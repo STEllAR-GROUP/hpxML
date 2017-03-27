@@ -1,0 +1,7 @@
+/home/zahra/Desktop/runtime_opt_with_compiler_and_ML/RealApplications/stencil/build/CMakeFiles/install/strip.dir
+/home/zahra/Desktop/runtime_opt_with_compiler_and_ML/RealApplications/stencil/build/CMakeFiles/install/local.dir
+/home/zahra/Desktop/runtime_opt_with_compiler_and_ML/RealApplications/stencil/build/CMakeFiles/install.dir
+/home/zahra/Desktop/runtime_opt_with_compiler_and_ML/RealApplications/stencil/build/CMakeFiles/list_install_components.dir
+/home/zahra/Desktop/runtime_opt_with_compiler_and_ML/RealApplications/stencil/build/CMakeFiles/rebuild_cache.dir
+/home/zahra/Desktop/runtime_opt_with_compiler_and_ML/RealApplications/stencil/build/CMakeFiles/edit_cache.dir
+/home/zahra/Desktop/runtime_opt_with_compiler_and_ML/RealApplications/stencil/build/CMakeFiles/main_exe.dir
