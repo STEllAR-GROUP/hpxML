@@ -15,7 +15,7 @@ We briefly discuss these learning models in the following sections.
 
 ### Binary Logistic Regression Model
 
-In order to select the optimum execution policy (sequential or parallel) for a loop, we implemented a binary logistic regression model in HPX which analyzes the static information extracted from the loop by the compiler and the dynamic information as provided by the runtime. In this model, the weights parameters having `k` features `W^T = [\omega _1, \omega _2, ..., \omega _{k}]` are determined by considering features values `x_r (i)` of each experiment $X_i = [1, x_1 (i), ..., x_{k} (i)]^T$ which minimize the log-likelihood of the Bernoulli distribution value as follow:
+In order to select the optimum execution policy (sequential or parallel) for a loop, we implemented a binary logistic regression model in HPX which analyzes the static information extracted from the loop by the compiler and the dynamic information as provided by the runtime. In this model, the weights parameters having `k` features ![eq 1](https://latex.codecogs.com/gif.download?W%5ET%20%3D%20%5B%5Comega%20_1%2C%20%5Comega%20_2%2C%20...%2C%20%5Comega%20_%7Bk%7D%5D) are determined by considering features values `x_r (i)` of each experiment $X_i = [1, x_1 (i), ..., x_{k} (i)]^T$ which minimize the log-likelihood of the Bernoulli distribution value as follow:
 \begin{equation} 
 \mu_i = 1/(1 + e^{-W^T X_i}). 
 \end{equation}
