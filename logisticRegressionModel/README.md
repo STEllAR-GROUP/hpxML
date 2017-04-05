@@ -2,14 +2,14 @@
 # Table of Contents
 1. [Logistic Regression Model](README.md#hpx-clangtool)
 2. [Training Data](README.md#training-data)
-3. [Trained Weights]((README.md#trained-weights)
+3. [Trained Weights](README.md#trained-weights)
 4. [Instructions](README.md#instructions)
 
 ## Logistic Regression Model
 
 We use the binary and multinomial logistic regression models to select the optimum execution policy, chunk size, and prefetching distance for certain HPX loops based on both, static and dynamic information, with the goal of minimizing execution time. Here, the static information about the loop body (such as the number of operations, see Table ...) collected by the compiler and the dynamic information (such as the number of cores used to execute the loop) as provided by the runtime system is used to feed a logistic regression model enabling a runtime decision which ensures best possible performance of the loop under consideration. 
 
-The presented method relies on a compiler-based source-to-source transformation. The compiler transforms certain loops which were annotated by the user by providing special execution policies -- par_if` `make_prefetcher_policy` and `adaptive_chunk_size` -- into code controlling runtime behavior. This transformed code instructs the runtime system to apply a logistic regression model and to select either an appropriate code path (e.g. parallel or sequential loop execution) or certain parameters for the loop execution itself (e.g. chunk size or prefetching distance).
+The presented method relies on a compiler-based source-to-source transformation. The compiler transforms certain loops which were annotated by the user by providing special execution policies -- `par_if` `make_prefetcher_policy` and `adaptive_chunk_size` -- into code controlling runtime behavior. This transformed code instructs the runtime system to apply a logistic regression model and to select either an appropriate code path (e.g. parallel or sequential loop execution) or certain parameters for the loop execution itself (e.g. chunk size or prefetching distance).
 
 We briefly discuss these learning models in the following sections. 
 
