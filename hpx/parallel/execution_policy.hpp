@@ -1,5 +1,6 @@
 //  Copyright (c) 2007-2017 Hartmut Kaiser
 //  Copyright (c) 2016 Marcin Copik
+//  Copyright (c) 2017 Zahra Khatami
 //
 //  Distributed under the Boost Software License, Version 1.0. (See accompanying
 //  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -355,7 +356,7 @@ namespace hpx { namespace parallel { namespace execution
         };
 
         /// \cond NOINTERNAL
-        HPX_CONSTEXPR sequenced_policy() : exec_{}, params_{} {}
+        HPX_CONSTEXPR sequenced_policy() {}
         /// \endcond
 
         /// Create a new sequenced_task_policy.
@@ -459,8 +460,8 @@ namespace hpx { namespace parallel { namespace execution
     };
 
     /// Default sequential execution policy object.
-    HPX_STATIC_CONSTEXPR sequenced_policy seq;
-
+    static sequenced_policy HPX_CONSTEXPR_OR_CONST seq;
+    
     /// The class sequenced_policy is an execution policy type used
     /// as a unique type to disambiguate parallel algorithm overloading and
     /// require that a parallel algorithm's execution may not be parallelized.
@@ -916,7 +917,7 @@ namespace hpx { namespace parallel { namespace execution
         };
 
         /// \cond NOINTERNAL
-        HPX_CONSTEXPR parallel_policy() : exec_{}, params_{} {}
+        HPX_CONSTEXPR parallel_policy() {}
         /// \endcond
 
         /// Create a new parallel_policy referencing a chunk size.
@@ -1013,7 +1014,7 @@ namespace hpx { namespace parallel { namespace execution
     };
 
     /// Default parallel execution policy object.
-    HPX_STATIC_CONSTEXPR parallel_policy par;
+    static parallel_policy HPX_CONSTEXPR_OR_CONST par;
 
     /// The class parallel_policy_shim is an execution policy type
     /// used as a unique type to disambiguate parallel algorithm overloading
@@ -1176,7 +1177,7 @@ namespace hpx { namespace parallel { namespace execution
         typedef parallel::parallel_execution_tag execution_category;
 
         /// \cond NOINTERNAL
-        HPX_CONSTEXPR parallel_unsequenced_policy() : exec_{}, params_{} {}
+        HPX_CONSTEXPR parallel_unsequenced_policy() {}
         /// \endcond
 
         /// Create a new parallel_unsequenced_policy from itself
@@ -1218,7 +1219,70 @@ namespace hpx { namespace parallel { namespace execution
     };
 
     /// Default vector execution policy object.
-    HPX_STATIC_CONSTEXPR parallel_unsequenced_policy par_unseq;
+    static parallel_unsequenced_policy HPX_CONSTEXPR_OR_CONST par_unseq;
+
+    ///////////////////////////////////////////////////////////////////////////
+    // The class prefetching_policy is an execution policy type 
+    // for implementing prefetching method
+    template<typename ExPolicy, typename ... Ts>
+    struct prefetching_policy
+    {
+        typedef hpx::util::tuple<std::reference_wrapper<Ts>...> ranges_type;
+
+        /// \cond NOINTERNAL
+        HPX_CONSTEXPR prefetching_policy(ExPolicy && policy,   
+                                            std::size_t dist_f, 
+                                            ranges_type const& rngs) :
+            current_policy_(policy), prefetching_distance_factor_(dist_f), 
+            ranges_(rngs) {}
+        /// \endcond
+
+    public:
+        
+        // Returning prefetching_distance_factor
+        std::size_t get_prefetching_distance_factor() 
+        { 
+            return prefetching_distance_factor_; 
+        } 
+               
+        // Returning ranges
+        ranges_type& get_ranges() { return ranges_; }
+
+        // Returning policy
+        ExPolicy& get_policy() { return current_policy_;}
+
+    private:
+        friend class hpx::serialization::access;
+
+        template <typename Archive>
+        void serialize(Archive & ar, const unsigned int version)
+        {
+            ar & prefetching_distance_factor_ & ranges_;
+        }
+
+    private:
+
+        std::size_t prefetching_distance_factor_;
+        ranges_type ranges_;
+        ExPolicy current_policy_;
+    };
+
+    // Helper function for creating prefetching_policy
+    template<typename ExPolicy, typename ... Ts>
+    prefetching_policy<ExPolicy, Ts const...>
+    make_prefetcher_policy(ExPolicy && policy, std::size_t dist_f, Ts const& ... rngs)
+    {
+        static_assert(
+            hpx::util::detail::all_of<hpx::traits::is_range<Ts>...>::value,
+            "All variadic parameters have to represent ranges");
+
+        typedef hpx::util::tuple<std::reference_wrapper<Ts const>...> ranges_type;
+
+        auto && ranges = ranges_type(std::cref(rngs)...);
+        return prefetching_policy<ExPolicy, Ts const...>(std::forward<ExPolicy>(policy), 
+                                                dist_f, 
+                                                std::move(ranges));
+    }
 
     ///////////////////////////////////////////////////////////////////////////
     // Allow to detect execution policies which were created as a result
@@ -1258,6 +1322,11 @@ namespace hpx { namespace parallel { namespace execution
         /// \cond NOINTERNAL
         template <>
         struct is_execution_policy<parallel_policy>
+          : std::true_type
+        {};
+
+        template <typename ... Ts>
+        struct is_execution_policy<prefetching_policy<Ts...>>
           : std::true_type
         {};
 
@@ -1314,6 +1383,11 @@ namespace hpx { namespace parallel { namespace execution
         /// \cond NOINTERNAL
         template <>
         struct is_parallel_execution_policy<parallel_policy>
+          : std::true_type
+        {};
+
+        template <typename ... Ts>
+        struct is_parallel_execution_policy<prefetching_policy<Ts...>>
           : std::true_type
         {};
 
@@ -1437,11 +1511,14 @@ namespace hpx { namespace parallel { HPX_INLINE_NAMESPACE(v1)
     using task_execution_policy_tag = parallel::execution::task_policy_tag;
 
     ///////////////////////////////////////////////////////////////////////////
-    HPX_STATIC_CONSTEXPR sequential_execution_policy seq;
-    HPX_STATIC_CONSTEXPR parallel_execution_policy par;
-    HPX_STATIC_CONSTEXPR parallel_vector_execution_policy par_vec;
+    static sequential_execution_policy HPX_CONSTEXPR_OR_CONST seq;    
+    static parallel_execution_policy HPX_CONSTEXPR_OR_CONST par;
 
-    HPX_STATIC_CONSTEXPR task_execution_policy_tag task;
+    // Applying machine learning techniques for policy determination by using par_if
+    static parallel_execution_policy HPX_CONSTEXPR_OR_CONST par_if;
+
+    static parallel_vector_execution_policy HPX_CONSTEXPR_OR_CONST par_vec;
+    static task_execution_policy_tag HPX_CONSTEXPR_OR_CONST task;
 
 #if defined(HPX_HAVE_GENERIC_EXECUTION_POLICY)
     ///////////////////////////////////////////////////////////////////////////
@@ -1687,7 +1764,8 @@ namespace hpx { namespace parallel { HPX_INLINE_NAMESPACE(v1)
             return extract_launch_policy<ExPolicy>::call();
         }
         /// \endcond
-    }
+    }   
+
 #endif
 }}}
 #endif

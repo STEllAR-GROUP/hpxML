@@ -26,7 +26,10 @@
 #include <hpx/parallel/util/foreach_partitioner.hpp>
 #include <hpx/parallel/util/loop.hpp>
 #include <hpx/parallel/util/projection_identity.hpp>
+#include <hpx/parallel/util/compiler_static_information.hpp>
+#include <hpx/parallel/util/prefetching.hpp>
 
+#include <typeinfo>
 #include <algorithm>
 #include <cstddef>
 #include <iterator>
@@ -433,7 +436,6 @@ namespace hpx { namespace parallel { HPX_INLINE_NAMESPACE(v1)
 
     // FIXME : is_indirect_callable does not work properly when compiling
     //         Cuda host code
-
     template <typename ExPolicy, typename InIter, typename F,
         typename Proj = util::projection_identity,
     HPX_CONCEPT_REQUIRES_(
@@ -460,6 +462,24 @@ namespace hpx { namespace parallel { HPX_INLINE_NAMESPACE(v1)
         return detail::for_each_(
             std::forward<ExPolicy>(policy), first, last,
             std::forward<F>(f), std::forward<Proj>(proj), is_segmented());
+    }
+
+    // for_each with prefetching 
+    template <typename ExPolicy, typename InIter, typename F, typename ... Ts>
+    void
+    for_each(hpx::parallel::execution::prefetching_policy<ExPolicy, Ts ...> && policy, 
+        InIter first, InIter last, F && f)
+    {
+        auto prefetcher_context = util::make_prefetcher_context(first, last, 
+                                    policy.get_prefetching_distance_factor(), 
+                                    std::move(policy.get_ranges()));
+
+        // Executing loop on policy while prefetching containers with a loop
+        auto && current_policy = policy.get_policy();       
+        for_each(
+            std::forward<ExPolicy>(current_policy), 
+            prefetcher_context.begin(), prefetcher_context.end(), 
+            std::forward<F>(f));
     }
 }}}
 

@@ -1,4 +1,4 @@
-//  Copyright (c) 2015-2016 Hartmut Kaiser
+//  Copyright (c) 2015-2017 Hartmut Kaiser, Zahra Khatami
 //
 //  Distributed under the Boost Software License, Version 1.0. (See accompanying
 //  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -64,6 +64,19 @@ void test_dynamic_chunk_size()
 
     {
         hpx::parallel::dynamic_chunk_size dcs(100);
+        parameters_test(dcs);
+    }
+}
+
+void test_adaptive_chunk_size()
+{
+    {
+        hpx::parallel::adaptive_chunk_size dcs;
+        parameters_test(dcs);
+    }
+
+    {
+        hpx::parallel::adaptive_chunk_size dcs(100);
         parameters_test(dcs);
     }
 }
@@ -166,6 +179,7 @@ int hpx_main(boost::program_options::variables_map& vm)
     std::srand(seed);
 
     test_dynamic_chunk_size();
+    test_adaptive_chunk_size();
     test_static_chunk_size();
     test_guided_chunk_size();
     test_auto_chunk_size();

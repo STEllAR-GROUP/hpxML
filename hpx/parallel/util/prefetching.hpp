@@ -1,4 +1,4 @@
-//  Copyright (c) 2016 Zahra Khatami, Hartmut Kaiser
+//  Copyright (c) 2016-17 Zahra Khatami, Hartmut Kaiser
 //
 //  Distributed under the Boost Software License, Version 1.0. (See accompanying
 //  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -393,23 +393,18 @@ namespace hpx { namespace parallel { namespace util
 
     ///////////////////////////////////////////////////////////////////////////
     // function to create a prefetcher_context
+    //NEW
     template <typename Itr, typename ... Ts>
     detail::prefetcher_context<Itr, Ts const...>
     make_prefetcher_context(Itr base_begin, Itr base_end,
-        std::size_t p_factor, Ts const& ... rngs)
+        std::size_t p_factor, hpx::util::tuple<std::reference_wrapper<Ts>...> const &rngs)
     {
         static_assert(
             hpx::traits::is_random_access_iterator<Itr>::value,
             "Iterators have to be of random access iterator category");
-        static_assert(
-            hpx::util::detail::all_of<hpx::traits::is_range<Ts>...>::value,
-            "All variadic parameters have to represent ranges");
 
-        typedef hpx::util::tuple<std::reference_wrapper<Ts const>...> ranges_type;
-
-        auto && ranges = ranges_type(std::cref(rngs)...);
         return detail::prefetcher_context<Itr, Ts const...>(
-            base_begin, base_end, std::move(ranges), p_factor);
+            base_begin, base_end, std::move(rngs), p_factor);
     }
 }}}
 
