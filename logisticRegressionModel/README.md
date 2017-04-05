@@ -15,9 +15,9 @@ We briefly discuss these learning models in the following sections.
 
 ### Binary Logistic Regression Model
 
-In order to select the optimum execution policy (sequential or parallel) for a loop, we implemented a binary logistic regression model in HPX which analyzes the static information extracted from the loop by the compiler and the dynamic information as provided by the runtime. In this model, the weights parameters having `k` features ![eq 1](https://latex.codecogs.com/gif.latex?W%5ET%20%3D%20%5B%5Comega%20_1%2C%20%5Comega%20_2%2C%20...%2C%20%5Comega%20_%7Bk%7D%5D) are determined by considering features values ![eq 2]((https://latex.codecogs.com/gif.latex?x_r%20%28i%29) of each experiment ![eq 3](https://latex.codecogs.com/gif.latex?X_i%20%3D%20%5B1%2C%20x_1%20%28i%29%2C%20...%2C%20x_%7Bk%7D%20%28i%29%5D%5ET) which minimize the log-likelihood of the Bernoulli distribution value as follow:
+In order to select the optimum execution policy (sequential or parallel) for a loop, we implemented a binary logistic regression model in HPX which analyzes the static information extracted from the loop by the compiler and the dynamic information as provided by the runtime. In this model, the weights parameters having `k` features ![eq 1](https://latex.codecogs.com/gif.latex?W%5ET%20%3D%20%5B%5Comega%20_1%2C%20%5Comega%20_2%2C%20...%2C%20%5Comega%20_%7Bk%7D%5D) are determined by considering features values ![eq 2](https://latex.codecogs.com/gif.latex?x_r%20%28i%29) of each experiment ![eq 3](https://latex.codecogs.com/gif.latex?X_i%20%3D%20%5B1%2C%20x_1%20%28i%29%2C%20...%2C%20x_%7Bk%7D%20%28i%29%5D%5ET) which minimize the log-likelihood of the Bernoulli distribution value as follow:
 
-	![eq 4](https://latex.codecogs.com/gif.latex?%5Cmu_i%20%3D%201/%281%20+%20e%5E%7B-W%5ET%20X_i%7D%29)
+![eq 4](https://latex.codecogs.com/gif.latex?%5Cmu_i%20%3D%201/%281%20+%20e%5E%7B-W%5ET%20X_i%7D%29)
 
  
 The values of $\omega$ are updated in each step $t$ as follows:
