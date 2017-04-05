@@ -19,8 +19,7 @@ After compiling using Clang and LoopConvert (our ClangTool), the above loops wil
 
 	hpx::parallel::for_each(hpx::parallel::par.with(hpx::parallel::chunk_size_determination(EXTRACTED_STATICE_DYNAMIC_FEATURES)), time_range.begin(), time_range.end(), f);	
 
-	hpx::parallel::for_each(hpx::parallel::execution::make_prefetcher_policy(policy, 
-		hpx::parallel::prefetching_distance_determination(EXTRACTED_STATICE_DYNAMIC_FEATURES), ...), time_range.begin(), time_range.end(), f);
+	hpx::parallel::for_each(hpx::parallel::execution::make_prefetcher_policy(policy, hpx::parallel::prefetching_distance_determination(EXTRACTED_STATICE_DYNAMIC_FEATURES), ...), time_range.begin(), time_range.end(), f);
 	...
 
 # Instructions
