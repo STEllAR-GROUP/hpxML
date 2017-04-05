@@ -1,7 +1,7 @@
 
 # Table of Contents
-1. Expected Results(README.md#expected-results)
-2. Instructions(README.md#instructions)
+1. [Expected Results](README.md#expected-results)
+2. [Instructions](README.md#instructions)
 
 ## Expected Results
 
