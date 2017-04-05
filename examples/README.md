@@ -1,7 +1,7 @@
 
 # Expected Results
 
-These examples are provided to show how you can implement hpxml for loops to acheive better parallel perfromance. 
+These examples are provided to show how you can implement hpxml on the hpx for loops to acheive a better parallel perfromance. 
 
 In each example, there are three different loops:
 
