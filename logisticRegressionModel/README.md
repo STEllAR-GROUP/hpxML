@@ -20,60 +20,40 @@ In order to select the optimum execution policy (sequential or parallel) for a l
 ![eq 4](https://latex.codecogs.com/gif.latex?%5Cmu_i%20%3D%201/%281%20+%20e%5E%7B-W%5ET%20X_i%7D%29)
 
  
-The values of $\omega$ are updated in each step $t$ as follows:
-\begin{equation} \label{eq1}
-\omega_{t + 1} = (X^TS_tX)^{-1}X^T(S_tX\omega_t + y - \mu_t)
-\end{equation}
+The values of ![eq 5](https://latex.codecogs.com/gif.latex?%5Comega) are updated in each step $t$ as follows:
 
-\noindent
-, where $S$ is a diagonal matrix with $S(i, i) = \mu_i(1 - \mu_i)$. The output is determined by considering the following decision rule:
-\begin{equation} 
-\label{eq2}
-y(x) = 1 \longleftrightarrow p(y = 1 | x) > 0.5
-\end{equation}
+![eq 6](https://latex.codecogs.com/gif.latex?%5Comega_%7Bt%20+%201%7D%20%3D%20%28X%5ETS_tX%29%5E%7B-1%7DX%5ET%28S_tX%5Comega_t%20+%20y%20-%20%5Cmu_t%29)
 
-\subsection{Multinomial Logistic Regression Model }
-\label{sec:mult}
 
-In order to predict the optimum values for the chunk size and the prefetching distance, we implemented a multinomial logistic regression model \cite{bishop1} in HPX which also analyzes the static information extracted from the loop by the compiler and the dynamic information as provided by the runtime. Assume that we have $N$ experiments that are classified in $C$ classes and each has $K$ features. In this method, the posterior probabilities are computed by using a softmax transformation of the feature variables linear functions for an experiment $n$ with a class $c$ as follow:
 
-\begin{equation}
-\label{eq3}
-y_{nc} = y_c(X_n) = \frac{exp(W_c^TX_n)}{\sum_{i=1}^{C} exp(W_i^TX_n)}
-\end{equation}
+, where `S` is a diagonal matrix with ![eq 7](https://latex.codecogs.com/gif.latex?S%28i%2C%20i%29%20%3D%20%5Cmu_i%281%20-%20%5Cmu_i%29). The output is determined by considering the following decision rule:
 
-\noindent
+![eq 8](https://latex.codecogs.com/gif.latex?y%28x%29%20%3D%201%20%5Clongleftrightarrow%20p%28y%20%3D%201%20%7C%20x%29%20%3E%200.5)
+
+### Multinomial Logistic Regression Model
+
+In order to predict the optimum values for the chunk size and the prefetching distance, we implemented a multinomial logistic regression model in HPX which also analyzes the static information extracted from the loop by the compiler and the dynamic information as provided by the runtime. Assume that we have `N` experiments that are classified in `C` classes and each has `K` features. In this method, the posterior probabilities are computed by using a softmax transformation of the feature variables linear functions for an experiment `n` with a class `c` as follow:
+
+![eq 9](https://latex.codecogs.com/gif.latex?y_%7Bnc%7D%20%3D%20y_c%28X_n%29%20%3D%20%5Cfrac%7Bexp%28W_c%5ETX_n%29%7D%7B%5Csum_%7Bi%3D1%7D%5E%7BC%7D%20exp%28W_i%5ETX_n%29%7D)
+
 The cross entropy error function is defined as follows:
 
-\begin{equation}
-\label{eq4}
-E(\omega_1, \omega_2, ..., \omega_C) = -\sum_{n=1}^{N}\sum_{c=1}^{C} t_{nc} lny_{nc}
-\end{equation}
+![eq 10](https://latex.codecogs.com/gif.latex?E%28%5Comega_1%2C%20%5Comega_2%2C%20...%2C%20%5Comega_C%29%20%3D%20-%5Csum_%7Bn%3D1%7D%5E%7BN%7D%5Csum_%7Bc%3D1%7D%5E%7BC%7D%20t_%7Bnc%7D%20lny_%7Bnc%7D)
 
-\noindent
-, where T is a $N\times C$ matrix of target variables with $t_{nc}$ elements. The gradient of $E$ is computed as follows:
 
-\begin{equation}
-\label{eq5}
-\nabla_{\omega_{c}}E(\omega_1, \omega_2, ..., \omega_C) = \sum_{n=1}^{N}(y_{nc} - t_{nc})X_n
-\end{equation}
+, where `T` is a ![eq 11](https://latex.codecogs.com/gif.latex?N%5Ctimes%20C) matrix of target variables with ![eq 12](https://latex.codecogs.com/gif.latex?t_%7Bnc%7D) elements. The gradient of `E` is computed as follows:
 
-In this method, we use the Newton-Raphson method \cite{nr} to update the weights values in each step:
+![eq 13](https://latex.codecogs.com/gif.latex?%5Cnabla_%7B%5Comega_%7Bc%7D%7DE%28%5Comega_1%2C%20%5Comega_2%2C%20...%2C%20%5Comega_C%29%20%3D%20%5Csum_%7Bn%3D1%7D%5E%7BN%7D%28y_%7Bnc%7D%20-%20t_%7Bnc%7D%29X_n)
 
-\begin{equation}
-\label{eq6}
-\omega_{new} = \omega_{old} - H^{-1}\nabla E(\omega)
-\end{equation}
+In this method, we use the gradient desecnt method to update the weights values in each step:
 
-\noindent
-where $H$ is the Hessian matrix defined as follows:
+![eq 14](https://latex.codecogs.com/gif.latex?%5Comega_%7Bnew%7D%20%3D%20%5Comega_%7Bold%7D%20-%20%5Calpha%20%5Ctimes%20%5Cnabla%20E%28%5Comega%29)
 
-\begin{equation}
-\label{eq7}
-\nabla_{\omega_{i}}\nabla_{\omega_{j}} E(\omega_1, \omega_2, ..., \omega_C)=\sum_{n=1}^{N} y_{ni}(I_{ij} - y_{nj})X_n X^T_n %i,j\in\{1,...,C\}
-\end{equation}
+where ![eq 15](https://latex.codecogs.com/gif.latex?%5Calpha) is `0.001` here.
 
-Since the Hessian matrix for this regression model is positive definite, its error function has a unique minimum. At the end of this iterative process, a set of weights is determined for a learning model that gives the best classification on a given set of training data. More details can be found in \cite{bishop2}. 
+More details can be found in:
+
+C Bishop. Pattern recognition and machine learning (information science and statistics), 1st edn. 2006. corr. 2nd printing edn. Springer, New York, 2007.
 
 
 
