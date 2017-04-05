@@ -55,16 +55,47 @@ More details can be found in:
 
 C Bishop. Pattern recognition and machine learning (information science and statistics), 1st edn. 2006. corr. 2nd printing edn. Springer, New York, 2007.
 
+## Features Set
 
+Initially, we selected `10` static features to be collected at compile time and `2` dynamic features to be determined at runtime to be evaluated by our learning model.
 
+|static/dynamic | Information |
+|---|---|
+| dynamic | number of threads |
+| dynamic | number of iterations |
+| static | number of total operations |
+| static | number of float operation |
+| static | number of comparison operations |
+| static | deepest loop level |
+| static | number of integer variables |
+| static | number of float variables |
+| static | number of if statements |
+| static | number of if statements within inner loops |
+| static | number of function calls |
+| static | number of function calls within inner loops |
 
-
-
+To avoid overfitting the model, we chose `6` first critical features in the Table to include in the actual decision tree classification, which reduces the initial feature set in a tree building process based on information gain value. This value is used to decide which feature to be selected for spliting data at each step in a tree building process. 
 
 ## Training Data 
 
+To design an efficient learning model that could be able to cover various cases, we collected over $300$ training data sets (see `/algorithms/inputs`) by analyzing different applications that implement `par_if` `make_prefetcher_policy`, or `adaptive_chunk_size`} on their loops. Both the binary and multinomial logistic regression models are implemented in C++ that can be found in `/algorithms`. These models are designed based on the collected data, in which the values of ![eq 16](https://latex.codecogs.com/gif.latex?%5Comega) are determined whenever the sum of square errors reaches its minimum value. Then they are stored in an output file located at `/learning_weights` that will be used for predicting the optimal execution policy, chunk size, or prefetching distance at runtime. 
+
+It should be noted that the multinomial logistic regression model must be initialized with the allowed boundaries for the chunk size and prefetching distance in order to choose an efficient value. In this study we selected `0.001`, `0.01`, `0.1`, and `0.5` of the number of iterations of a loop as chunk size candidates and `10`, `50`, `100`, `1000` and `5000` cache lines as prefetching distance candidates. These candidates are validated with different tests and based on their results, they are selected. Also, they are already included in the implementation of the proposed technique discussed in the next section and it is not required for the users to include them manually. This learning step can be done offline, which also doesn't add any overhead at compile time nor does at runtime.
+
 ## Trained Weights
+
+We gathered the rained weights from implementing learning model on our own machine on the inputs found at `algorithms/inputs` in `/learning_weights`:
+
+	weights_chunk_size.dat
+	weights_prefetcher_distance_factor.dat
+	weights_seq_par.dat
+
+These weights are trained using `Clang 4.0.0` and `HPX V0.9.99` on the test machine with two `Intel Xeon E5-2630` processors, each with `8` cores clocked at `2.4GHZ` and `65GB` of main memory. 
+
+- It should be note that these weights may be different with the one you may get from training on your machine.
 
 ## Instructions
 
-g++ -std=c++11 -I /usr/bin/include/eigen3/ main.cpp -o main.o
+To run these provided algorithms, compile your code with:
+
+	g++ -std=c++11 -I /path/to/eigen3/ main.cpp -o main.o

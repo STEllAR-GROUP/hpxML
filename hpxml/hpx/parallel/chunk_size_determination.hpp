@@ -38,7 +38,7 @@ namespace hpx { namespace parallel {
     	}
 
         //candidates
-        double candidates[] = {0.001, 0.01, 0.1, 1, 1.1};
+        double candidates[] = {0.001, 0.01, 0.1, 0.5};
 
     	double chunk_size = candidates[determined_class] * features[4];
 
