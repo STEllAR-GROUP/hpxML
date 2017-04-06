@@ -96,6 +96,6 @@ These weights are trained using `Clang 4.0.0` and `HPX V0.9.99` on the test mach
 
 ## Instructions
 
-To run these provided algorithms, you need first downloading Eigen library from `http://eigen.tuxfamily.org/index.php?title=Main_Page`, then compile your code with:
+To run these provided algorithms, first download Eigen library from `http://eigen.tuxfamily.org/index.php?title=Main_Page`, then compile your code with:
 
 	g++ -std=c++11 -I /path/to/eigen3/ main.cpp -o main.o
