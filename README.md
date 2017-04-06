@@ -15,11 +15,11 @@ The goal of this project is to combine machine learning methods, compiler transf
 
 ### Special Execution Policies and Parameters
 
-We introduce two new HPX execution policies and one new HPX execution policy parameter, which enables the weights gathered by the learning model to be applied on the loop: `par_if` and `make_prefetcher_policy`. These policies instrument executors to be able to consume the weights produced by a binary logistic regression model, which is used to select the execution policy corresponding to the optimal code path to execute (sequential or parallel), and a multinomial logistic regression model, which is used to determine an efficient prefetching distance. Additionally we created an new execution policy parameter, `adaptive_chunk_size`, which uses a multinomial logistic regression model to determine an efficient chunk size. We have created a new special ClangTool which recognizes these annotated loops and transform them into equivalent code which instructs the runtime to apply the described regression models. More details can be found in `ClangTool`.
+We introduce two new HPX execution policies and one new HPX execution policy parameter, which enables the weights gathered by the learning model to be applied on the loop: `par_if` and `make_prefetcher_policy`. These policies instrument executors to be able to consume the weights produced by a binary logistic regression model, which is used to select the execution policy corresponding to the optimal code path to execute (sequential or parallel), and a multinomial logistic regression model, which is used to determine an efficient prefetching distance. Additionally we created an new execution policy parameter, `adaptive_chunk_size`, which uses a multinomial logistic regression model to determine an efficient chunk size. We have created a new special ClangTool which recognizes these annotated loops and transform them into equivalent code which instructs the runtime to apply the described regression models. More details can be found in `/ClangTool`.
 
 ### Designing the Learning Model and Feature Extraction
 
-We use the binary and multinomial logistic regression models to select the optimum execution policy, chunk size, and prefetching distance for certain HPX loops based on both, static and dynamic information, with the goal of minimizing execution time. More details can be found in ` 	logisticRegressionModel`
+We use the binary and multinomial logistic regression models to select the optimum execution policy, chunk size, and prefetching distance for certain HPX loops based on both, static and dynamic information, with the goal of minimizing execution time. More details can be found in `/logisticRegressionModel`.
 
 ### Learning Model Implementation
 
@@ -68,3 +68,10 @@ More details can be found in our recent published paper:
 
 
 ## Instructions
+
+1. Install HPX (see instructions in `/hpxml`)
+2. Install Clang 4.0.0 add our new ClangTool (see instructions in `/ClangTool`)
+3. Design learning model (see instructions in `/logisticRegressionModel`)
+
+
+Don't forget to join our IRC `#ste||ar` if you need any help :) 
