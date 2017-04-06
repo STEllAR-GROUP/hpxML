@@ -74,4 +74,4 @@ More details can be found in our recent published paper:
 3. Design learning model (see instructions in `/logisticRegressionModel`)
 
 
-Don't forget to join our IRC `#ste||ar` if you need any help :) 
+Don't forget to join our IRC channel `#ste||ar` if you need any help :) 
