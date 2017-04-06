@@ -25,7 +25,7 @@ We use the binary and multinomial logistic regression models to select the optim
 
 We propose three new techniques that implement binary and multinomial logistic regression models at runtime:
 
-1. We propose a new function `seq_par` (`/hpxml/hpx/parallel/seq_or_par.hpp`) that passes the extracted features for a loop that uses `par_if` as its execution policy. In this technique, a Clang compiler automatically adds extra lines within a user's code as below that allows the runtime system to decide whether execute a loop sequentially or in parallel based on the return value of `seq_par`. 
+1. **Predicting Execution Policy:** We propose a new function `seq_par` (`/hpxml/hpx/parallel/seq_or_par.hpp`) that passes the extracted features for a loop that uses `par_if` as its execution policy. In this technique, a Clang compiler automatically adds extra lines within a user's code as below that allows the runtime system to decide whether execute a loop sequentially or in parallel based on the return value of `seq_par`. 
 	
 		Before compilation:
 		for_each(par_if,range.begin(),range.end(),lambda);
@@ -39,7 +39,7 @@ We propose three new techniques that implement binary and multinomial logistic r
 
 If the output is `false` the loop will execute sequentially and if the output is `true` the loop will execute in parallel. This function takes the weights extracted during compilation and the values polled at runtime as inputs. 
 
-2. We propose a new function `chunk_size_determination` (`/hpxml/hpx/parallel/chunk_size_determination.hpp`) that passes the extracted features for a loop that uses `adaptive_chunk_size` as its execution policy's parameter. In this technique, a Clang compiler changes a user's code automatically as below that makes runtime system to choose an optimum chunk size based on the output of `chunk_size_determination` that is based on the chunk size candidate's probability. In addition to the extracted compile time static information, number of threads and number of iterations are also measured and included in this function. 
+2. **Predicting Efficient Chunk Size:** We propose a new function `chunk_size_determination` (`/hpxml/hpx/parallel/chunk_size_determination.hpp`) that passes the extracted features for a loop that uses `adaptive_chunk_size` as its execution policy's parameter. In this technique, a Clang compiler changes a user's code automatically as below that makes runtime system to choose an optimum chunk size based on the output of `chunk_size_determination` that is based on the chunk size candidate's probability. In addition to the extracted compile time static information, number of threads and number of iterations are also measured and included in this function. 
 
 		Before compilation:
 		for_each(policy.with(adaptive_chunk_size()),range.begin(),
@@ -50,7 +50,7 @@ If the output is `false` the loop will execute sequentially and if the output is
 			range.begin(),range.end(),lambda);
 		...
 
-3. We propose a new function `prefetching_distance_determination` (`/hpxml/hpx/parallel/prefetching_distance_determination.hpp`) that passes the extracted features for a loop that uses `make_prefetcher_policy` as its execution policy. In this technique, a Clang compiler changes a user's code automatically as below that makes runtime system to choose an optimum prefetching distance based on the output of `prefetching_distance_determination`. Same as `seq_par` and `chunk_size_determination`, this function includes the compiler extracted static information in addition to dynamically measured number of threads and number of iterations.	
+3. **Predicting Efficient Prefetching Distance:** We propose a new function `prefetching_distance_determination` (`/hpxml/hpx/parallel/prefetching_distance_determination.hpp`) that passes the extracted features for a loop that uses `make_prefetcher_policy` as its execution policy. In this technique, a Clang compiler changes a user's code automatically as below that makes runtime system to choose an optimum prefetching distance based on the output of `prefetching_distance_determination`. Same as `seq_par` and `chunk_size_determination`, this function includes the compiler extracted static information in addition to dynamically measured number of threads and number of iterations.	
 
 		Before compilation:
 		for_each(make_prefetcher_policy(policy, 
