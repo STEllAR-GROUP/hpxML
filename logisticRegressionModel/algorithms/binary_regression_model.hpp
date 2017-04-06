@@ -1,6 +1,6 @@
 //  Copyright (c) 2017 Zahra Khatami 
 //
-//
+// Train your data, then record them in an output file stated in "retrieving_weights_two_classes_into_txt_file"
 
 #include <limits>
 #include <math.h>
