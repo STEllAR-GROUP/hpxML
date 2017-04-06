@@ -32,9 +32,9 @@ We propose three new techniques that implement binary and multinomial logistic r
 
 		After compilation:
 		if(seq_par(EXTRACTED_STATICE_DYNAMIC_FEATURES))
-		for_each(seq, range.begin(),range.end(),lambda);  
+			for_each(seq, range.begin(),range.end(),lambda);  
 		else
-		for_each(par, range.begin(),range.end(),lambda);
+			for_each(par, range.begin(),range.end(),lambda);
 		...
 
 If the output is `false` the loop will execute sequentially and if the output is `true` the loop will execute in parallel. This function takes the weights extracted during compilation and the values polled at runtime as inputs. 
