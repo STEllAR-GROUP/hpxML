@@ -5,7 +5,7 @@
 #include <fstream>
 #include <sstream>
 #include <limits>
-#include "multinomial_logistic_regression_model.hpp"
+#include "models/regression_models.hpp"
 
 void reading_input_values(std::size_t number_of_experiments, std::size_t number_of_features, std::size_t number_of_multi_classes, 
                                         float** experimental_results, int* targets, float** execution_times_multi_class, std::ifstream& myfile) {
