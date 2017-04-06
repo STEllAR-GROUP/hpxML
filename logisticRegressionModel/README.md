@@ -7,9 +7,9 @@
 
 ## Logistic Regression Model
 
-We use the binary and multinomial logistic regression models to select the optimum execution policy, chunk size, and prefetching distance for certain HPX loops based on both, static and dynamic information, with the goal of minimizing execution time. Here, the static information about the loop body (such as the number of operations, see Table ...) collected by the compiler and the dynamic information (such as the number of cores used to execute the loop) as provided by the runtime system is used to feed a logistic regression model enabling a runtime decision which ensures best possible performance of the loop under consideration. 
+We use the binary and multinomial logistic regression models to select the optimum execution policy, chunk size, and prefetching distance for certain HPX loops based on both, static and dynamic information, with the goal of minimizing execution time. Here, the static information about the loop body (such as the number of operations, see below Table) collected by the compiler and the dynamic information (such as the number of cores used to execute the loop) as provided by the runtime system is used to feed a logistic regression model enabling a runtime decision which ensures best possible performance of the loop under consideration. 
 
-The presented method relies on a compiler-based source-to-source transformation. The compiler transforms certain loops which were annotated by the user by providing special execution policies -- `par_if` `make_prefetcher_policy` and `adaptive_chunk_size` -- into code controlling runtime behavior. This transformed code instructs the runtime system to apply a logistic regression model and to select either an appropriate code path (e.g. parallel or sequential loop execution) or certain parameters for the loop execution itself (e.g. chunk size or prefetching distance).
+The presented method relies on a compiler-based source-to-source transformation. The compiler transforms certain loops which were annotated by the user by providing special execution policies -- `par_if` `make_prefetcher_policy` and `adaptive_chunk_size` -- into code controlling runtime behavior. This transformed code instructs the runtime system to apply a logistic regression model and to select either an appropriate code path (e.g. parallel or sequential loop execution) or certain parameters for the loop execution itself (e.g. chunk size or prefetching distance). ClangTool proposed for this purpose can be found in `/hpxML/ClangTool`.
 
 We briefly discuss these learning models in the following sections. 
 
@@ -20,7 +20,7 @@ In order to select the optimum execution policy (sequential or parallel) for a l
 ![eq 4](https://latex.codecogs.com/gif.latex?%5Cmu_i%20%3D%201/%281%20+%20e%5E%7B-W%5ET%20X_i%7D%29)
 
  
-The values of ![eq 5](https://latex.codecogs.com/gif.latex?%5Comega) are updated in each step $t$ as follows:
+The values of ![eq 5](https://latex.codecogs.com/gif.latex?%5Comega) are updated in each step `t` as follows:
 
 ![eq 6](https://latex.codecogs.com/gif.latex?%5Comega_%7Bt%20+%201%7D%20%3D%20%28X%5ETS_tX%29%5E%7B-1%7DX%5ET%28S_tX%5Comega_t%20+%20y%20-%20%5Cmu_t%29)
 
@@ -78,13 +78,13 @@ To avoid overfitting the model, we chose `6` first critical features in the Tabl
 
 ## Training Data 
 
-To design an efficient learning model that could be able to cover various cases, we collected over $300$ training data sets (see `/algorithms/inputs`) by analyzing different applications that implement `par_if` `make_prefetcher_policy`, or `adaptive_chunk_size`} on their loops. Both the binary and multinomial logistic regression models are implemented in C++ that can be found in `/algorithms`. These models are designed based on the collected data, in which the values of ![eq 16](https://latex.codecogs.com/gif.latex?%5Comega) are determined whenever the sum of square errors reaches its minimum value. Then they are stored in an output file located at `/learning_weights` that will be used for predicting the optimal execution policy, chunk size, or prefetching distance at runtime. 
+To design an efficient learning model that could be able to cover various cases, we collected over `300` training data sets (see `/algorithms/inputs`) by analyzing different applications that implement `par_if` `make_prefetcher_policy`, or `adaptive_chunk_size` on their loops. Both the binary and multinomial logistic regression models are implemented in C++ that can be found in `/algorithms`. These models are designed based on the collected data, in which the values of ![eq 16](https://latex.codecogs.com/gif.latex?%5Comega) are determined whenever the sum of square errors reaches its minimum value. Then they are stored in an output file located at `/learning_weights` that will be used for predicting the optimal execution policy, chunk size, or prefetching distance at runtime. 
 
 It should be noted that the multinomial logistic regression model must be initialized with the allowed boundaries for the chunk size and prefetching distance in order to choose an efficient value. In this study we selected `0.001`, `0.01`, `0.1`, and `0.5` of the number of iterations of a loop as chunk size candidates and `10`, `50`, `100`, `1000` and `5000` cache lines as prefetching distance candidates. These candidates are validated with different tests and based on their results, they are selected. Also, they are already included in the implementation of the proposed technique discussed in the next section and it is not required for the users to include them manually. This learning step can be done offline, which also doesn't add any overhead at compile time nor does at runtime.
 
 ## Trained Weights
 
-We gathered the rained weights from implementing learning model on our own machine on the inputs found at `algorithms/inputs` in `/learning_weights`:
+We gathered the trained weights in `/learning_weights` from implementing learning model on our own machine on the training data at `algorithms/inputs` :
 
 	weights_chunk_size.dat
 	weights_prefetcher_distance_factor.dat
@@ -92,10 +92,10 @@ We gathered the rained weights from implementing learning model on our own machi
 
 These weights are trained using `Clang 4.0.0` and `HPX V0.9.99` on the test machine with two `Intel Xeon E5-2630` processors, each with `8` cores clocked at `2.4GHZ` and `65GB` of main memory. 
 
-- It should be note that these weights may be different with the one you may get from training on your machine.
+- It should be note that these weights may be different with the one you may get from training data on your own machine.
 
 ## Instructions
 
-To run these provided algorithms, compile your code with:
+To run these provided algorithms, you need first downloading Eigen library from `http://eigen.tuxfamily.org/index.php?title=Main_Page`, then compile your code with:
 
 	g++ -std=c++11 -I /path/to/eigen3/ main.cpp -o main.o
