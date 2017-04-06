@@ -5,7 +5,7 @@
 
 ## Expected Results
 
-These examples are provided to show how you can implement hpxml on the hpx for loops to acheive a better parallel perfromance. 
+These examples are provided to show how you can implement hpxml on the hpx loops to acheive a better parallel perfromance. The output results of these examples compare the parallel perfromance of an hpx loop when using hpxml.
 
 In each example, there are three different loops:
 
@@ -32,7 +32,7 @@ Follow below instructions to compile the provided examples:
 
 	mkdir build & cd build
 	cmake -DCMAKE_CXX_COMPILER=/path/to/clang++ -DHPX_DIR=/path/to/hpx/build/lib/cmake/hpx -DCMAKE_BUILD_TYPE=Release -std=c++11 ..
-	/path/to/loop-convert ../main.cpp -- -std=c++11 -I/pat/to/hpx -I/path/to/hpx/build -I/path/to/boost
+	/path/to/loop-convert ../main.cpp -- -std=c++11 -I/path/to/hpx -I/path/to/hpx/build -I/path/to/boost
 	make -j
 
 
