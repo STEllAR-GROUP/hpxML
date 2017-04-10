@@ -39,7 +39,7 @@ We have created three new techniques that implement binary and multinomial logis
 
 If the output is `false` the loop will execute sequentially and if the output is `true` the loop will execute in parallel. This function takes the weights extracted during compilation and the values polled at runtime as inputs. Both static and dynamic loop's features are considered in this technique. 
 
-2. **Predicting Efficient Chunk Size:** We propose a new function `chunk_size_determination` (`/hpxml/hpx/parallel/chunk_size_determination.hpp`) that passes the extracted features for a loop that uses `adaptive_chunk_size` as its execution policy's parameter. In this technique, a Clang compiler changes a user's code automatically as shown below. This allows the runtime system to choose an optimum chunk size based on the output of `chunk_size_determination` which is determined on the chunk size candidate's probability. Both static and dynamic loop's features are considered in this technique. 
+2. **Predicting Efficient Chunk Size:** We propose a new function `chunk_size_determination` (`/hpxml/hpx/parallel/chunk_size_determination.hpp`) that passes the extracted features for a loop that uses `adaptive_chunk_size` as its execution policy's parameter. In this technique, a Clang compiler changes a user's code automatically as shown below. This allows the runtime system to choose an optimum chunk size based on the output of `chunk_size_determination`. Both static and dynamic loop's features are considered in this technique. 
 
 		Before compilation:
 		for_each(policy.with(adaptive_chunk_size()),range.begin(),
