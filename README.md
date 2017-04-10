@@ -37,9 +37,9 @@ We propose three new techniques that implement binary and multinomial logistic r
 			for_each(par, range.begin(),range.end(),lambda);
 		...
 
-If the output is `false` the loop will execute sequentially and if the output is `true` the loop will execute in parallel. This function takes the weights extracted during compilation and the values polled at runtime as inputs. 
+If the output is `false` the loop will execute sequentially and if the output is `true` the loop will execute in parallel. This function takes the weights extracted during compilation and the values polled at runtime as inputs. Both static and dynamic loop's features are considered in this technique. 
 
-2. **Predicting Efficient Chunk Size:** We propose a new function `chunk_size_determination` (`/hpxml/hpx/parallel/chunk_size_determination.hpp`) that passes the extracted features for a loop that uses `adaptive_chunk_size` as its execution policy's parameter. In this technique, a Clang compiler changes a user's code automatically as below that makes runtime system to choose an optimum chunk size based on the output of `chunk_size_determination` that is based on the chunk size candidate's probability. In addition to the extracted compile time static information, number of threads and number of iterations are also measured and included in this function. 
+2. **Predicting Efficient Chunk Size:** We propose a new function `chunk_size_determination` (`/hpxml/hpx/parallel/chunk_size_determination.hpp`) that passes the extracted features for a loop that uses `adaptive_chunk_size` as its execution policy's parameter. In this technique, a Clang compiler changes a user's code automatically as below that makes runtime system to choose an optimum chunk size based on the output of `chunk_size_determination`. Both static and dynamic loop's features are considered in this technique. 
 
 		Before compilation:
 		for_each(policy.with(adaptive_chunk_size()),range.begin(),
@@ -50,7 +50,7 @@ If the output is `false` the loop will execute sequentially and if the output is
 			range.begin(),range.end(),lambda);
 		...
 
-3. **Predicting Efficient Prefetching Distance:** We propose a new function `prefetching_distance_determination` (`/hpxml/hpx/parallel/prefetching_distance_determination.hpp`) that passes the extracted features for a loop that uses `make_prefetcher_policy` as its execution policy. In this technique, a Clang compiler changes a user's code automatically as below that makes runtime system to choose an optimum prefetching distance based on the output of `prefetching_distance_determination`. Same as `seq_par` and `chunk_size_determination`, this function includes the compiler extracted static information in addition to dynamically measured number of threads and number of iterations.	
+3. **Predicting Efficient Prefetching Distance:** We propose a new function `prefetching_distance_determination` (`/hpxml/hpx/parallel/prefetching_distance_determination.hpp`) that passes the extracted features for a loop that uses `make_prefetcher_policy` as its execution policy. In this technique, a Clang compiler changes a user's code automatically as below that makes runtime system to choose an optimum prefetching distance based on the output of `prefetching_distance_determination`. Both static and dynamic loop's features are considered in this technique. 	
 
 		Before compilation:
 		for_each(make_prefetcher_policy(policy, 
@@ -65,7 +65,7 @@ If the output is `false` the loop will execute sequentially and if the output is
 
 More details can be found in our recent published paper:
 
-
+...
 
 ## Instructions
 
