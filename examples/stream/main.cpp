@@ -364,7 +364,7 @@ int hpx_main(boost::program_options::variables_map& vm)
     // extract hardware topology
     hpx::threads::topology const& topo = retrieve_topology();
 
-    std::size_t numa_nodes = 2;//get_num_numa_nodes(topo, vm);
+    std::size_t numa_nodes = get_num_numa_nodes(topo, vm);
     std::pair<std::size_t, std::size_t> pus =
         get_num_numa_pus(topo, numa_nodes, vm);
 
