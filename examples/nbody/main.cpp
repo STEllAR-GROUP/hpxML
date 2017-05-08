@@ -19,6 +19,7 @@ int hpx_main(boost::program_options::variables_map& vm)
     int level_octree = vm["level_octree"].as<int>();
     int steps = vm["steps"].as<int>();
     double distance_threshold = vm["distance"].as<double>(); 
+    std::size_t number_of_instructions = vm["instructions"].as<std::size_t>();
 
     //initializing bodies and creating octree based on the given information
     std::vector<Cube*> octree;
@@ -28,8 +29,7 @@ int hpx_main(boost::program_options::variables_map& vm)
 
     // perform benchmark
     std::vector<std::vector<double> > timing;    
-    timing = computing_forces_on_all_bodies(steps, body);    
-
+    timing = computing_forces_on_all_bodies(steps, body);
     //print_new_location(20, body);
 
      // --- SUMMARY --- 
@@ -39,10 +39,18 @@ int hpx_main(boost::program_options::variables_map& vm)
         "prefetch_for_each:                       "  //with prfetching itr        
     };
 
+    /*
+	Number of total instructions:
+	1000: 188000
+	10000: 1880000
+	100000: 18800000
+	1000000: 18800000
+    */
+	
     const double bytes[3] = {
-        7 * sizeof(double) * static_cast<double>(Nx),
-        7 * sizeof(double) * static_cast<double>(Nx),
-        7 * sizeof(double) * static_cast<double>(Nx)
+        static_cast<double>(number_of_instructions) * sizeof(double),
+        static_cast<double>(number_of_instructions) * sizeof(double),
+        static_cast<double>(number_of_instructions) * sizeof(double)
     };
 
     // Note: skip first iteration
@@ -59,14 +67,14 @@ int hpx_main(boost::program_options::variables_map& vm)
         }
     }
 
-    printf("Function                           BestRate MB/s  Avg time     Min time     Max time\n");
+    printf("Function                           BestRate GB/s  Avg time     Min time     Max time\n");
     // Printing all
     
     for (std::size_t j = 0; j < 3; j++) {
         avgtime[j] = avgtime[j]/(double)(steps-1);
 
         printf("%s%12.1f  %11.6f  %11.6f  %11.6f\n", label[j],
-           1.0E-06 * bytes[j]/mintime[j],
+           1.0E-09 * bytes[j]/mintime[j],
            avgtime[j],
            mintime[j],
            maxtime[j]);
@@ -87,6 +95,8 @@ int main(int argc, char* argv[])
          "Level of octree")
         ("distance", value<double>()->default_value(2),
          "distance threshhold for implmeneting BarnesHut algorithm")
+        ("instructions", value<std::size_t>()->default_value(188000),
+         "number of total instructions")
         ("steps", value<int>()->default_value(2),
          "Number of steps to compute force of each body")
     ;

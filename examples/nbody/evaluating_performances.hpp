@@ -64,19 +64,9 @@ computing_forces_on_all_bodies(int steps, std::vector<Body*>& body) {
 	auto all_bodies = boost::irange(0, number_of_bodies);
 
 	std::vector<std::vector<double>> timing(3, std::vector<double>(steps));
+	//int sum1 = 0, sum2 = 0; //for counting number of instructions
 
-	//computing froce on each body in each time step
-	//without using ML techniques:
-	for(int t = 0; t < steps; t++) {
-
-		////////////////////////////////////////////////
-		//without using ML techniques
-		timing[0][t] = mysecond();
-
-		hpx::parallel::for_each(policy, 
-								all_bodies.begin(), 
-								all_bodies.end(), 
-								[&](std::size_t i) {
+	auto f = [&](std::size_t i) {
 
 			body[i]->force[0] = 0.0;
 			body[i]->force[1] = 0.0;
@@ -96,7 +86,17 @@ computing_forces_on_all_bodies(int steps, std::vector<Body*>& body) {
 
 			//study if this body moved to another location:
 			find_new_parent(body[i]);
-		});
+		};
+
+	//computing froce on each body in each time step
+	//without using ML techniques:
+	for(int t = 0; t < steps; t++) { //step * number_of_bodies * ( SUM1 + SUM2 + 37 + 140)
+
+		////////////////////////////////////////////////
+		//without using ML techniques
+		timing[0][t] = mysecond();
+
+		hpx::parallel::for_each(policy, all_bodies.begin(), all_bodies.end(), f);
 
 		timing[0][t] = mysecond() - timing[0][t];	
 
@@ -104,30 +104,7 @@ computing_forces_on_all_bodies(int steps, std::vector<Body*>& body) {
 		//efficient chunk size
 		timing[1][t] = mysecond();
 		
-		hpx::parallel::for_each(policy.with(hpx::parallel::adaptive_chunk_size()), 
-								all_bodies.begin(), 
-								all_bodies.end(), 
-								[&](std::size_t i) {
-
-			body[i]->force[0] = 0.0;
-			body[i]->force[1] = 0.0;
-			body[i]->force[2] = 0.0;
-			Cube* parent = body[i]->parent;
-			for(std::size_t c = 0; c < (parent->near_cells).size(); c++) {
-				compute_force_from_near_cells(body[i], 
-											(parent->near_cells)[c]);				
-			}
-			for(std::size_t c = 0; c < (parent->remote_cells).size(); c++) {
-				compute_force_from_remote_cells(body[i], 
-												(parent->remote_cells)[c]);
-			}
-
-			//computing new location:
-			compute_location_and_velocity(body[i]);
-
-			//study if this body moved to another location:
-			find_new_parent(body[i]);
-		});
+		hpx::parallel::for_each(policy.with(hpx::parallel::adaptive_chunk_size()), all_bodies.begin(), all_bodies.end(), f);
 		
 		timing[1][t] = mysecond() - timing[1][t];	
 
@@ -135,35 +112,16 @@ computing_forces_on_all_bodies(int steps, std::vector<Body*>& body) {
 		//efficient prefetching distance
 		timing[2][t] = mysecond();
 		
-		hpx::parallel::for_each(hpx::parallel::execution::make_prefetcher_policy(policy, 1, body), 
-								all_bodies.begin(), 
-								all_bodies.end(), 
-								[&](std::size_t i) {
-
-			body[i]->force[0] = 0.0;
-			body[i]->force[1] = 0.0;
-			body[i]->force[2] = 0.0;
-			Cube* parent = body[i]->parent;
-			for(std::size_t c = 0; c < (parent->near_cells).size(); c++) {
-				compute_force_from_near_cells(body[i], 
-											(parent->near_cells)[c]);				
-			}
-			for(std::size_t c = 0; c < (parent->remote_cells).size(); c++) {
-				compute_force_from_remote_cells(body[i], 
-												(parent->remote_cells)[c]);
-			}
-
-			//computing new location:
-			compute_location_and_velocity(body[i]);
-
-			//study if this body moved to another location:
-			find_new_parent(body[i]);
-		});
+		hpx::parallel::for_each(hpx::parallel::execution::make_prefetcher_policy(policy, 1, body), all_bodies.begin(), all_bodies.end(), f);
 
 		timing[2][t] = mysecond() - timing[2][t];
 
 		////////////////////////////////////////////////
 	}	
+
+	// total instructions:
+	//int sum_total = (11 + sum1 * 74 + sum2 * 72 + 37 + 140 ) * body.size();
+	//std::cout << "\n [ " << body.size() << " ] = " << sum_total << "\n";
 
 	return timing;
 }

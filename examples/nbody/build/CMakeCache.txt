@@ -19,7 +19,7 @@ CMAKE_AR:FILEPATH=/usr/bin/ar
 
 //Choose the type of build, options are: None(CMAKE_CXX_FLAGS or
 // CMAKE_C_FLAGS used) Debug Release RelWithDebInfo MinSizeRel.
-CMAKE_BUILD_TYPE:STRING=
+CMAKE_BUILD_TYPE:STRING=Release
 
 //Enable/Disable color output during build.
 CMAKE_COLOR_MAKEFILE:BOOL=ON
@@ -182,6 +182,9 @@ HPX_C_COMPILER_ID:STRING=Clang
 
 //C compiler version for HPX
 HPX_C_COMPILER_VERSION:STRING=4.0.0
+
+//No help, variable specified on the command line.
+HPX_DIR:UNINITIALIZED=/home/zahra/Projects/HPX/build/lib/cmake/HPX
 
 //Fortran compiler for HPX
 HPX_Fortran_COMPILER:STRING=

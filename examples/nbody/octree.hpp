@@ -21,9 +21,12 @@ void dividing_parent_bodies_into_its_subcubes(Cube* parent, std::vector<Body*>& 
 		for(int i = 0; i < (octree[parent_id]->body_members).size(); i++) {
 			Body* b = octree[parent_id]->body_members[i];
 
-			if(b->location[0] >= octree[sub_cube_id]->boundary[0] && b->location[0] < octree[sub_cube_id]->boundary[1]
-				&& b->location[1] >= octree[sub_cube_id]->boundary[2] && b->location[1] < octree[sub_cube_id]->boundary[3]
-				&& b->location[2] >= octree[sub_cube_id]->boundary[4] && b->location[2] < octree[sub_cube_id]->boundary[5]) {
+			if(b->location[0] >= octree[sub_cube_id]->boundary[0] 
+				&& b->location[0] < octree[sub_cube_id]->boundary[1]
+				&& b->location[1] >= octree[sub_cube_id]->boundary[2] 
+				&& b->location[1] < octree[sub_cube_id]->boundary[3]
+				&& b->location[2] >= octree[sub_cube_id]->boundary[4] 
+				&& b->location[2] < octree[sub_cube_id]->boundary[5]) {
 				
 				(octree[sub_cube_id]->body_members).push_back(b);
 				octree[sub_cube_id]->mass += b->mass;

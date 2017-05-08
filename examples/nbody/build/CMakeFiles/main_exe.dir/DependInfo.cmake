@@ -10,9 +10,11 @@ set(CMAKE_CXX_COMPILER_ID "Clang")
 
 # Preprocessor definitions for this target.
 set(CMAKE_TARGET_DEFINITIONS_CXX
+  "BOOST_DISABLE_ASSERTS"
   "HPX_APPLICATION_EXPORTS"
   "HPX_APPLICATION_NAME=main_exe"
   "HPX_APPLICATION_STRING=\"main_exe\""
+  "HPX_DISABLE_ASSERTS"
   "HPX_PREFIX=\"/home/zahra/Projects/HPX/build\""
   )
 
