@@ -65,7 +65,7 @@ If the output is `false` the loop will execute sequentially and if the output is
 
 More details can be found in our recent published paper:
 
-...
+http://stellar.cct.lsu.edu/pubs/khatami_espm2_2017.pdf
 
 ## Instructions
 
