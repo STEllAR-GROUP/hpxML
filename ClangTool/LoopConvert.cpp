@@ -1,4 +1,7 @@
-//  Copyright (c) 2017 Lukas Troska and Zahra Khatami
+//  Copyright (c) 2017 BOARD OF SUPERVISORS OF LOUISIANA STATE UNIVERSITY AND AGRICULTURAL AND MECHANICAL COLLEGE
+//  Developers Zahra Khatami and Lukas Troska
+//  Distributed under the Boost Software License, Version 1.0. (See accompanying
+//  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
 #include <string>
 
