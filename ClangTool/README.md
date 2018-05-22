@@ -16,7 +16,8 @@ Add a new ClangTool `LoopConvert.cpp` in a new directory loop-convert as follow:
 	cd /path/to/clang-llvm/llvm/
 	mkdir tools/clang/tools/extra/loop-convert
 	mv /path/to/LoopConvert.cpp tools/clang/tools/extra/loop-convert/
-	echo 'add_subdirectory(loop-convert)' >> tools/extra/CMakeLists.txt
+	mv /path/to/CMakeLists.txt tools/clang/tools/extra/loop-convert/
+    echo 'add_subdirectory(loop-convert)' >> tools/extra/CMakeLists.txt
 
 
 Compile our new tool as follow. We recommend using `Ninja` for this process. 
