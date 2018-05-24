@@ -3,7 +3,6 @@
 //  Distributed under the Boost Software License, Version 1.0. (See accompanying
 //  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
-#include <limits>
 #include <math.h>
 #include <iostream>
 #include <string> 
@@ -72,10 +71,12 @@ void implementing_binary_logistic_regression_model(){
     std::size_t number_of_experiments_two_class = std::stoi(str);
     getline(ss, str, ' ');
     std::size_t number_of_features_two_class = std::stoi(str);
-    
+    getline(ss, str, ' ');
+    std::size_t number_of_multi_classes = std::stoi(str);
     //initializing
     float** experimental_results_two_class = new float*[number_of_experiments_two_class];
     float** execution_times_two_class = new float*[number_of_experiments_two_class];
+    
     for(std::size_t n = 0; n < number_of_experiments_two_class; n++) {
         experimental_results_two_class[n] = new float[number_of_features_two_class];
         execution_times_two_class[n] = new float[2];
@@ -83,7 +84,7 @@ void implementing_binary_logistic_regression_model(){
     int* targets_two_class = new int[number_of_experiments_two_class];    
 
     //reading input data
-    reading_real_input_values_binary(number_of_experiments_two_class, number_of_features_two_class, 
+    reading_input_values(number_of_experiments_two_class, number_of_features_two_class, number_of_multi_classes, 
                                     experimental_results_two_class, targets_two_class, execution_times_two_class, myfile);
     
     //implementing binary regression model on input data
