@@ -22,7 +22,7 @@ void reading_input_values(std::size_t number_of_experiments, std::size_t number_
     //assigning values for experimental_results:
     while(e < number_of_experiments) {
 
-        getline(myfile, line);
+    	getline(myfile, line);
         std::stringstream ss(line);
         std::string str;
         std::size_t f = 0;
@@ -63,15 +63,18 @@ void implementing_binary_logistic_regression_model(){
     //learning two classes    
     std::cout <<"\n****************** Binary logistic regression model ******************\n"<<std::endl;
 
-    std::ifstream myfile ("inputs/par_if.dat");
+    std::ifstream myfile ("./../inputs/par_if.dat");
     getline(myfile, line);
     std::stringstream ss(line);
     std::string str;
     getline(ss, str, ' ');
-    std::size_t number_of_experiments_two_class = std::stoi(str);
+    std::cout<<str<<std::endl;
+    std::size_t number_of_experiments_two_class =std::stoi(str);
     getline(ss, str, ' ');
+    std::cout<<str<<std::endl;
     std::size_t number_of_features_two_class = std::stoi(str);
     getline(ss, str, ' ');
+    std::cout<<str<<std::endl;
     std::size_t number_of_multi_classes = std::stoi(str);
     //initializing
     float** experimental_results_two_class = new float*[number_of_experiments_two_class];
@@ -107,10 +110,9 @@ void implementing_multinomial_logistic_regression_model(){
     std::cout <<"\n****************** Multi-class logistic regression model ******************\n"<<std::endl;
     //reading input data : number of experiments, number of feautures and number of output_classes in each experiments
     //chunk size training data:
-    std::ifstream myfile ("inputs/data_chunk.dat");
-    
+    std::ifstream myfile("./../inputs/data_chunk.dat");
     // prefetching distance training data:
-    //std::ifstream myfile ("inputs/data_prefetch.dat");
+    //std::ifstream myfile ("./../inputs/data_prefetch.dat");
     
     getline(myfile, line);
     std::stringstream ss(line);
