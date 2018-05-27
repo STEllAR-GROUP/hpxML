@@ -63,7 +63,7 @@ void implementing_binary_logistic_regression_model(){
     //learning two classes    
     std::cout <<"\n****************** Binary logistic regression model ******************\n"<<std::endl;
 
-    std::ifstream myfile ("inputs/par_if.dat");
+    std::ifstream myfile ("../inputs/par_if.dat");
     getline(myfile, line);
     std::stringstream ss(line);
     std::string str;
@@ -71,7 +71,7 @@ void implementing_binary_logistic_regression_model(){
     std::size_t number_of_experiments_two_class = std::stoi(str);
     getline(ss, str, ' ');
     std::size_t number_of_features_two_class = std::stoi(str);
-    getline(ss, str, ' ');
+    //getline(ss, str, ' ');
     std::size_t number_of_multi_classes = std::stoi(str);
     //initializing
     float** experimental_results_two_class = new float*[number_of_experiments_two_class];
@@ -107,7 +107,7 @@ void implementing_multinomial_logistic_regression_model(){
     std::cout <<"\n****************** Multi-class logistic regression model ******************\n"<<std::endl;
     //reading input data : number of experiments, number of feautures and number of output_classes in each experiments
     //chunk size training data:
-    std::ifstream myfile ("inputs/data_chunk.dat");
+    std::ifstream myfile ("../inputs/data_chunk.dat");
     
     // prefetching distance training data:
     //std::ifstream myfile ("inputs/data_prefetch.dat");
