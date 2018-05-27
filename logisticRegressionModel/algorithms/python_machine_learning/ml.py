@@ -7,11 +7,11 @@ from sklearn.model_selection import cross_val_score
 import tests as ts
 
 ### Reading data file ###
-filename="data_chunk.dat"
-#filename="data_prefetch.dat"
+filename="./../inputs/data_chunk.dat"
+#filename="./../inputs/data_prefetch.dat"
 
 targets=np.array([0.001,0.01,0.1,0.5])   #chunk size candidates
-#targets=np.array([1,2,3,4,5,6])  #prefetching distance candidates
+#targets=np.array([1,2,3,4,5,6])  #prefetching distance candidates(These values are temporary since i don't know them)
 
 
 Xdata=[]
