@@ -290,7 +290,7 @@ void data_determinant(std::vector<T>& A,float& Determinant,std::size_t vector_si
 
 
 
-//Determinant of A//
+//Stencil (A,B,C)//
 template<typename T>
 void data_stencil(std::vector<T>& A,std::vector<T>& B,std::vector<T>& C,,std::size_t vector_size) {
     
