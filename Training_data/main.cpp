@@ -9,13 +9,12 @@
 #include <hpx/hpx_init.hpp>
 #include <hpx/parallel/algorithms/for_each.hpp>
 #include <hpx/util/high_resolution_timer.hpp>
-#include <boost/range.hpp>
+#include <boost/range/irange.hpp>
 #include <vector>
 #include <initializer_list>
 #include <algorithm>
 #include <typeinfo>
 #include <iterator>
-#include <hpx/parallel/executors/sequential_execution_wrapper.hpp>
 #include <hpx/parallel/executors/dynamic_chunk_size.hpp>
 
 
@@ -26,57 +25,20 @@ double mysecond()
 }
 
 
-
-//Scalar product a*b=scalar
-template<typename T>
-void data_scalar_product(std::vector<T>& A, std::vector<T>& B,float& Scalar,std::size_t vector_size) {
-
-    auto time_range = boost::irange(0, vector_size);
-    
-    auto f=[&](int i){
-	Scalar+=A[i]*B[i]
-    };
- 
-    // Parralel execution
-    double t_origin = mysecond();
-
-    hpx::parallel::for_each(hpx::parallel::par, time_range.begin(), time_range.end(), f);
-
-    double elapsed_origin = mysecond() - t_origin;
-
-    // Dynamic chunk size
-    double t_chunk = mysecond();
-    
-    hpx::parallel::for_each(hpx::parallel::par.with(hpx::parallel::dynamic_chunk_size()), time_range.begin(), time_range.end(), f);
-
-    double elapsed_chunk = mysecond() - t_chunk;
-
-    //Prefetching dictance:
-    //std::size_t pref_dist_fac = 2;
-    //auto policy = hpx::parallel::par;
-
-    //double t_prefetch = mysecond();
-
-    //hpx::parallel::for_each(hpx::parallel::execution::make_prefetcher_policy(policy, pref_dist_fac, A, B, C), time_range.begin(), time_range.end(), f);
-
-    //double elapsed_prefetch = mysecond() - t_prefetch;
-
-    
-    // Printing results
-    std::cout<<"Execution time for parralel policy : "<<elapsed_origin<<std::endl;
-    std::cout<<"Execution time for dynamic_chunk_size() : "<<elapsed_chunk>>std::endl;
-    //std::cout<<"Execution time for make_prefetcher_policy() : "<<elapsed_prefetch<<std::endl;
-
-}  
-
+//std::vector<int> std_range(int vector_size){
+ //   std::vector<int> range;
+  //  for (int i(0);i<vector_size;i++){
+   //     range.push_back(i);
+   // }
+//}
 
 
 //Matrix vector multiplication A*b=c
 template<typename T>
-void data_matrice_vector(std::vector<T>& A, std::vector<T>& B, std::vector<T>& C,std::size_t vector_size) {
-
+void data_matrice_vector(std::vector<T>& A, std::vector<T>& B, std::vector<T>& C,int vector_size) {
+  
     auto time_range = boost::irange(0, vector_size);
- 
+//    auto time_range=std_range(vector_size); 
     auto f=[&](int i){
     	if (i % 4 ==0){
 	    T result1=0.0;
@@ -84,11 +46,11 @@ void data_matrice_vector(std::vector<T>& A, std::vector<T>& B, std::vector<T>& C
 	    T result3=0.0;
 	    T result4=0.0;
 
-	    for (int j=0;j<vector_size;j++){
-	        T result1+=A[i*vector_size+k]*B[k];
-		T result2+=A[(i+1)*vector_size+k]*B[k];
-		T result3+=A[(i+2)*vector_size+k]*B[k];
-		T result4+=A[(i+3)*vector_size+k]*B[k];
+	    for (int k=0;k<vector_size;k++){
+	        result1+=A[i*vector_size+k]*B[k];
+		result2+=A[(i+1)*vector_size+k]*B[k];
+		result3+=A[(i+2)*vector_size+k]*B[k];
+		result4+=A[(i+3)*vector_size+k]*B[k];
 	    }
 	    C[i]=result1;
 	    C[i+1]=result2;
@@ -100,14 +62,14 @@ void data_matrice_vector(std::vector<T>& A, std::vector<T>& B, std::vector<T>& C
     // Parrallel execution
     double t_origin = mysecond();
 
-    hpx::parallel::for_each(hpx::parallel::par, time_range.begin(), time_range.end(), f);
+    hpx::parallel::for_each(hpx::parallel::execution::par, time_range.begin(), time_range.end(), f);
 
     double elapsed_origin = mysecond() - t_origin;
 
     // Dynamic chunk size
     double t_chunk = mysecond();
     
-    hpx::parallel::for_each(hpx::parallel::par.with(hpx::parallel::dynamic_chunk_size()), time_range.begin(), time_range.end(), f);
+    hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::execution::dynamic_chunk_size()), time_range.begin(), time_range.end(), f);
 
     double elapsed_chunk = mysecond() - t_chunk;
 
@@ -124,7 +86,7 @@ void data_matrice_vector(std::vector<T>& A, std::vector<T>& B, std::vector<T>& C
     
     // Printing results
     std::cout<<"Execution time for parralel policy : "<<elapsed_origin<<std::endl;
-    std::cout<<"Execution time for dynamic_chunk_size() : "<<elapsed_chunk>>std::endl;
+    std::cout<<"Execution time for dynamic_chunk_size() : "<<elapsed_chunk<<std::endl;
     //std::cout<<"Execution time for make_prefetcher_policy() : "<<elapsed_prefetch<<std::endl;
 
 }
@@ -133,9 +95,9 @@ void data_matrice_vector(std::vector<T>& A, std::vector<T>& B, std::vector<T>& C
 
 //Matrix Matrix multiplicaiton A*B=C//
 template<typename T>
-void data_matrices(std::vector<T>& A, std::vector<T>& B, std::vector<T>& C,std::size_t vector_size) {
+void data_matrices(std::vector<T>& A, std::vector<T>& B, std::vector<T>& C,int vector_size) {
     
-    auto time_range = boost::irange(0, vector_size);
+    auto time_range = boost::irange(0, vector_size); 
     auto f = [&](int i) {
         if(i % 4 == 0) {
             for (int j = 0; j < vector_size; j += 4) {
@@ -206,17 +168,24 @@ void data_matrices(std::vector<T>& A, std::vector<T>& B, std::vector<T>& C,std::
         }
     };
 
+    //Sequential execution
+    double t_seq = mysecond();
+
+    hpx::parallel::for_each(hpx::parallel::execution::seq, time_range.begin(), time_range.end(), f);
+
+    double elapsed_seq = mysecond() - t_seq;
+
     // Parralel execution
-    double t_origin = mysecond();
+    double t_par = mysecond();
 
-    hpx::parallel::for_each(hpx::parallel::par, time_range.begin(), time_range.end(), f);
+    hpx::parallel::for_each(hpx::parallel::execution::par, time_range.begin(), time_range.end(), f);
 
-    double elapsed_origin = mysecond() - t_origin;
+    double elapsed_par = mysecond() - t_par;
 
     // Dynamic chunk size
     double t_chunk = mysecond();
     
-    hpx::parallel::for_each(hpx::parallel::par.with(hpx::parallel::dynamic_chunk_size()), time_range.begin(), time_range.end(), f);
+    hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::execution::dynamic_chunk_size()), time_range.begin(), time_range.end(), f);
 
     double elapsed_chunk = mysecond() - t_chunk;
 
@@ -232,8 +201,9 @@ void data_matrices(std::vector<T>& A, std::vector<T>& B, std::vector<T>& C,std::
 
     
     // Printing results
-    std::cout<<"Execution time for parralel policy : "<<elapsed_origin<<std::endl;
-    std::cout<<"Execution time for dynamic_chunk_size() : "<<elapsed_chunk>>std::endl;
+    std::cout<<"Execution time for sequential policy : "<<elapsed_seq<<std::endl;
+    std::cout<<"Execution time for parralel policy : "<<elapsed_par<<std::endl;
+    std::cout<<"Execution time for dynamic_chunk_size() : "<<elapsed_chunk<<std::endl;
     //std::cout<<"Execution time for make_prefetcher_policy() : "<<elapsed_prefetch<<std::endl;
 
 }
@@ -242,31 +212,32 @@ void data_matrices(std::vector<T>& A, std::vector<T>& B, std::vector<T>& C,std::
 
 //Determinant of A//
 template<typename T>
-void data_determinant(std::vector<T>& A,float& Determinant,std::size_t vector_size) {
+void data_determinant(std::vector<T>& A,std::vector<T> Determinant,int vector_size) {
     
     auto time_range = boost::irange(0, vector_size);
+//    auto time_range=std_range(vector_size); 
     auto f=[&](int i){
         T result1=1;
 	T result2=1;
 	for(int j=0;j<vector_size;j++){
 	    result1*=A[j*vector_size+(j+i)%vector_size];
-	    result2*=A[(vector_size-1-j)*vector_size+(j+i)%vector_size]
+	    result2*=A[(vector_size-1-j)*vector_size+(j+i)%vector_size];
 	}
-	Determinant+=result1;
-	Determinant-=result2;
+	Determinant[i]+=result1;
+	Determinant[i]-=result2;
     };
 
     // Parrallel execution
     double t_origin = mysecond();
 
-    hpx::parallel::for_each(hpx::parallel::par, time_range.begin(), time_range.end(), f);
+    hpx::parallel::for_each(hpx::parallel::execution::par, time_range.begin(), time_range.end(), f);
 
     double elapsed_origin = mysecond() - t_origin;
 
     // Dynamic chunk size
     double t_chunk = mysecond();
     
-    hpx::parallel::for_each(hpx::parallel::par.with(hpx::parallel::dynamic_chunk_size()), time_range.begin(), time_range.end(), f);
+    hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::execution::dynamic_chunk_size()), time_range.begin(), time_range.end(), f);
 
     double elapsed_chunk = mysecond() - t_chunk;
 
@@ -283,7 +254,7 @@ void data_determinant(std::vector<T>& A,float& Determinant,std::size_t vector_si
     
     // Printing results
     std::cout<<"Execution time for parralel policy : "<<elapsed_origin<<std::endl;
-    std::cout<<"Execution time for dynamic_chunk_size() : "<<elapsed_chunk>>std::endl;
+    std::cout<<"Execution time for dynamic_chunk_size() : "<<elapsed_chunk<<std::endl;
     //std::cout<<"Execution time for make_prefetcher_policy() : "<<elapsed_prefetch<<std::endl;
 
 }
@@ -292,9 +263,10 @@ void data_determinant(std::vector<T>& A,float& Determinant,std::size_t vector_si
 
 //Stencil (A,B,C)//
 template<typename T>
-void data_stencil(std::vector<T>& A,std::vector<T>& B,std::vector<T>& C,,std::size_t vector_size) {
+void data_stencil(std::vector<T>& A,std::vector<T>& B,std::vector<T>& C,int vector_size) {
     
     auto time_range = boost::irange(0, vector_size);
+  //  auto time_range=std_range(vector_size); 
     T scalar(3);
 
     auto f=[&](int i){
@@ -307,14 +279,14 @@ void data_stencil(std::vector<T>& A,std::vector<T>& B,std::vector<T>& C,,std::si
     // Parrallel execution
     double t_origin = mysecond();
 
-    hpx::parallel::for_each(hpx::parallel::par, time_range.begin(), time_range.end(), f);
+    hpx::parallel::for_each(hpx::parallel::execution::seq, time_range.begin(), time_range.end(), f);
 
     double elapsed_origin = mysecond() - t_origin;
 
     // Dynamic chunk size
     double t_chunk = mysecond();
     
-    hpx::parallel::for_each(hpx::parallel::par.with(hpx::parallel::dynamic_chunk_size()), time_range.begin(), time_range.end(), f);
+    hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::execution::dynamic_chunk_size()), time_range.begin(), time_range.end(), f);
 
     double elapsed_chunk = mysecond() - t_chunk;
 
@@ -331,7 +303,7 @@ void data_stencil(std::vector<T>& A,std::vector<T>& B,std::vector<T>& C,,std::si
     
     // Printing results
     std::cout<<"Execution time for parralel policy : "<<elapsed_origin<<std::endl;
-    std::cout<<"Execution time for dynamic_chunk_size() : "<<elapsed_chunk>>std::endl;
+    std::cout<<"Execution time for dynamic_chunk_size() : "<<elapsed_chunk<<std::endl;
     //std::cout<<"Execution time for make_prefetcher_policy() : "<<elapsed_prefetch<<std::endl;
 
 }
@@ -341,6 +313,7 @@ void data_stencil(std::vector<T>& A,std::vector<T>& B,std::vector<T>& C,,std::si
 int hpx_main(int argc, char* argv[])
 {
     // Initialization
+    int vector_size=500;
     std::size_t size_of_mat = vector_size * vector_size;
     std::vector<double> A(size_of_mat, 0.0);
     std::vector<double> B(size_of_mat, 0.0);
@@ -353,7 +326,7 @@ int hpx_main(int argc, char* argv[])
         C[r] = (r + 1) * (r + 10) * (rand() % 10 + 1);
     }
 
-    comparing_perfromances(A, B, C);
+    data_matrices(A, B, C,vector_size);
   
     return hpx::finalize();
 }
