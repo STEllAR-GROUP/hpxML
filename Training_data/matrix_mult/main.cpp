@@ -49,9 +49,9 @@ int hpx_main(int argc, char* argv[])
     std::vector<double> chunk_candidates(7);
     chunk_candidates[0]=0.001;chunk_candidates[1]=0.005;chunk_candidates[2]=0.01;chunk_candidates[3]=0.05;chunk_candidates[4]=0.1;
     chunk_candidates[5]=0.2;chunk_candidates[6]=0.5;
-   
+    
     srand(time(NULL));
-    std::ofstream file("./../train_data_matrix_debug.txt",std::ios::app);
+    std::ofstream file("./../files/train_data_matrix_debug.txt",std::ios::app);
     
     if(file){
         if(argv[1][6]=='1' && argv[1][8]=='1'){
