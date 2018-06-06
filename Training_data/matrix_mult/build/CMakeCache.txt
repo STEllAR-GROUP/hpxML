@@ -216,9 +216,6 @@ HPX_Fortran_COMPILER_VERSION:STRING=
 //Revision of HPX from Git
 HPX_GIT_COMMIT:STRING=5e24f85a5fac84c541787c8bb2de96ca0731614e
 
-//No help, variable specified on the command line.
-HPX_ROOT:UNINITIALIZED=~/hpx/my_hpx_build
-
 //Define which allocator should be linked in. Options are: system,
 // tcmalloc, jemalloc, tbbmalloc, and custom (default is: tcmalloc)
 HPX_WITH_MALLOC:STRING=tcmalloc

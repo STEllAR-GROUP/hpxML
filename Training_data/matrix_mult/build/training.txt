@@ -1,6 +1,0 @@
-lambda1_1,i,1000
-lambda2_1,f,1300
-lambda1_2,f,5000
-lambda1_2,f,1000
-lambda1_2,f,2000
-lambda1_2,f,3000

@@ -15,28 +15,31 @@ The CXX compiler identification is Clang, found in "/home/glaberge/hpxML/Trainin
 Determining if the CXX compiler works passed with the following output:
 Change Dir: /home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/gmake" "cmTC_0c845/fast"
-/usr/bin/gmake -f CMakeFiles/cmTC_0c845.dir/build.make CMakeFiles/cmTC_0c845.dir/build
+Run Build Command:"/usr/bin/gmake" "cmTC_e06a3/fast"
 gmake[1]: Entering directory `/home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_0c845.dir/testCXXCompiler.cxx.o
-/home/glaberge/compile/cfe-6.0.0.src/build/bin/clang++    -stdlib=libc++    -o CMakeFiles/cmTC_0c845.dir/testCXXCompiler.cxx.o -c /home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp/testCXXCompiler.cxx
-Linking CXX executable cmTC_0c845
-/opt/eb/software/cmake/3.9.0/bin/cmake -E cmake_link_script CMakeFiles/cmTC_0c845.dir/link.txt --verbose=1
-/home/glaberge/compile/cfe-6.0.0.src/build/bin/clang++  -stdlib=libc++     -rdynamic CMakeFiles/cmTC_0c845.dir/testCXXCompiler.cxx.o  -o cmTC_0c845 
+/usr/bin/gmake -f CMakeFiles/cmTC_e06a3.dir/build.make CMakeFiles/cmTC_e06a3.dir/build
+gmake[2]: Entering directory `/home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_e06a3.dir/testCXXCompiler.cxx.o
+/home/glaberge/compile/cfe-6.0.0.src/build/bin/clang++    -stdlib=libc++    -o CMakeFiles/cmTC_e06a3.dir/testCXXCompiler.cxx.o -c /home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp/testCXXCompiler.cxx
+Linking CXX executable cmTC_e06a3
+/opt/eb/software/cmake/3.9.0/bin/cmake -E cmake_link_script CMakeFiles/cmTC_e06a3.dir/link.txt --verbose=1
+/home/glaberge/compile/cfe-6.0.0.src/build/bin/clang++  -stdlib=libc++     -rdynamic CMakeFiles/cmTC_e06a3.dir/testCXXCompiler.cxx.o  -o cmTC_e06a3 
+gmake[2]: Leaving directory `/home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp'
 gmake[1]: Leaving directory `/home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp'
 
 
 Detecting CXX compiler ABI info compiled with the following output:
 Change Dir: /home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/gmake" "cmTC_e30c4/fast"
-/usr/bin/gmake -f CMakeFiles/cmTC_e30c4.dir/build.make CMakeFiles/cmTC_e30c4.dir/build
+Run Build Command:"/usr/bin/gmake" "cmTC_21848/fast"
 gmake[1]: Entering directory `/home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_e30c4.dir/CMakeCXXCompilerABI.cpp.o
-/home/glaberge/compile/cfe-6.0.0.src/build/bin/clang++    -stdlib=libc++    -o CMakeFiles/cmTC_e30c4.dir/CMakeCXXCompilerABI.cpp.o -c /opt/eb/software/cmake/3.9.0/share/cmake-3.9/Modules/CMakeCXXCompilerABI.cpp
-Linking CXX executable cmTC_e30c4
-/opt/eb/software/cmake/3.9.0/bin/cmake -E cmake_link_script CMakeFiles/cmTC_e30c4.dir/link.txt --verbose=1
-/home/glaberge/compile/cfe-6.0.0.src/build/bin/clang++  -stdlib=libc++    -v -rdynamic CMakeFiles/cmTC_e30c4.dir/CMakeCXXCompilerABI.cpp.o  -o cmTC_e30c4 
+/usr/bin/gmake -f CMakeFiles/cmTC_21848.dir/build.make CMakeFiles/cmTC_21848.dir/build
+gmake[2]: Entering directory `/home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_21848.dir/CMakeCXXCompilerABI.cpp.o
+/home/glaberge/compile/cfe-6.0.0.src/build/bin/clang++    -stdlib=libc++    -o CMakeFiles/cmTC_21848.dir/CMakeCXXCompilerABI.cpp.o -c /opt/eb/software/cmake/3.9.0/share/cmake-3.9/Modules/CMakeCXXCompilerABI.cpp
+Linking CXX executable cmTC_21848
+/opt/eb/software/cmake/3.9.0/bin/cmake -E cmake_link_script CMakeFiles/cmTC_21848.dir/link.txt --verbose=1
+/home/glaberge/compile/cfe-6.0.0.src/build/bin/clang++  -stdlib=libc++    -v -rdynamic CMakeFiles/cmTC_21848.dir/CMakeCXXCompilerABI.cpp.o  -o cmTC_21848 
 clang version 6.0.0 (tags/RELEASE_600/final)
 Target: x86_64-unknown-linux-gnu
 Thread model: posix
@@ -53,7 +56,8 @@ Candidate multilib: .;@m64
 Candidate multilib: 32;@m32
 Selected multilib: .;@m64
 Found CUDA installation: /usr/local/cuda, version unknown
- "/opt/mn/binutils/2.28/bin/ld" -export-dynamic --hash-style=gnu --no-add-needed --eh-frame-hdr -m elf_x86_64 -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_e30c4 /lib/../lib64/crt1.o /lib/../lib64/crti.o /opt/rh/devtoolset-6/root/usr/lib/gcc/x86_64-redhat-linux/6.3.1/crtbegin.o -L/opt/rh/devtoolset-6/root/usr/lib/gcc/x86_64-redhat-linux/6.3.1 -L/opt/rh/devtoolset-6/root/usr/lib/gcc/x86_64-redhat-linux/6.3.1/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/opt/rh/devtoolset-6/root/usr/lib/gcc/x86_64-redhat-linux/6.3.1/../../.. -L/home/glaberge/compile/cfe-6.0.0.src/build/bin/../lib -L/lib -L/usr/lib CMakeFiles/cmTC_e30c4.dir/CMakeCXXCompilerABI.cpp.o -L/opt/boost/1.67.0-clang6.0.0/release/lib -L/opt/mn/clang/6.0.0/lib -L/opt/mn/binutils/2.28/lib -lc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /opt/rh/devtoolset-6/root/usr/lib/gcc/x86_64-redhat-linux/6.3.1/crtend.o /lib/../lib64/crtn.o
+ "/opt/mn/binutils/2.28/bin/ld" -export-dynamic --hash-style=gnu --no-add-needed --eh-frame-hdr -m elf_x86_64 -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_21848 /lib/../lib64/crt1.o /lib/../lib64/crti.o /opt/rh/devtoolset-6/root/usr/lib/gcc/x86_64-redhat-linux/6.3.1/crtbegin.o -L/opt/rh/devtoolset-6/root/usr/lib/gcc/x86_64-redhat-linux/6.3.1 -L/opt/rh/devtoolset-6/root/usr/lib/gcc/x86_64-redhat-linux/6.3.1/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/opt/rh/devtoolset-6/root/usr/lib/gcc/x86_64-redhat-linux/6.3.1/../../.. -L/home/glaberge/compile/cfe-6.0.0.src/build/bin/../lib -L/lib -L/usr/lib CMakeFiles/cmTC_21848.dir/CMakeCXXCompilerABI.cpp.o -L/opt/boost/1.67.0-clang6.0.0/release/lib -L/opt/mn/clang/6.0.0/lib -L/opt/mn/binutils/2.28/lib -lc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /opt/rh/devtoolset-6/root/usr/lib/gcc/x86_64-redhat-linux/6.3.1/crtend.o /lib/../lib64/crtn.o
+gmake[2]: Leaving directory `/home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp'
 gmake[1]: Leaving directory `/home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp'
 
 
@@ -61,14 +65,15 @@ Parsed CXX implicit link information from above output:
   link line regex: [^( *|.*[/\])(ld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\]+-)?ld|collect2)[^/\]*( |$)]
   ignore line: [Change Dir: /home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp]
   ignore line: []
-  ignore line: [Run Build Command:"/usr/bin/gmake" "cmTC_e30c4/fast"]
-  ignore line: [/usr/bin/gmake -f CMakeFiles/cmTC_e30c4.dir/build.make CMakeFiles/cmTC_e30c4.dir/build]
+  ignore line: [Run Build Command:"/usr/bin/gmake" "cmTC_21848/fast"]
   ignore line: [gmake[1]: Entering directory `/home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp']
-  ignore line: [Building CXX object CMakeFiles/cmTC_e30c4.dir/CMakeCXXCompilerABI.cpp.o]
-  ignore line: [/home/glaberge/compile/cfe-6.0.0.src/build/bin/clang++    -stdlib=libc++    -o CMakeFiles/cmTC_e30c4.dir/CMakeCXXCompilerABI.cpp.o -c /opt/eb/software/cmake/3.9.0/share/cmake-3.9/Modules/CMakeCXXCompilerABI.cpp]
-  ignore line: [Linking CXX executable cmTC_e30c4]
-  ignore line: [/opt/eb/software/cmake/3.9.0/bin/cmake -E cmake_link_script CMakeFiles/cmTC_e30c4.dir/link.txt --verbose=1]
-  ignore line: [/home/glaberge/compile/cfe-6.0.0.src/build/bin/clang++  -stdlib=libc++    -v -rdynamic CMakeFiles/cmTC_e30c4.dir/CMakeCXXCompilerABI.cpp.o  -o cmTC_e30c4 ]
+  ignore line: [/usr/bin/gmake -f CMakeFiles/cmTC_21848.dir/build.make CMakeFiles/cmTC_21848.dir/build]
+  ignore line: [gmake[2]: Entering directory `/home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp']
+  ignore line: [Building CXX object CMakeFiles/cmTC_21848.dir/CMakeCXXCompilerABI.cpp.o]
+  ignore line: [/home/glaberge/compile/cfe-6.0.0.src/build/bin/clang++    -stdlib=libc++    -o CMakeFiles/cmTC_21848.dir/CMakeCXXCompilerABI.cpp.o -c /opt/eb/software/cmake/3.9.0/share/cmake-3.9/Modules/CMakeCXXCompilerABI.cpp]
+  ignore line: [Linking CXX executable cmTC_21848]
+  ignore line: [/opt/eb/software/cmake/3.9.0/bin/cmake -E cmake_link_script CMakeFiles/cmTC_21848.dir/link.txt --verbose=1]
+  ignore line: [/home/glaberge/compile/cfe-6.0.0.src/build/bin/clang++  -stdlib=libc++    -v -rdynamic CMakeFiles/cmTC_21848.dir/CMakeCXXCompilerABI.cpp.o  -o cmTC_21848 ]
   ignore line: [clang version 6.0.0 (tags/RELEASE_600/final)]
   ignore line: [Target: x86_64-unknown-linux-gnu]
   ignore line: [Thread model: posix]
@@ -88,7 +93,7 @@ Parsed CXX implicit link information from above output:
   ignore line: [Selected multilib: .]
   ignore line: [@m64]
   ignore line: [Found CUDA installation: /usr/local/cuda, version unknown]
-  link line: [ "/opt/mn/binutils/2.28/bin/ld" -export-dynamic --hash-style=gnu --no-add-needed --eh-frame-hdr -m elf_x86_64 -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_e30c4 /lib/../lib64/crt1.o /lib/../lib64/crti.o /opt/rh/devtoolset-6/root/usr/lib/gcc/x86_64-redhat-linux/6.3.1/crtbegin.o -L/opt/rh/devtoolset-6/root/usr/lib/gcc/x86_64-redhat-linux/6.3.1 -L/opt/rh/devtoolset-6/root/usr/lib/gcc/x86_64-redhat-linux/6.3.1/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/opt/rh/devtoolset-6/root/usr/lib/gcc/x86_64-redhat-linux/6.3.1/../../.. -L/home/glaberge/compile/cfe-6.0.0.src/build/bin/../lib -L/lib -L/usr/lib CMakeFiles/cmTC_e30c4.dir/CMakeCXXCompilerABI.cpp.o -L/opt/boost/1.67.0-clang6.0.0/release/lib -L/opt/mn/clang/6.0.0/lib -L/opt/mn/binutils/2.28/lib -lc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /opt/rh/devtoolset-6/root/usr/lib/gcc/x86_64-redhat-linux/6.3.1/crtend.o /lib/../lib64/crtn.o]
+  link line: [ "/opt/mn/binutils/2.28/bin/ld" -export-dynamic --hash-style=gnu --no-add-needed --eh-frame-hdr -m elf_x86_64 -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_21848 /lib/../lib64/crt1.o /lib/../lib64/crti.o /opt/rh/devtoolset-6/root/usr/lib/gcc/x86_64-redhat-linux/6.3.1/crtbegin.o -L/opt/rh/devtoolset-6/root/usr/lib/gcc/x86_64-redhat-linux/6.3.1 -L/opt/rh/devtoolset-6/root/usr/lib/gcc/x86_64-redhat-linux/6.3.1/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/opt/rh/devtoolset-6/root/usr/lib/gcc/x86_64-redhat-linux/6.3.1/../../.. -L/home/glaberge/compile/cfe-6.0.0.src/build/bin/../lib -L/lib -L/usr/lib CMakeFiles/cmTC_21848.dir/CMakeCXXCompilerABI.cpp.o -L/opt/boost/1.67.0-clang6.0.0/release/lib -L/opt/mn/clang/6.0.0/lib -L/opt/mn/binutils/2.28/lib -lc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /opt/rh/devtoolset-6/root/usr/lib/gcc/x86_64-redhat-linux/6.3.1/crtend.o /lib/../lib64/crtn.o]
     arg [/opt/mn/binutils/2.28/bin/ld] ==> ignore
     arg [-export-dynamic] ==> ignore
     arg [--hash-style=gnu] ==> ignore
@@ -100,7 +105,7 @@ Parsed CXX implicit link information from above output:
     arg [-dynamic-linker] ==> ignore
     arg [/lib64/ld-linux-x86-64.so.2] ==> ignore
     arg [-o] ==> ignore
-    arg [cmTC_e30c4] ==> ignore
+    arg [cmTC_21848] ==> ignore
     arg [/lib/../lib64/crt1.o] ==> ignore
     arg [/lib/../lib64/crti.o] ==> ignore
     arg [/opt/rh/devtoolset-6/root/usr/lib/gcc/x86_64-redhat-linux/6.3.1/crtbegin.o] ==> ignore
@@ -112,7 +117,7 @@ Parsed CXX implicit link information from above output:
     arg [-L/home/glaberge/compile/cfe-6.0.0.src/build/bin/../lib] ==> dir [/home/glaberge/compile/cfe-6.0.0.src/build/bin/../lib]
     arg [-L/lib] ==> dir [/lib]
     arg [-L/usr/lib] ==> dir [/usr/lib]
-    arg [CMakeFiles/cmTC_e30c4.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
+    arg [CMakeFiles/cmTC_21848.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
     arg [-L/opt/boost/1.67.0-clang6.0.0/release/lib] ==> dir [/opt/boost/1.67.0-clang6.0.0/release/lib]
     arg [-L/opt/mn/clang/6.0.0/lib] ==> dir [/opt/mn/clang/6.0.0/lib]
     arg [-L/opt/mn/binutils/2.28/lib] ==> dir [/opt/mn/binutils/2.28/lib]
@@ -146,14 +151,16 @@ Parsed CXX implicit link information from above output:
 Detecting CXX [-std=c++1z] compiler features compiled with the following output:
 Change Dir: /home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/gmake" "cmTC_65fc3/fast"
-/usr/bin/gmake -f CMakeFiles/cmTC_65fc3.dir/build.make CMakeFiles/cmTC_65fc3.dir/build
+Run Build Command:"/usr/bin/gmake" "cmTC_abb0b/fast"
 gmake[1]: Entering directory `/home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_65fc3.dir/feature_tests.cxx.o
-/home/glaberge/compile/cfe-6.0.0.src/build/bin/clang++    -stdlib=libc++    -std=c++1z -o CMakeFiles/cmTC_65fc3.dir/feature_tests.cxx.o -c /home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/feature_tests.cxx
-Linking CXX executable cmTC_65fc3
-/opt/eb/software/cmake/3.9.0/bin/cmake -E cmake_link_script CMakeFiles/cmTC_65fc3.dir/link.txt --verbose=1
-/home/glaberge/compile/cfe-6.0.0.src/build/bin/clang++  -stdlib=libc++     -rdynamic CMakeFiles/cmTC_65fc3.dir/feature_tests.cxx.o  -o cmTC_65fc3 
+/usr/bin/gmake -f CMakeFiles/cmTC_abb0b.dir/build.make CMakeFiles/cmTC_abb0b.dir/build
+gmake[2]: Entering directory `/home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_abb0b.dir/feature_tests.cxx.o
+/home/glaberge/compile/cfe-6.0.0.src/build/bin/clang++    -stdlib=libc++    -std=c++1z -o CMakeFiles/cmTC_abb0b.dir/feature_tests.cxx.o -c /home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/feature_tests.cxx
+Linking CXX executable cmTC_abb0b
+/opt/eb/software/cmake/3.9.0/bin/cmake -E cmake_link_script CMakeFiles/cmTC_abb0b.dir/link.txt --verbose=1
+/home/glaberge/compile/cfe-6.0.0.src/build/bin/clang++  -stdlib=libc++     -rdynamic CMakeFiles/cmTC_abb0b.dir/feature_tests.cxx.o  -o cmTC_abb0b 
+gmake[2]: Leaving directory `/home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp'
 gmake[1]: Leaving directory `/home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp'
 
 
@@ -219,14 +226,16 @@ gmake[1]: Leaving directory `/home/glaberge/hpxML/Training_data/matrix_mult/buil
 Detecting CXX [-std=c++14] compiler features compiled with the following output:
 Change Dir: /home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/gmake" "cmTC_7c95d/fast"
-/usr/bin/gmake -f CMakeFiles/cmTC_7c95d.dir/build.make CMakeFiles/cmTC_7c95d.dir/build
+Run Build Command:"/usr/bin/gmake" "cmTC_1ac9e/fast"
 gmake[1]: Entering directory `/home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_7c95d.dir/feature_tests.cxx.o
-/home/glaberge/compile/cfe-6.0.0.src/build/bin/clang++    -stdlib=libc++    -std=c++14 -o CMakeFiles/cmTC_7c95d.dir/feature_tests.cxx.o -c /home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/feature_tests.cxx
-Linking CXX executable cmTC_7c95d
-/opt/eb/software/cmake/3.9.0/bin/cmake -E cmake_link_script CMakeFiles/cmTC_7c95d.dir/link.txt --verbose=1
-/home/glaberge/compile/cfe-6.0.0.src/build/bin/clang++  -stdlib=libc++     -rdynamic CMakeFiles/cmTC_7c95d.dir/feature_tests.cxx.o  -o cmTC_7c95d 
+/usr/bin/gmake -f CMakeFiles/cmTC_1ac9e.dir/build.make CMakeFiles/cmTC_1ac9e.dir/build
+gmake[2]: Entering directory `/home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_1ac9e.dir/feature_tests.cxx.o
+/home/glaberge/compile/cfe-6.0.0.src/build/bin/clang++    -stdlib=libc++    -std=c++14 -o CMakeFiles/cmTC_1ac9e.dir/feature_tests.cxx.o -c /home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/feature_tests.cxx
+Linking CXX executable cmTC_1ac9e
+/opt/eb/software/cmake/3.9.0/bin/cmake -E cmake_link_script CMakeFiles/cmTC_1ac9e.dir/link.txt --verbose=1
+/home/glaberge/compile/cfe-6.0.0.src/build/bin/clang++  -stdlib=libc++     -rdynamic CMakeFiles/cmTC_1ac9e.dir/feature_tests.cxx.o  -o cmTC_1ac9e 
+gmake[2]: Leaving directory `/home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp'
 gmake[1]: Leaving directory `/home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp'
 
 
@@ -292,14 +301,16 @@ gmake[1]: Leaving directory `/home/glaberge/hpxML/Training_data/matrix_mult/buil
 Detecting CXX [-std=c++11] compiler features compiled with the following output:
 Change Dir: /home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/gmake" "cmTC_3cb86/fast"
-/usr/bin/gmake -f CMakeFiles/cmTC_3cb86.dir/build.make CMakeFiles/cmTC_3cb86.dir/build
+Run Build Command:"/usr/bin/gmake" "cmTC_a25f6/fast"
 gmake[1]: Entering directory `/home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_3cb86.dir/feature_tests.cxx.o
-/home/glaberge/compile/cfe-6.0.0.src/build/bin/clang++    -stdlib=libc++    -std=c++11 -o CMakeFiles/cmTC_3cb86.dir/feature_tests.cxx.o -c /home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/feature_tests.cxx
-Linking CXX executable cmTC_3cb86
-/opt/eb/software/cmake/3.9.0/bin/cmake -E cmake_link_script CMakeFiles/cmTC_3cb86.dir/link.txt --verbose=1
-/home/glaberge/compile/cfe-6.0.0.src/build/bin/clang++  -stdlib=libc++     -rdynamic CMakeFiles/cmTC_3cb86.dir/feature_tests.cxx.o  -o cmTC_3cb86 
+/usr/bin/gmake -f CMakeFiles/cmTC_a25f6.dir/build.make CMakeFiles/cmTC_a25f6.dir/build
+gmake[2]: Entering directory `/home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_a25f6.dir/feature_tests.cxx.o
+/home/glaberge/compile/cfe-6.0.0.src/build/bin/clang++    -stdlib=libc++    -std=c++11 -o CMakeFiles/cmTC_a25f6.dir/feature_tests.cxx.o -c /home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/feature_tests.cxx
+Linking CXX executable cmTC_a25f6
+/opt/eb/software/cmake/3.9.0/bin/cmake -E cmake_link_script CMakeFiles/cmTC_a25f6.dir/link.txt --verbose=1
+/home/glaberge/compile/cfe-6.0.0.src/build/bin/clang++  -stdlib=libc++     -rdynamic CMakeFiles/cmTC_a25f6.dir/feature_tests.cxx.o  -o cmTC_a25f6 
+gmake[2]: Leaving directory `/home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp'
 gmake[1]: Leaving directory `/home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp'
 
 
@@ -365,14 +376,16 @@ gmake[1]: Leaving directory `/home/glaberge/hpxML/Training_data/matrix_mult/buil
 Detecting CXX [-std=c++98] compiler features compiled with the following output:
 Change Dir: /home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/gmake" "cmTC_f7688/fast"
-/usr/bin/gmake -f CMakeFiles/cmTC_f7688.dir/build.make CMakeFiles/cmTC_f7688.dir/build
+Run Build Command:"/usr/bin/gmake" "cmTC_1a529/fast"
 gmake[1]: Entering directory `/home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_f7688.dir/feature_tests.cxx.o
-/home/glaberge/compile/cfe-6.0.0.src/build/bin/clang++    -stdlib=libc++    -std=c++98 -o CMakeFiles/cmTC_f7688.dir/feature_tests.cxx.o -c /home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/feature_tests.cxx
-Linking CXX executable cmTC_f7688
-/opt/eb/software/cmake/3.9.0/bin/cmake -E cmake_link_script CMakeFiles/cmTC_f7688.dir/link.txt --verbose=1
-/home/glaberge/compile/cfe-6.0.0.src/build/bin/clang++  -stdlib=libc++     -rdynamic CMakeFiles/cmTC_f7688.dir/feature_tests.cxx.o  -o cmTC_f7688 
+/usr/bin/gmake -f CMakeFiles/cmTC_1a529.dir/build.make CMakeFiles/cmTC_1a529.dir/build
+gmake[2]: Entering directory `/home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_1a529.dir/feature_tests.cxx.o
+/home/glaberge/compile/cfe-6.0.0.src/build/bin/clang++    -stdlib=libc++    -std=c++98 -o CMakeFiles/cmTC_1a529.dir/feature_tests.cxx.o -c /home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/feature_tests.cxx
+Linking CXX executable cmTC_1a529
+/opt/eb/software/cmake/3.9.0/bin/cmake -E cmake_link_script CMakeFiles/cmTC_1a529.dir/link.txt --verbose=1
+/home/glaberge/compile/cfe-6.0.0.src/build/bin/clang++  -stdlib=libc++     -rdynamic CMakeFiles/cmTC_1a529.dir/feature_tests.cxx.o  -o cmTC_1a529 
+gmake[2]: Leaving directory `/home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp'
 gmake[1]: Leaving directory `/home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp'
 
 
@@ -449,28 +462,31 @@ The C compiler identification is Clang, found in "/home/glaberge/hpxML/Training_
 Determining if the C compiler works passed with the following output:
 Change Dir: /home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/gmake" "cmTC_06685/fast"
-/usr/bin/gmake -f CMakeFiles/cmTC_06685.dir/build.make CMakeFiles/cmTC_06685.dir/build
+Run Build Command:"/usr/bin/gmake" "cmTC_5eef9/fast"
 gmake[1]: Entering directory `/home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_06685.dir/testCCompiler.c.o
-/home/glaberge/compile/cfe-6.0.0.src/build/bin/clang    -o CMakeFiles/cmTC_06685.dir/testCCompiler.c.o   -c /home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp/testCCompiler.c
-Linking C executable cmTC_06685
-/opt/eb/software/cmake/3.9.0/bin/cmake -E cmake_link_script CMakeFiles/cmTC_06685.dir/link.txt --verbose=1
-/home/glaberge/compile/cfe-6.0.0.src/build/bin/clang      -rdynamic CMakeFiles/cmTC_06685.dir/testCCompiler.c.o  -o cmTC_06685 
+/usr/bin/gmake -f CMakeFiles/cmTC_5eef9.dir/build.make CMakeFiles/cmTC_5eef9.dir/build
+gmake[2]: Entering directory `/home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_5eef9.dir/testCCompiler.c.o
+/home/glaberge/compile/cfe-6.0.0.src/build/bin/clang    -o CMakeFiles/cmTC_5eef9.dir/testCCompiler.c.o   -c /home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp/testCCompiler.c
+Linking C executable cmTC_5eef9
+/opt/eb/software/cmake/3.9.0/bin/cmake -E cmake_link_script CMakeFiles/cmTC_5eef9.dir/link.txt --verbose=1
+/home/glaberge/compile/cfe-6.0.0.src/build/bin/clang      -rdynamic CMakeFiles/cmTC_5eef9.dir/testCCompiler.c.o  -o cmTC_5eef9 
+gmake[2]: Leaving directory `/home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp'
 gmake[1]: Leaving directory `/home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp'
 
 
 Detecting C compiler ABI info compiled with the following output:
 Change Dir: /home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/gmake" "cmTC_1c304/fast"
-/usr/bin/gmake -f CMakeFiles/cmTC_1c304.dir/build.make CMakeFiles/cmTC_1c304.dir/build
+Run Build Command:"/usr/bin/gmake" "cmTC_48529/fast"
 gmake[1]: Entering directory `/home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_1c304.dir/CMakeCCompilerABI.c.o
-/home/glaberge/compile/cfe-6.0.0.src/build/bin/clang    -o CMakeFiles/cmTC_1c304.dir/CMakeCCompilerABI.c.o   -c /opt/eb/software/cmake/3.9.0/share/cmake-3.9/Modules/CMakeCCompilerABI.c
-Linking C executable cmTC_1c304
-/opt/eb/software/cmake/3.9.0/bin/cmake -E cmake_link_script CMakeFiles/cmTC_1c304.dir/link.txt --verbose=1
-/home/glaberge/compile/cfe-6.0.0.src/build/bin/clang     -v -rdynamic CMakeFiles/cmTC_1c304.dir/CMakeCCompilerABI.c.o  -o cmTC_1c304 
+/usr/bin/gmake -f CMakeFiles/cmTC_48529.dir/build.make CMakeFiles/cmTC_48529.dir/build
+gmake[2]: Entering directory `/home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_48529.dir/CMakeCCompilerABI.c.o
+/home/glaberge/compile/cfe-6.0.0.src/build/bin/clang    -o CMakeFiles/cmTC_48529.dir/CMakeCCompilerABI.c.o   -c /opt/eb/software/cmake/3.9.0/share/cmake-3.9/Modules/CMakeCCompilerABI.c
+Linking C executable cmTC_48529
+/opt/eb/software/cmake/3.9.0/bin/cmake -E cmake_link_script CMakeFiles/cmTC_48529.dir/link.txt --verbose=1
+/home/glaberge/compile/cfe-6.0.0.src/build/bin/clang     -v -rdynamic CMakeFiles/cmTC_48529.dir/CMakeCCompilerABI.c.o  -o cmTC_48529 
 clang version 6.0.0 (tags/RELEASE_600/final)
 Target: x86_64-unknown-linux-gnu
 Thread model: posix
@@ -487,7 +503,8 @@ Candidate multilib: .;@m64
 Candidate multilib: 32;@m32
 Selected multilib: .;@m64
 Found CUDA installation: /usr/local/cuda, version unknown
- "/opt/mn/binutils/2.28/bin/ld" -export-dynamic --hash-style=gnu --no-add-needed --eh-frame-hdr -m elf_x86_64 -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_1c304 /lib/../lib64/crt1.o /lib/../lib64/crti.o /opt/rh/devtoolset-6/root/usr/lib/gcc/x86_64-redhat-linux/6.3.1/crtbegin.o -L/opt/rh/devtoolset-6/root/usr/lib/gcc/x86_64-redhat-linux/6.3.1 -L/opt/rh/devtoolset-6/root/usr/lib/gcc/x86_64-redhat-linux/6.3.1/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/opt/rh/devtoolset-6/root/usr/lib/gcc/x86_64-redhat-linux/6.3.1/../../.. -L/home/glaberge/compile/cfe-6.0.0.src/build/bin/../lib -L/lib -L/usr/lib CMakeFiles/cmTC_1c304.dir/CMakeCCompilerABI.c.o -L/opt/boost/1.67.0-clang6.0.0/release/lib -L/opt/mn/clang/6.0.0/lib -L/opt/mn/binutils/2.28/lib -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /opt/rh/devtoolset-6/root/usr/lib/gcc/x86_64-redhat-linux/6.3.1/crtend.o /lib/../lib64/crtn.o
+ "/opt/mn/binutils/2.28/bin/ld" -export-dynamic --hash-style=gnu --no-add-needed --eh-frame-hdr -m elf_x86_64 -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_48529 /lib/../lib64/crt1.o /lib/../lib64/crti.o /opt/rh/devtoolset-6/root/usr/lib/gcc/x86_64-redhat-linux/6.3.1/crtbegin.o -L/opt/rh/devtoolset-6/root/usr/lib/gcc/x86_64-redhat-linux/6.3.1 -L/opt/rh/devtoolset-6/root/usr/lib/gcc/x86_64-redhat-linux/6.3.1/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/opt/rh/devtoolset-6/root/usr/lib/gcc/x86_64-redhat-linux/6.3.1/../../.. -L/home/glaberge/compile/cfe-6.0.0.src/build/bin/../lib -L/lib -L/usr/lib CMakeFiles/cmTC_48529.dir/CMakeCCompilerABI.c.o -L/opt/boost/1.67.0-clang6.0.0/release/lib -L/opt/mn/clang/6.0.0/lib -L/opt/mn/binutils/2.28/lib -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /opt/rh/devtoolset-6/root/usr/lib/gcc/x86_64-redhat-linux/6.3.1/crtend.o /lib/../lib64/crtn.o
+gmake[2]: Leaving directory `/home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp'
 gmake[1]: Leaving directory `/home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp'
 
 
@@ -495,14 +512,15 @@ Parsed C implicit link information from above output:
   link line regex: [^( *|.*[/\])(ld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\]+-)?ld|collect2)[^/\]*( |$)]
   ignore line: [Change Dir: /home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp]
   ignore line: []
-  ignore line: [Run Build Command:"/usr/bin/gmake" "cmTC_1c304/fast"]
-  ignore line: [/usr/bin/gmake -f CMakeFiles/cmTC_1c304.dir/build.make CMakeFiles/cmTC_1c304.dir/build]
+  ignore line: [Run Build Command:"/usr/bin/gmake" "cmTC_48529/fast"]
   ignore line: [gmake[1]: Entering directory `/home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp']
-  ignore line: [Building C object CMakeFiles/cmTC_1c304.dir/CMakeCCompilerABI.c.o]
-  ignore line: [/home/glaberge/compile/cfe-6.0.0.src/build/bin/clang    -o CMakeFiles/cmTC_1c304.dir/CMakeCCompilerABI.c.o   -c /opt/eb/software/cmake/3.9.0/share/cmake-3.9/Modules/CMakeCCompilerABI.c]
-  ignore line: [Linking C executable cmTC_1c304]
-  ignore line: [/opt/eb/software/cmake/3.9.0/bin/cmake -E cmake_link_script CMakeFiles/cmTC_1c304.dir/link.txt --verbose=1]
-  ignore line: [/home/glaberge/compile/cfe-6.0.0.src/build/bin/clang     -v -rdynamic CMakeFiles/cmTC_1c304.dir/CMakeCCompilerABI.c.o  -o cmTC_1c304 ]
+  ignore line: [/usr/bin/gmake -f CMakeFiles/cmTC_48529.dir/build.make CMakeFiles/cmTC_48529.dir/build]
+  ignore line: [gmake[2]: Entering directory `/home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp']
+  ignore line: [Building C object CMakeFiles/cmTC_48529.dir/CMakeCCompilerABI.c.o]
+  ignore line: [/home/glaberge/compile/cfe-6.0.0.src/build/bin/clang    -o CMakeFiles/cmTC_48529.dir/CMakeCCompilerABI.c.o   -c /opt/eb/software/cmake/3.9.0/share/cmake-3.9/Modules/CMakeCCompilerABI.c]
+  ignore line: [Linking C executable cmTC_48529]
+  ignore line: [/opt/eb/software/cmake/3.9.0/bin/cmake -E cmake_link_script CMakeFiles/cmTC_48529.dir/link.txt --verbose=1]
+  ignore line: [/home/glaberge/compile/cfe-6.0.0.src/build/bin/clang     -v -rdynamic CMakeFiles/cmTC_48529.dir/CMakeCCompilerABI.c.o  -o cmTC_48529 ]
   ignore line: [clang version 6.0.0 (tags/RELEASE_600/final)]
   ignore line: [Target: x86_64-unknown-linux-gnu]
   ignore line: [Thread model: posix]
@@ -522,7 +540,7 @@ Parsed C implicit link information from above output:
   ignore line: [Selected multilib: .]
   ignore line: [@m64]
   ignore line: [Found CUDA installation: /usr/local/cuda, version unknown]
-  link line: [ "/opt/mn/binutils/2.28/bin/ld" -export-dynamic --hash-style=gnu --no-add-needed --eh-frame-hdr -m elf_x86_64 -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_1c304 /lib/../lib64/crt1.o /lib/../lib64/crti.o /opt/rh/devtoolset-6/root/usr/lib/gcc/x86_64-redhat-linux/6.3.1/crtbegin.o -L/opt/rh/devtoolset-6/root/usr/lib/gcc/x86_64-redhat-linux/6.3.1 -L/opt/rh/devtoolset-6/root/usr/lib/gcc/x86_64-redhat-linux/6.3.1/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/opt/rh/devtoolset-6/root/usr/lib/gcc/x86_64-redhat-linux/6.3.1/../../.. -L/home/glaberge/compile/cfe-6.0.0.src/build/bin/../lib -L/lib -L/usr/lib CMakeFiles/cmTC_1c304.dir/CMakeCCompilerABI.c.o -L/opt/boost/1.67.0-clang6.0.0/release/lib -L/opt/mn/clang/6.0.0/lib -L/opt/mn/binutils/2.28/lib -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /opt/rh/devtoolset-6/root/usr/lib/gcc/x86_64-redhat-linux/6.3.1/crtend.o /lib/../lib64/crtn.o]
+  link line: [ "/opt/mn/binutils/2.28/bin/ld" -export-dynamic --hash-style=gnu --no-add-needed --eh-frame-hdr -m elf_x86_64 -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_48529 /lib/../lib64/crt1.o /lib/../lib64/crti.o /opt/rh/devtoolset-6/root/usr/lib/gcc/x86_64-redhat-linux/6.3.1/crtbegin.o -L/opt/rh/devtoolset-6/root/usr/lib/gcc/x86_64-redhat-linux/6.3.1 -L/opt/rh/devtoolset-6/root/usr/lib/gcc/x86_64-redhat-linux/6.3.1/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/opt/rh/devtoolset-6/root/usr/lib/gcc/x86_64-redhat-linux/6.3.1/../../.. -L/home/glaberge/compile/cfe-6.0.0.src/build/bin/../lib -L/lib -L/usr/lib CMakeFiles/cmTC_48529.dir/CMakeCCompilerABI.c.o -L/opt/boost/1.67.0-clang6.0.0/release/lib -L/opt/mn/clang/6.0.0/lib -L/opt/mn/binutils/2.28/lib -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /opt/rh/devtoolset-6/root/usr/lib/gcc/x86_64-redhat-linux/6.3.1/crtend.o /lib/../lib64/crtn.o]
     arg [/opt/mn/binutils/2.28/bin/ld] ==> ignore
     arg [-export-dynamic] ==> ignore
     arg [--hash-style=gnu] ==> ignore
@@ -534,7 +552,7 @@ Parsed C implicit link information from above output:
     arg [-dynamic-linker] ==> ignore
     arg [/lib64/ld-linux-x86-64.so.2] ==> ignore
     arg [-o] ==> ignore
-    arg [cmTC_1c304] ==> ignore
+    arg [cmTC_48529] ==> ignore
     arg [/lib/../lib64/crt1.o] ==> ignore
     arg [/lib/../lib64/crti.o] ==> ignore
     arg [/opt/rh/devtoolset-6/root/usr/lib/gcc/x86_64-redhat-linux/6.3.1/crtbegin.o] ==> ignore
@@ -546,7 +564,7 @@ Parsed C implicit link information from above output:
     arg [-L/home/glaberge/compile/cfe-6.0.0.src/build/bin/../lib] ==> dir [/home/glaberge/compile/cfe-6.0.0.src/build/bin/../lib]
     arg [-L/lib] ==> dir [/lib]
     arg [-L/usr/lib] ==> dir [/usr/lib]
-    arg [CMakeFiles/cmTC_1c304.dir/CMakeCCompilerABI.c.o] ==> ignore
+    arg [CMakeFiles/cmTC_48529.dir/CMakeCCompilerABI.c.o] ==> ignore
     arg [-L/opt/boost/1.67.0-clang6.0.0/release/lib] ==> dir [/opt/boost/1.67.0-clang6.0.0/release/lib]
     arg [-L/opt/mn/clang/6.0.0/lib] ==> dir [/opt/mn/clang/6.0.0/lib]
     arg [-L/opt/mn/binutils/2.28/lib] ==> dir [/opt/mn/binutils/2.28/lib]
@@ -582,14 +600,16 @@ Parsed C implicit link information from above output:
 Detecting C [-std=c11] compiler features compiled with the following output:
 Change Dir: /home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/gmake" "cmTC_1c38e/fast"
-/usr/bin/gmake -f CMakeFiles/cmTC_1c38e.dir/build.make CMakeFiles/cmTC_1c38e.dir/build
+Run Build Command:"/usr/bin/gmake" "cmTC_c621c/fast"
 gmake[1]: Entering directory `/home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_1c38e.dir/feature_tests.c.o
-/home/glaberge/compile/cfe-6.0.0.src/build/bin/clang   -std=c11 -o CMakeFiles/cmTC_1c38e.dir/feature_tests.c.o   -c /home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/feature_tests.c
-Linking C executable cmTC_1c38e
-/opt/eb/software/cmake/3.9.0/bin/cmake -E cmake_link_script CMakeFiles/cmTC_1c38e.dir/link.txt --verbose=1
-/home/glaberge/compile/cfe-6.0.0.src/build/bin/clang      -rdynamic CMakeFiles/cmTC_1c38e.dir/feature_tests.c.o  -o cmTC_1c38e 
+/usr/bin/gmake -f CMakeFiles/cmTC_c621c.dir/build.make CMakeFiles/cmTC_c621c.dir/build
+gmake[2]: Entering directory `/home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_c621c.dir/feature_tests.c.o
+/home/glaberge/compile/cfe-6.0.0.src/build/bin/clang   -std=c11 -o CMakeFiles/cmTC_c621c.dir/feature_tests.c.o   -c /home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/feature_tests.c
+Linking C executable cmTC_c621c
+/opt/eb/software/cmake/3.9.0/bin/cmake -E cmake_link_script CMakeFiles/cmTC_c621c.dir/link.txt --verbose=1
+/home/glaberge/compile/cfe-6.0.0.src/build/bin/clang      -rdynamic CMakeFiles/cmTC_c621c.dir/feature_tests.c.o  -o cmTC_c621c 
+gmake[2]: Leaving directory `/home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp'
 gmake[1]: Leaving directory `/home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp'
 
 
@@ -602,14 +622,16 @@ gmake[1]: Leaving directory `/home/glaberge/hpxML/Training_data/matrix_mult/buil
 Detecting C [-std=c99] compiler features compiled with the following output:
 Change Dir: /home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/gmake" "cmTC_44d35/fast"
-/usr/bin/gmake -f CMakeFiles/cmTC_44d35.dir/build.make CMakeFiles/cmTC_44d35.dir/build
+Run Build Command:"/usr/bin/gmake" "cmTC_4aa86/fast"
 gmake[1]: Entering directory `/home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_44d35.dir/feature_tests.c.o
-/home/glaberge/compile/cfe-6.0.0.src/build/bin/clang   -std=c99 -o CMakeFiles/cmTC_44d35.dir/feature_tests.c.o   -c /home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/feature_tests.c
-Linking C executable cmTC_44d35
-/opt/eb/software/cmake/3.9.0/bin/cmake -E cmake_link_script CMakeFiles/cmTC_44d35.dir/link.txt --verbose=1
-/home/glaberge/compile/cfe-6.0.0.src/build/bin/clang      -rdynamic CMakeFiles/cmTC_44d35.dir/feature_tests.c.o  -o cmTC_44d35 
+/usr/bin/gmake -f CMakeFiles/cmTC_4aa86.dir/build.make CMakeFiles/cmTC_4aa86.dir/build
+gmake[2]: Entering directory `/home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_4aa86.dir/feature_tests.c.o
+/home/glaberge/compile/cfe-6.0.0.src/build/bin/clang   -std=c99 -o CMakeFiles/cmTC_4aa86.dir/feature_tests.c.o   -c /home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/feature_tests.c
+Linking C executable cmTC_4aa86
+/opt/eb/software/cmake/3.9.0/bin/cmake -E cmake_link_script CMakeFiles/cmTC_4aa86.dir/link.txt --verbose=1
+/home/glaberge/compile/cfe-6.0.0.src/build/bin/clang      -rdynamic CMakeFiles/cmTC_4aa86.dir/feature_tests.c.o  -o cmTC_4aa86 
+gmake[2]: Leaving directory `/home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp'
 gmake[1]: Leaving directory `/home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp'
 
 
@@ -622,14 +644,16 @@ gmake[1]: Leaving directory `/home/glaberge/hpxML/Training_data/matrix_mult/buil
 Detecting C [-std=c90] compiler features compiled with the following output:
 Change Dir: /home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/gmake" "cmTC_80bdb/fast"
-/usr/bin/gmake -f CMakeFiles/cmTC_80bdb.dir/build.make CMakeFiles/cmTC_80bdb.dir/build
+Run Build Command:"/usr/bin/gmake" "cmTC_a90db/fast"
 gmake[1]: Entering directory `/home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_80bdb.dir/feature_tests.c.o
-/home/glaberge/compile/cfe-6.0.0.src/build/bin/clang   -std=c90 -o CMakeFiles/cmTC_80bdb.dir/feature_tests.c.o   -c /home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/feature_tests.c
-Linking C executable cmTC_80bdb
-/opt/eb/software/cmake/3.9.0/bin/cmake -E cmake_link_script CMakeFiles/cmTC_80bdb.dir/link.txt --verbose=1
-/home/glaberge/compile/cfe-6.0.0.src/build/bin/clang      -rdynamic CMakeFiles/cmTC_80bdb.dir/feature_tests.c.o  -o cmTC_80bdb 
+/usr/bin/gmake -f CMakeFiles/cmTC_a90db.dir/build.make CMakeFiles/cmTC_a90db.dir/build
+gmake[2]: Entering directory `/home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_a90db.dir/feature_tests.c.o
+/home/glaberge/compile/cfe-6.0.0.src/build/bin/clang   -std=c90 -o CMakeFiles/cmTC_a90db.dir/feature_tests.c.o   -c /home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/feature_tests.c
+Linking C executable cmTC_a90db
+/opt/eb/software/cmake/3.9.0/bin/cmake -E cmake_link_script CMakeFiles/cmTC_a90db.dir/link.txt --verbose=1
+/home/glaberge/compile/cfe-6.0.0.src/build/bin/clang      -rdynamic CMakeFiles/cmTC_a90db.dir/feature_tests.c.o  -o cmTC_a90db 
+gmake[2]: Leaving directory `/home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp'
 gmake[1]: Leaving directory `/home/glaberge/hpxML/Training_data/matrix_mult/build/CMakeFiles/CMakeTmp'
 
 
