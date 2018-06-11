@@ -20,47 +20,32 @@
 
 
 
-double mysecond()
-{
-    return hpx::util::high_resolution_clock::now() * 1e-9;
-}
-
-double random_double(double min,double max){
-    return (min+1)+(((double) rand())/(double) RAND_MAX)*(max-(min+1));
-}
-
-template<typename T>
-void vector_generator(std::vector<T> &A,int size,double min,double max){
-    for(std::size_t r = 0; r < size; r++) {
-        A.push_back(random_double(min,max));
-    }
-}
-	
-/////////////////////////////////////////////////////////////////////////////////////////////////////
-void Rand_Pond_Sum(int iterations,std::vector<double> chunk_candidates,std::ofstream& file) {
+void Max_Sum_Row(int iterations,std::vector<double> chunk_candidates,std::ofstream& file) {
     
+     
     int vector_size=iterations;
+    int matrix_size=iterations*iterations;
+    auto time_range = boost::irange(0, vector_size);
     std::vector<double> A;
     std::vector<double> B;
     std::vector<double> C(vector_size);
-    vector_generator(A,vector_size,10,100);
-    vector_generator(B,vector_size,10,100);
+    vector_generator(A,matrix_size,10,100);
+    vector_generator(B,matrix_size,10,100);   
 
-    auto time_range = boost::irange(0, vector_size); 
     auto f = [&](int i) {
-        double result=0.0;
-	result+=(rand()%10+1)*A[i];
-	result+=(rand()%10+1)*B[i];
-	C[i]=result;
+	double result1=0.0;
+        double result2=0.0;
+        for(int k(0);k<vector_size;k++){
+	    result1+=A[vector_size*i+k];
+	    result2+=B[vector_size*i+k];
+	}
+	C[i]=std::max(result1,result2);
+
     };
-  
-   //feature extraction
-//   hpx::parallel::for_each(hpx::parallel::execution::par.with(adaptive_chunk_size()), time_range.begin(), time_range.end(), f);
-    
 
-
-  double t_chunk=0.0;
-   file<<vector_size<<" "<<"1 ";
+   // Dynamic chunk size/////////
+   double t_chunk=0.0;
+   file<<vector_size<<" "<<"2 ";
 
     for (int i(0);i<chunk_candidates.size();i++){
         t_chunk = mysecond();
@@ -71,65 +56,30 @@ void Rand_Pond_Sum(int iterations,std::vector<double> chunk_candidates,std::ofst
     }
     file<<""<<std::endl;
     
+
 }
+    
 
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
-void Swap(int iterations,std::vector<double> chunk_candidates,std::ofstream& file) {
-        
+void Cum_Sum(int iterations,std::vector<double> chunk_candidates,std::ofstream& file) {
+    
+         
     int vector_size=iterations;
-    std::vector<double> A;
-    std::vector<double> B;
-    vector_generator(A,vector_size,10,100);
-    vector_generator(B,vector_size,10,100);
-
     auto time_range = boost::irange(0, vector_size); 
-    
-    auto f=[&](int i){
-        double container=A[i];
-        A[i]=B[i];
-        B[i]=container;
-    };
-  
-    double t_chunk=0.0;
-    file<<vector_size<<" "<<"1 ";
-
-    for (int i(0);i<chunk_candidates.size();i++){
-        t_chunk = mysecond();
-        hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(vector_size*chunk_candidates[i])), time_range.begin(), time_range.end(), f);
-
-        double elapsed_chunk = mysecond() - t_chunk;
-	file<<elapsed_chunk<<" ";
-    }
-    file<<""<<std::endl;
-    
-}
-
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void Finite_Diff_Step(int iterations,std::vector<double> chunk_candidates,std::ofstream& file) {
-        
-    int vector_size=iterations;
     std::vector<double> A;
     std::vector<double> B(vector_size);
     vector_generator(A,vector_size,10,100);
-
-    auto time_range = boost::irange(0, vector_size); 
-    
     auto f=[&](int i){
-        if(i==0){
-	    B[i]=(A[i]+A[i+1])/2;
+        double result=0;
+	for(int j(0);j<i;j++){
+		result+=A[i];
 	}
-	else if(i==(vector_size-1)){
-	    B[i]=(A[i]+A[i-1])/2;
-	}
-	else {
-	    B[i]=(A[i-1]+A[i]+A[i+1])/2;
-	}
+	B[i]=result;
     };
-  
-    double t_chunk=0.0;
-    file<<vector_size<<" "<<"1 ";
+
+   // Dynamic chunk size/////////
+   double t_chunk=0.0;
+   file<<vector_size<<" "<<"2 ";
 
     for (int i(0);i<chunk_candidates.size();i++){
         t_chunk = mysecond();
@@ -139,31 +89,29 @@ void Finite_Diff_Step(int iterations,std::vector<double> chunk_candidates,std::o
 	file<<elapsed_chunk<<" ";
     }
     file<<""<<std::endl;
-    
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////// 	
-void Stream(int iterations,std::vector<double> chunk_candidates,std::ofstream& file) {
-        
-    int vector_size=iterations;
-    std::vector<double> A;
-    std::vector<double> B;
-    std::vector<double> C;
-    vector_generator(A,vector_size,10,100);
-    vector_generator(B,vector_size,10,100);
-    vector_generator(C,vector_size,10,100);
 
+void Factorial(int iterations,std::vector<double> chunk_candidates,std::ofstream& file) {
+    
+     
+    int vector_size=iterations;
     auto time_range = boost::irange(0, vector_size); 
-    double k(14);
+    std::vector<double> A;
+    std::vector<double> B(vector_size);
+    vector_generator(A,vector_size,10,100);  
     auto f=[&](int i){
-        C[i]=A[i];
-	B[i]=k*C[i];
-	C[i]=A[i]+B[i];
-	A[i]=B[i]+k*C[i];
+        double result=1;
+	for(int j(2);j<A[i];j++){
+		result*=j;
+	}
+	B[i]=result;
     };
-  
-    double t_chunk=0.0;
-    file<<vector_size<<" "<<"1 ";
+
+
+   // Dynamic chunk size/////////
+   double t_chunk=0.0;
+   file<<vector_size<<" "<<"2 ";
 
     for (int i(0);i<chunk_candidates.size();i++){
         t_chunk = mysecond();
@@ -173,4 +121,52 @@ void Stream(int iterations,std::vector<double> chunk_candidates,std::ofstream& f
 	file<<elapsed_chunk<<" ";
     }
     file<<""<<std::endl;
+    
+
+}
+
+
+void Matrix_Vector_Mult(int iterations,std::vector<double> chunk_candidates,std::ofstream& file) {
+   
+    int vector_size=iterations;
+    int matrix_size=iterations*iterations;
+    auto time_range = boost::irange(0, iterations);
+    std::vector<double> A;
+    std::vector<double> B;
+    std::vector<double> C(matrix_size);
+    vector_generator(A,matrix_size,10,100);
+    vector_generator(B,matrix_size,10,100);  
+    auto f=[&](int i){
+    	if (i % 4 ==0){
+	    double result1=0.0;
+	    double result2=0.0;
+	    double result3=0.0;
+	    double result4=0.0;
+
+	    for (int k=0;k<vector_size;k++){
+	        result1+=A[i*vector_size+k]*B[k];
+		result2+=A[(i+1)*vector_size+k]*B[k];
+		result3+=A[(i+2)*vector_size+k]*B[k];
+		result4+=A[(i+3)*vector_size+k]*B[k];
+	    }
+	    C[i]=result1;
+	    C[i+1]=result2;
+	    C[i+2]=result3;
+	    C[i+3]=result4;
+	}
+    };
+
+   // Dynamic chunk size/////////
+   double t_chunk=0.0;
+   file<<vector_size<<" "<<"2 ";
+
+    for (int i(0);i<chunk_candidates.size();i++){
+        t_chunk = mysecond();
+        hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(vector_size*chunk_candidates[i])), time_range.begin(), time_range.end(), f);
+
+        double elapsed_chunk = mysecond() - t_chunk;
+	file<<elapsed_chunk<<" ";
+    }
+    file<<""<<std::endl;
+    
 }
