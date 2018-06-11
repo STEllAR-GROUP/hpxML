@@ -12,13 +12,11 @@ These following functions are used to generate data and they can be found in the
 1. Matrix_Vector_Mult(args)
 1. Cum_Sum(args)
 1. Factorial(args)
-1. Matrix_Matrix_sum(args)
-1. Matrix_Matrix_rand_sum(args)
 1. Finite_element_F(args)
 1. Triples(args)
-1. Finite_element_K(args)
-1. Finite_difference_laplacien(args)
-1.
+1. Cum_Product_Row(args)
+1. Matrix_Matrix_Mult()
+1. 
 1.
 1.
 1.
