@@ -6,4 +6,6 @@ in a file located in the files/ folder. Here are the current functions:
 
 1. Rand_Ponderated_Sum()
 1. Swap()
+1. Finite_Diff_Step()
 1. Stream()
+1. 
