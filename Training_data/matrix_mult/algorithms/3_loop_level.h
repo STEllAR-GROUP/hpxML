@@ -32,10 +32,10 @@ double shape_function(int index,double eta){
     else{ return 0;}
 }
 
-void Finite_Element_K(int iterations,std::vector<double> chunk_candidates,std::ofstream& file) {
+void Finite_Element_F(int iterations,std::vector<double> chunk_candidates,std::ofstream& file) {
         
     int n_elements=iterations;
-    int vector_size=iterations;
+    int vector_size=2*n_element+1;
     auto time_range = boost::irange(0, n_elements);
     
     std::vector<double> A;
