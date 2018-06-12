@@ -17,4 +17,5 @@ in a file located in the files/ folder. Here are the current functions:
 1. Triples
 1. Matrix_Matrix_Mult()
 1. Commulative_Product_Row()
-1
+1. Finite_Element_K()
+1. Tensor_4_generator()
