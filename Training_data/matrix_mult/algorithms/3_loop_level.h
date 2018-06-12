@@ -127,7 +127,7 @@ void Triples(int iterations,std::vector<double> chunk_candidates,std::ofstream& 
     file<<""<<std::endl;
 
 }
-void Cum_Product_Row(int iterations,std::vector<double> chunk_candidates,std::ofstream& file) {
+void Cummulative_Product_Row(int iterations,std::vector<double> chunk_candidates,std::ofstream& file) {
     
     int vector_size=iterations;
     int matrix_size=iterations*iterations;
