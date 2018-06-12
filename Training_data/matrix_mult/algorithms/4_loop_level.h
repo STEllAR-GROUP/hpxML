@@ -82,7 +82,7 @@ void Finite_Element_K(int iterations,std::vector<double> chunk_candidates,std::o
 
 }
 
-void Finite_Element_K(int iterations,std::vector<double> chunk_candidates,std::ofstream& file) {
+void Tensor_4_generator(int iterations,std::vector<double> chunk_candidates,std::ofstream& file) {
         
     int vector_size=iterations;
     auto time_range = boost::irange(0, iterations);
