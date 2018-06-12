@@ -61,7 +61,7 @@ void Max_Sum_Row(int iterations,std::vector<double> chunk_candidates,std::ofstre
     
 
 
-void Cum_Sum(int iterations,std::vector<double> chunk_candidates,std::ofstream& file) {
+void Cummulative_Sum(int iterations,std::vector<double> chunk_candidates,std::ofstream& file) {
     
          
     int vector_size=iterations;
@@ -186,51 +186,6 @@ void Diadic_Prod(int iterations,std::vector<double> chunk_candidates,std::ofstre
     auto f=[&](int i){
 	for(int j(0);j<vector_size;j++){
 	    C[vector_size*i+j]=A[i](B[j];
-	}
-    };
-
-   // Dynamic chunk size/////////
-   double t_chunk=0.0;
-   file<<vector_size<<" "<<"2 ";
-
-    for (int i(0);i<chunk_candidates.size();i++){
-        t_chunk = mysecond();
-        hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(vector_size*chunk_candidates[i])), time_range.begin(), time_range.end(), f);
-
-        double elapsed_chunk = mysecond() - t_chunk;
-	file<<elapsed_chunk<<" ";
-    }
-    file<<""<<std::endl;
-    
-}
-
-void Matrix_Vector_Mult(int iterations,std::vector<double> chunk_candidates,std::ofstream& file) {
-   
-    int vector_size=iterations;
-    int matrix_size=iterations*iterations;
-    auto time_range = boost::irange(0, iterations);
-    std::vector<double> A;
-    std::vector<double> B;
-    std::vector<double> C(matrix_size);
-    vector_generator(A,matrix_size,10,100);
-    vector_generator(B,matrix_size,10,100);  
-    auto f=[&](int i){
-    	if (i % 4 ==0){
-	    double result1=0.0;
-	    double result2=0.0;
-	    double result3=0.0;
-	    double result4=0.0;
-
-	    for (int k=0;k<vector_size;k++){
-	        result1+=A[i*vector_size+k]*B[k];
-		result2+=A[(i+1)*vector_size+k]*B[k];
-		result3+=A[(i+2)*vector_size+k]*B[k];
-		result4+=A[(i+3)*vector_size+k]*B[k];
-	    }
-	    C[i]=result1;
-	    C[i+1]=result2;
-	    C[i+2]=result3;
-	    C[i+3]=result4;
 	}
     };
 
