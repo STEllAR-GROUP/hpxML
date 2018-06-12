@@ -19,11 +19,13 @@
 #include <hpx/parallel/executors/dynamic_chunk_size.hpp>
 #include "algorithms/1_loop_level.h"
 #include "algorithms/2_loop_level.h"
+#include "algorithms/3_loop_level.h"
 #include<string>
 
 int hpx_main(int argc, char* argv[])
 {
     // Initialization 
+    //
     int iterations=strtol(argv[2],NULL,10);
     std::vector<double> chunk_candidates(7);
     chunk_candidates[0]=0.001;chunk_candidates[1]=0.005;chunk_candidates[2]=0.01;chunk_candidates[3]=0.05;chunk_candidates[4]=0.1;
