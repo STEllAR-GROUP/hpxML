@@ -17,10 +17,12 @@
 #include <typeinfo>
 #include <iterator>
 #include <hpx/parallel/executors/dynamic_chunk_size.hpp>
-#include "algorithms/1_loop_level.h"
-#include "algorithms/2_loop_level.h"
-#include "algorithms/3_loop_level.h"
+#include <hpx/runtime/get_os_thread_count.hpp>
+#include "algorithms/dynamic_and_times/1_loop_level.h"
+#include "algorithms/dynamic_and_times/2_loop_level.h"
+#include "algorithms/dynamic_and_times/3_loop_level.h"
 #include<string>
+#include "algorithms/dynamic_and_times/4_loop_level.h"
 
 int hpx_main(int argc, char* argv[])
 {
@@ -32,30 +34,43 @@ int hpx_main(int argc, char* argv[])
     chunk_candidates[5]=0.2;chunk_candidates[6]=0.5;
     
     srand(time(NULL));
-    std::ofstream file("./../files/train_data_matrix_debug.txt",std::ios::app);
-    if(file){
-        if(std::strncmp(argv[1],"Rand_Pond_Sum",13)==0){     
-		Rand_Pond_Sum(iterations,chunk_candidates,file); 
-		std::cout<<"Rans_Sum"<<std::endl;
-        }
-       
-        else if(std::strncmp(argv[1],"Swap",4)==0){
-		Swap(iterations,chunk_candidates,file);    
-		std::cout<<"Swap"<<std::endl;
-	}
-        else if(std::strncmp(argv[1],"Finite_Diff_Step",16)==0){
-		Finite_Diff_Step(iterations,chunk_candidates,file);    
-		std::cout<<"Finite_diff"<<std::endl;
-	}
-        else if(std::strncmp(argv[1],"Stream",6)==0){
-		Stream(iterations,chunk_candidates,file);    
-		std::cout<<"Stream"<<std::endl;
-	}
+    if(std::strncmp(argv[1],"Rand_Pond_Sum",13)==0){    
+        Rand_Pond_Sum(iterations,chunk_candidates); 
+    }   
+    else if(std::strncmp(argv[1],"Swap",4)==0){
+	Swap(iterations,chunk_candidates);    
+    }
+    else if(std::strncmp(argv[1],"Finite_Diff_Step",16)==0){
+	Finite_Diff_Step(iterations,chunk_candidates);    
+    }
+    else if(std::strncmp(argv[1],"Stream",6)==0){
+	Stream(iterations,chunk_candidates);   
+    }
+    else if(std::strncmp(argv[1],"Max_Sum_Row",11)==0){
+        Max_Sum_Row(iterations,chunk_candidates);
+    }
+    else if(std::strncmp(argv[1],"Matrix_Vector_Mult",18)==0){
+	Matrix_Vector_Mult(iterations,chunk_candidates);    
+    }
+    else if(std::strncmp(argv[1],"Diadic_Prod",11)==0){
+	Diadic_Prod(iterations,chunk_candidates);   
+    }
+    else if(std::strncmp(argv[1],"Cosine",6)==0){
+	Cosine(iterations,chunk_candidates);   
+    }
 
+    else if(std::strncmp(argv[1],"Triples",7)==0){
+	Triples(iterations,chunk_candidates);    
     }
-    else{
-        std::cout<<"The file could not open"<<std::endl;
+    else if(std::strncmp(argv[1],"Matrix_Matrix_Mult",20)==0){
+        Matrix_Matrix_Mult(iterations,chunk_candidates);
     }
+    else if(std::strncmp(argv[1],"Tensor_generator",16)==0){
+        Tensor_generator(iterations,chunk_candidates);
+    
+    }
+    else{ std::cout<<"Function not found"<<std::endl;}
+
     return hpx::finalize();
 }
 

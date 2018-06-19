@@ -18,7 +18,7 @@
 #include <iterator>
 #include <hpx/parallel/executors/dynamic_chunk_size.hpp>
 
-
+namespace hpx { namespace parallel {struct adaptive_chunk_size {}; } }
 
 double mysecond()
 {
@@ -37,7 +37,7 @@ void vector_generator(std::vector<T> &A,int size,double min,double max){
 }
 	
 /////////////////////////////////////////////////////////////////////////////////////////////////////
-void Rand_Pond_Sum(int iterations,std::vector<double> chunk_candidates,std::ofstream& file) {
+void Rand_Pond_Sum(int iterations,std::vector<double> chunk_candidates) {
     
     int vector_size=iterations;
     std::vector<double> A;
@@ -54,28 +54,26 @@ void Rand_Pond_Sum(int iterations,std::vector<double> chunk_candidates,std::ofst
 	C[i]=result;
     };
   
-   //feature extraction
-//   hpx::parallel::for_each(hpx::parallel::execution::par.with(adaptive_chunk_size()), time_range.begin(), time_range.end(), f);
+   std::cout<<vector_size<<" "<<hpx::get_os_thread_count()<<" ";
+   //feature extraction Rand_Pond_Sum
+//  hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::adaptive_chunk_size()), time_range.begin(), time_range.end(), f);
     
-
-
   double t_chunk=0.0;
-   file<<vector_size<<" "<<"1 ";
 
     for (int i(0);i<chunk_candidates.size();i++){
         t_chunk = mysecond();
         hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(vector_size*chunk_candidates[i])), time_range.begin(), time_range.end(), f);
 
         double elapsed_chunk = mysecond() - t_chunk;
-	file<<elapsed_chunk<<" ";
+	std::cout<<elapsed_chunk<<" ";
     }
-    file<<""<<std::endl;
+    std::cout<<""<<std::endl;
     
 }
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
-void Swap(int iterations,std::vector<double> chunk_candidates,std::ofstream& file) {
+void Swap(int iterations,std::vector<double> chunk_candidates) {
         
     int vector_size=iterations;
     std::vector<double> A;
@@ -91,23 +89,24 @@ void Swap(int iterations,std::vector<double> chunk_candidates,std::ofstream& fil
         B[i]=container;
     };
   
+    std::cout<<vector_size<<" "<<hpx::get_os_thread_count()<<" ";
     double t_chunk=0.0;
-    file<<vector_size<<" "<<"1 ";
-
+   //feature extraction Swap
+// hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::adaptive_chunk_size()), time_range.begin(), time_range.end(), f);
     for (int i(0);i<chunk_candidates.size();i++){
         t_chunk = mysecond();
         hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(vector_size*chunk_candidates[i])), time_range.begin(), time_range.end(), f);
 
         double elapsed_chunk = mysecond() - t_chunk;
-	file<<elapsed_chunk<<" ";
+	std::cout<<elapsed_chunk<<" ";
     }
-    file<<""<<std::endl;
+    std::cout<<""<<std::endl;
     
 }
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void Finite_Diff_Step(int iterations,std::vector<double> chunk_candidates,std::ofstream& file) {
+void Finite_Diff_Step(int iterations,std::vector<double> chunk_candidates) {
         
     int vector_size=iterations;
     std::vector<double> A;
@@ -128,22 +127,25 @@ void Finite_Diff_Step(int iterations,std::vector<double> chunk_candidates,std::o
 	}
     };
   
+    std::cout<<vector_size<<" "<<hpx::get_os_thread_count()<<" ";
     double t_chunk=0.0;
-    file<<vector_size<<" "<<"1 ";
+
+    //feature extraction Finite_Diff_Step
+// hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::adaptive_chunk_size()), time_range.begin(), time_range.end(), f);
 
     for (int i(0);i<chunk_candidates.size();i++){
         t_chunk = mysecond();
         hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(vector_size*chunk_candidates[i])), time_range.begin(), time_range.end(), f);
 
         double elapsed_chunk = mysecond() - t_chunk;
-	file<<elapsed_chunk<<" ";
+	std::cout<<elapsed_chunk<<" ";
     }
-    file<<""<<std::endl;
+    std::cout<<""<<std::endl;
     
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////// 	
-void Stream(int iterations,std::vector<double> chunk_candidates,std::ofstream& file) {
+void Stream(int iterations,std::vector<double> chunk_candidates) {
         
     int vector_size=iterations;
     std::vector<double> A;
@@ -162,15 +164,16 @@ void Stream(int iterations,std::vector<double> chunk_candidates,std::ofstream& f
 	A[i]=B[i]+k*C[i];
     };
   
+    std::cout<<vector_size<<" "<<hpx::get_os_thread_count()<<" ";
     double t_chunk=0.0;
-    file<<vector_size<<" "<<"1 ";
-
+   //feature extraction Stream
+// hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::adaptive_chunk_size()), time_range.begin(), time_range.end(), f);
     for (int i(0);i<chunk_candidates.size();i++){
         t_chunk = mysecond();
         hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(vector_size*chunk_candidates[i])), time_range.begin(), time_range.end(), f);
 
         double elapsed_chunk = mysecond() - t_chunk;
-	file<<elapsed_chunk<<" ";
+	std::cout<<elapsed_chunk<<" ";
     }
-    file<<""<<std::endl;
+    std::cout<<""<<std::endl;
 }

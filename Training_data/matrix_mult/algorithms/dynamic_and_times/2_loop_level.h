@@ -17,14 +17,26 @@
 #include <typeinfo>
 #include <iterator>
 #include <hpx/parallel/executors/dynamic_chunk_size.hpp>
+#include <cmath>
 
+int factorial(int n){
+    if(n==0){
+        return 1;
+    }
+    else{
+        int result=1;
+        for(int i(0);i<n;i++){
+	    result*=i;
+	}
+        return result;
+    }
+}
 
-
-void Max_Sum_Row(int iterations,std::vector<double> chunk_candidates,std::ofstream& file) {
-    
+void Max_Sum_Row(int iterations,std::vector<double> chunk_candidates) {
      
     int vector_size=iterations;
     int matrix_size=iterations*iterations;
+
     auto time_range = boost::irange(0, vector_size);
     std::vector<double> A;
     std::vector<double> B;
@@ -42,94 +54,26 @@ void Max_Sum_Row(int iterations,std::vector<double> chunk_candidates,std::ofstre
 	C[i]=std::max(result1,result2);
 
     };
-
-   // Dynamic chunk size/////////
+   std::cout<<vector_size<<" "<<hpx::get_os_thread_count()<<" ";
    double t_chunk=0.0;
-   file<<vector_size<<" "<<"2 ";
 
     for (int i(0);i<chunk_candidates.size();i++){
         t_chunk = mysecond();
         hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(vector_size*chunk_candidates[i])), time_range.begin(), time_range.end(), f);
 
         double elapsed_chunk = mysecond() - t_chunk;
-	file<<elapsed_chunk<<" ";
+	std::cout<<elapsed_chunk<<" ";
     }
-    file<<""<<std::endl;
+    std::cout<<""<<std::endl;
     
 
 }
     
-
-
-void Cummulative_Sum(int iterations,std::vector<double> chunk_candidates,std::ofstream& file) {
-    
-         
-    int vector_size=iterations;
-    auto time_range = boost::irange(0, vector_size); 
-    std::vector<double> A;
-    std::vector<double> B(vector_size);
-    vector_generator(A,vector_size,10,100);
-    auto f=[&](int i){
-        double result=0;
-	for(int j(0);j<i;j++){
-		result+=A[i];
-	}
-	B[i]=result;
-    };
-
-   // Dynamic chunk size/////////
-   double t_chunk=0.0;
-   file<<vector_size<<" "<<"2 ";
-
-    for (int i(0);i<chunk_candidates.size();i++){
-        t_chunk = mysecond();
-        hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(vector_size*chunk_candidates[i])), time_range.begin(), time_range.end(), f);
-
-        double elapsed_chunk = mysecond() - t_chunk;
-	file<<elapsed_chunk<<" ";
-    }
-    file<<""<<std::endl;
-}
-
-
-void Factorial(int iterations,std::vector<double> chunk_candidates,std::ofstream& file) {
-    
-     
-    int vector_size=iterations;
-    auto time_range = boost::irange(0, vector_size); 
-    std::vector<double> A;
-    std::vector<double> B(vector_size);
-    vector_generator(A,vector_size,10,100);  
-    auto f=[&](int i){
-        double result=1;
-	for(int j(2);j<A[i];j++){
-		result*=j;
-	}
-	B[i]=result;
-    };
-
-
-   // Dynamic chunk size/////////
-   double t_chunk=0.0;
-   file<<vector_size<<" "<<"2 ";
-
-    for (int i(0);i<chunk_candidates.size();i++){
-        t_chunk = mysecond();
-        hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(vector_size*chunk_candidates[i])), time_range.begin(), time_range.end(), f);
-
-        double elapsed_chunk = mysecond() - t_chunk;
-	file<<elapsed_chunk<<" ";
-    }
-    file<<""<<std::endl;
-    
-
-}
-
-
-void Matrix_Vector_Mult(int iterations,std::vector<double> chunk_candidates,std::ofstream& file) {
+void Matrix_Vector_Mult(int iterations,std::vector<double> chunk_candidates) {
    
     int vector_size=iterations;
     int matrix_size=iterations*iterations;
+
     auto time_range = boost::irange(0, iterations);
     std::vector<double> A;
     std::vector<double> B;
@@ -155,25 +99,24 @@ void Matrix_Vector_Mult(int iterations,std::vector<double> chunk_candidates,std:
 	    C[i+3]=result4;
 	}
     };
-
-   // Dynamic chunk size/////////
    double t_chunk=0.0;
-   file<<vector_size<<" "<<"2 ";
+   
+   std::cout<<vector_size<<" "<<hpx::get_os_thread_count()<<" ";
 
     for (int i(0);i<chunk_candidates.size();i++){
         t_chunk = mysecond();
         hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(vector_size*chunk_candidates[i])), time_range.begin(), time_range.end(), f);
 
         double elapsed_chunk = mysecond() - t_chunk;
-	file<<elapsed_chunk<<" ";
+	std::cout<<elapsed_chunk<<" ";
     }
-    file<<""<<std::endl;
+    std::cout<<""<<std::endl;
     
 }
 
 
 
-void Diadic_Prod(int iterations,std::vector<double> chunk_candidates,std::ofstream& file) {
+void Diadic_Prod(int iterations,std::vector<double> chunk_candidates) {
    
     int vector_size=iterations;
     int matrix_size=iterations*iterations;
@@ -185,21 +128,46 @@ void Diadic_Prod(int iterations,std::vector<double> chunk_candidates,std::ofstre
     vector_generator(B,vector_size,10,100);  
     auto f=[&](int i){
 	for(int j(0);j<vector_size;j++){
-	    C[vector_size*i+j]=A[i](B[j];
+	    C[vector_size*i+j]=A[i]*B[j];
 	}
     };
-
-   // Dynamic chunk size/////////
    double t_chunk=0.0;
-   file<<vector_size<<" "<<"2 ";
+   
+   std::cout<<vector_size<<" "<<hpx::get_os_thread_count()<<" ";
 
     for (int i(0);i<chunk_candidates.size();i++){
         t_chunk = mysecond();
         hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(vector_size*chunk_candidates[i])), time_range.begin(), time_range.end(), f);
 
         double elapsed_chunk = mysecond() - t_chunk;
-	file<<elapsed_chunk<<" ";
+	std::cout<<elapsed_chunk<<" ";
     }
-    file<<""<<std::endl;
+    std::cout<<""<<std::endl;
     
 }
+ void Cosine(int iterations,std::vector<double> chunk_candidates) {
+   
+    int vector_size=iterations;
+    auto time_range = boost::irange(0, iterations);
+    std::vector<double> A,B(vector_size,0);
+    vector_generator(A,vector_size,10,1000);
+    auto f=[&](int i){
+	for(int n(0);n<100;n++){
+	    B[i]+=std::pow(-1,n)/factorial(2*n)*std::pow(A[i],2*n);
+	}
+    };
+   double t_chunk=0.0;
+   
+   std::cout<<vector_size<<" "<<hpx::get_os_thread_count()<<" ";
+
+    for (int i(0);i<chunk_candidates.size();i++){
+        t_chunk = mysecond();
+        hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(vector_size*chunk_candidates[i])), time_range.begin(), time_range.end(), f);
+
+        double elapsed_chunk = mysecond() - t_chunk;
+	std::cout<<elapsed_chunk<<" ";
+    }
+    std::cout<<""<<std::endl;
+    
+}
+   
