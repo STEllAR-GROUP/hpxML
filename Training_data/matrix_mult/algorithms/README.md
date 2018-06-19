@@ -14,4 +14,4 @@ in a file located in the files/ folder. Here are the current functions:
 1. Diadic_Prod()
 1. Triples
 1. Matrix_Matrix_Mult()
-1. Tensor_4_generator()
+1. Tensor_generator()
