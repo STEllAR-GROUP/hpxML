@@ -55,17 +55,18 @@ void Rand_Pond_Sum(int iterations,std::vector<double> chunk_candidates) {
     };
   
    std::cout<<vector_size<<" "<<hpx::get_os_thread_count()<<" ";
-   //feature extraction Rand_Pond_Sum
-//  hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::adaptive_chunk_size()), time_range.begin(), time_range.end(), f);
     
-  double t_chunk=0.0;
-
+    double t_chunk=0.0;
+    double N_mean=10;
+    double mean_time;
     for (int i(0);i<chunk_candidates.size();i++){
-        t_chunk = mysecond();
+	mean_time=0;
+	for(int j(0);j<N_mean;j++){
+	t_chunk=mysecond();
         hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(vector_size*chunk_candidates[i])), time_range.begin(), time_range.end(), f);
-
-        double elapsed_chunk = mysecond() - t_chunk;
-	std::cout<<elapsed_chunk<<" ";
+        mean_time+= mysecond() - t_chunk;
+	}
+	std::cout<<mean_time/N_mean<<" ";
     }
     std::cout<<""<<std::endl;
     
@@ -91,17 +92,19 @@ void Swap(int iterations,std::vector<double> chunk_candidates) {
   
     std::cout<<vector_size<<" "<<hpx::get_os_thread_count()<<" ";
     double t_chunk=0.0;
-   //feature extraction Swap
-// hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::adaptive_chunk_size()), time_range.begin(), time_range.end(), f);
+    double N_mean=10;
+    double mean_time;
     for (int i(0);i<chunk_candidates.size();i++){
-        t_chunk = mysecond();
+	mean_time=0;
+	for(int j(0);j<N_mean;j++){
+	t_chunk=mysecond();
         hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(vector_size*chunk_candidates[i])), time_range.begin(), time_range.end(), f);
-
-        double elapsed_chunk = mysecond() - t_chunk;
-	std::cout<<elapsed_chunk<<" ";
+        mean_time+= mysecond() - t_chunk;
+	}
+	std::cout<<mean_time/N_mean<<" ";
     }
     std::cout<<""<<std::endl;
-    
+
 }
 
 
@@ -129,19 +132,19 @@ void Finite_Diff_Step(int iterations,std::vector<double> chunk_candidates) {
   
     std::cout<<vector_size<<" "<<hpx::get_os_thread_count()<<" ";
     double t_chunk=0.0;
-
-    //feature extraction Finite_Diff_Step
-// hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::adaptive_chunk_size()), time_range.begin(), time_range.end(), f);
-
+    double N_mean=10;
+    double mean_time;
     for (int i(0);i<chunk_candidates.size();i++){
-        t_chunk = mysecond();
+	mean_time=0;
+	for(int j(0);j<N_mean;j++){
+	t_chunk=mysecond();
         hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(vector_size*chunk_candidates[i])), time_range.begin(), time_range.end(), f);
-
-        double elapsed_chunk = mysecond() - t_chunk;
-	std::cout<<elapsed_chunk<<" ";
+        mean_time+= mysecond() - t_chunk;
+	}
+	std::cout<<mean_time/N_mean<<" ";
     }
     std::cout<<""<<std::endl;
-    
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////// 	
@@ -166,14 +169,18 @@ void Stream(int iterations,std::vector<double> chunk_candidates) {
   
     std::cout<<vector_size<<" "<<hpx::get_os_thread_count()<<" ";
     double t_chunk=0.0;
-   //feature extraction Stream
-// hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::adaptive_chunk_size()), time_range.begin(), time_range.end(), f);
+    double N_mean=10;
+    double mean_time;
     for (int i(0);i<chunk_candidates.size();i++){
-        t_chunk = mysecond();
+	mean_time=0;
+	for(int j(0);j<N_mean;j++){
+	t_chunk=mysecond();
         hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(vector_size*chunk_candidates[i])), time_range.begin(), time_range.end(), f);
-
-        double elapsed_chunk = mysecond() - t_chunk;
-	std::cout<<elapsed_chunk<<" ";
+        mean_time+= mysecond() - t_chunk;
+	}
+	std::cout<<mean_time/N_mean<<" ";
     }
     std::cout<<""<<std::endl;
+
+
 }

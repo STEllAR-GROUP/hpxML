@@ -17,6 +17,24 @@
 #include <typeinfo>
 #include <iterator>
 #include <hpx/parallel/executors/dynamic_chunk_size.hpp>
+#include<cmath>
+double Mean(std::vector<double> times){
+	double mean=0;
+	for(int i(0);i<times.size();i++){
+		mean+=times[i];
+	}
+	return mean/times.size();
+}
+
+double var(std::vector<double> times){
+	double var=0;
+	double mean=Mean(times);
+	for (int i(0);i<times.size();i++){
+		var+=std::pow(mean-times[i],2);
+	}
+	return var/((times.size()-1)*std::pow(mean,2))*100;
+}
+
 
 
 void Triples(int iterations,std::vector<double> chunk_candidates) {
@@ -51,16 +69,17 @@ void Triples(int iterations,std::vector<double> chunk_candidates) {
     };	
 
    std::cout<<vector_size<<" "<<hpx::get_os_thread_count()<<" ";
-
-   // Dynamic chunk size/////////
-   double t_chunk=0.0;
-
+    double t_chunk=0.0;
+    double N_mean=10;
+    double mean_time;
     for (int i(0);i<chunk_candidates.size();i++){
-        t_chunk = mysecond();
+	mean_time=0;
+	for(int j(0);j<N_mean;j++){
+	t_chunk=mysecond();
         hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(vector_size*chunk_candidates[i])), time_range.begin(), time_range.end(), f);
-
-        double elapsed_chunk = mysecond() - t_chunk;
-	std::cout<<elapsed_chunk<<" ";
+        mean_time+= mysecond() - t_chunk;
+	}
+	std::cout<<mean_time/N_mean<<" ";
     }
     std::cout<<""<<std::endl;
 
@@ -151,18 +170,53 @@ void Matrix_Matrix_Mult(int iterations,std::vector<double> chunk_candidates) {
 
 
    std::cout<<vector_size<<" "<<hpx::get_os_thread_count()<<" ";
-   // Dynamic chunk size/////////
-   double t_chunk=0.0;
-
+   /* double t_chunk=0.0;
+    std::vector<double> means(10);
+    double t_mean;
+    double elapsed_time;
     for (int i(0);i<chunk_candidates.size();i++){
-        t_chunk = mysecond();
-        hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(vector_size*chunk_candidates[i])), time_range.begin(), time_range.end(), f);
+	for(int j(0);j<10;j++){
+	    t_mean=0;
+	    for(int k(0);k<repetitions+1;k++){
+	        t_chunk=mysecond();
+                hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(vector_size*chunk_candidates[i])), time_range.begin(), time_range.end(), f);
+	       elapsed_time=mysecond()-t_chunk;
+	        if(k!=0){
+                    t_mean+=elapsed_time;
+	        }
+	    }
+	    t_mean/=repetitions;
+	    means[j]=t_mean;
+        }
+    std::cout<<var(means)<<" ";
+    }
+    std::cout<<""<<std::endl;*/
 
-        double elapsed_chunk = mysecond() - t_chunk;
-	std::cout<<elapsed_chunk<<" ";
+    double t_chunk=0.0;
+    double N_rep=50;
+    double mean_time;
+    double elapsed_time;
+    for (int i(0);i<chunk_candidates.size();i++){
+	mean_time=0;
+	for(int j(0);j<N_rep+1;j++){
+	    if(chunk_candidates[i]*vector_size>1){
+	    t_chunk=mysecond();
+            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(vector_size*chunk_candidates[i])), time_range.begin(), time_range.end(), f);
+            elapsed_time= mysecond() - t_chunk;
+	    }
+	    else{
+	    t_chunk=mysecond();
+            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(1)), time_range.begin(), time_range.end(), f);
+            elapsed_time= mysecond() - t_chunk;
+	    }
+	    if(j!=0){
+	        mean_time+=elapsed_time;
+ 	    }
+	}
+	std::cout<<mean_time/N_rep<<" ";
     }
     std::cout<<""<<std::endl;
 
 }
 
-  
+

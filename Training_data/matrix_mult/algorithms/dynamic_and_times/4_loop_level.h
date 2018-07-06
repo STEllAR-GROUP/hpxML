@@ -36,17 +36,18 @@ void Tensor_generator(int iterations,std::vector<double> chunk_candidates) {
 	}
     };
     
-
-   // Dynamic chunk size/////////
-   double t_chunk=0.0;
    std::cout<<vector_size<<" "<<hpx::get_os_thread_count()<<" ";
-
+    double t_chunk=0.0;
+    double N_mean=10;
+    double mean_time;
     for (int i(0);i<chunk_candidates.size();i++){
-        t_chunk = mysecond();
-        hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(10/*iterations*chunk_candidates[i]*/)), time_range.begin(), time_range.end(), f);
-
-        double elapsed_chunk = mysecond() - t_chunk;
-	std::cout<<elapsed_chunk<<" ";
+	mean_time=0;
+	for(int j(0);j<N_mean;j++){
+	t_chunk=mysecond();
+        hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(vector_size*chunk_candidates[i])), time_range.begin(), time_range.end(), f);
+        mean_time+= mysecond() - t_chunk;
+	}
+	std::cout<<mean_time/N_mean<<" ";
     }
     std::cout<<""<<std::endl;
 
