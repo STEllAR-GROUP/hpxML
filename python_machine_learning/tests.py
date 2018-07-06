@@ -27,23 +27,39 @@ def merge(cluster,index):
     return X,Y
        
 def cross_validation_relative(model,Xdata,Ydata,k):
-    error=0
+    error=[]
     cluster=cluster_maker(Xdata,Ydata,k)
     for i in range(k):
         X,Y=merge(cluster,i)
         model.fit(X,Y)
-        error+=np.abs((model.predict(cluster[i][0])-cluster[i][1])/(cluster[i][1]))*100
-    error/=k
-    return error
+        error.append(np.mean(np.abs((model.predict(cluster[i][0])-cluster[i][1])/(cluster[i][1]))*100))
+    return np.array(error)
+
+def cross_validation_squared(model,Xdata,Ydata,k):
+    error=[]
+    cluster=cluster_maker(Xdata,Ydata,k)
+    for i in range(k):
+        X,Y=merge(cluster,i)
+        model.fit(X,Y)
+        error.append(np.mean((model.predict(cluster[i][0])-cluster[i][1])**2))
+    return np.array(error)
 
 def cross_validation_relative_log(model,Xdata,Ydata,k):
-    error=0
+    error=[]
     cluster=cluster_maker(Xdata,np.log(Ydata),k)
     for i in range(k):
         X,Y=merge(cluster,i)
         model.fit(X,Y)
-        error+=np.abs((np.exp(model.predict(cluster[i][0]))-np.exp(cluster[i][1]))/np.exp(cluster[i][1]))*100
-    error/=k
-    return error
+        error.append(np.mean(np.abs((np.exp(model.predict(cluster[i][0]))-np.exp(cluster[i][1]))/np.exp(cluster[i][1]))*100))
+    return np.array(error)
+
+def cross_validation_squared_log(model,Xdata,Ydata,k):
+    error=[]
+    cluster=cluster_maker(Xdata,np.log(Ydata),k)
+    for i in range(k):
+        X,Y=merge(cluster,i)
+        model.fit(X,Y)
+        error.append(np.mean((np.exp(model.predict(cluster[i][0]))-np.exp(cluster[i][1]))**2))
+    return np.array(error)
 
     
