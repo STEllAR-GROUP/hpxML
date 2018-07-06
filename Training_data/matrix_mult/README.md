@@ -1,8 +1,8 @@
 # Data Generations
 
-This directory allows for automatic data generation. To generate data, functions located in the algorithms/ folder are called in main.cpp.
-These functions apply a for_each loop on a given lambda functions and outputs the execution time for different chunk_size candidates. The results
-in a file located in the files/ folder. Here are the current functions:
+This directory allows for data generation. To generate data, lambda functions are run with different chunk-size candidates and the execution times are measured and outputted.
+
+here are the different function which are defines in headers files at algorithm/dynamic_and_execution/ here are the different functions
 
 1. Rand_Ponderated_Sum()
 1. Swap()
@@ -15,3 +15,16 @@ in a file located in the files/ folder. Here are the current functions:
 1. Triples
 1. Matrix_Matrix_Mult()
 1. Tensor_generator()
+
+More can easily be added.
+
+Experiments are scheduled using the *train.sbatch* file using 
+```
+sbatch train.sbatch training.txt
+```
+training.txt is a file where every line is structured like the following
+
+```
+function_name,header_file_index,number_of_iterations_number_of_threads
+```
+
