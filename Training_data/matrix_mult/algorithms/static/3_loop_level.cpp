@@ -18,7 +18,7 @@
 #include <iterator>
 #include <hpx/parallel/executors/dynamic_chunk_size.hpp>
 
-#define lambda_inner_iteration 0                                                                   
+#define lambda_inner_iteration 3000                                                                                                                                     
 
 namespace hpx { namespace parallel {struct adaptive_chunk_size {}; } }
 
@@ -156,7 +156,7 @@ void Matrix_Matrix_Mult(int iterations,std::vector<double> chunk_candidates) {
     };
 
    //feature extraction Matrix_Matrix_Mult
-//  hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::adaptive_chunk_size()), time_range.begin(), time_range.end(), f);
+    hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::adaptive_chunk_size()), time_range.begin(), time_range.end(), f);
   
 
 }
