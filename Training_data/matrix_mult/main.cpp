@@ -29,9 +29,9 @@ int hpx_main(int argc, char* argv[])
     // Initialization 
     //
     int iterations=strtol(argv[2],NULL,10);
-    std::vector<double> chunk_candidates(7);
-    chunk_candidates[0]=0.001;chunk_candidates[1]=0.005;chunk_candidates[2]=0.01;chunk_candidates[3]=0.05;chunk_candidates[4]=0.1;
-    chunk_candidates[5]=0.2;chunk_candidates[6]=0.5;
+    std::vector<double> chunk_candidates(6);
+    chunk_candidates[0]=0.005;chunk_candidates[1]=0.01;chunk_candidates[2]=0.05;chunk_candidates[3]=0.1;chunk_candidates[4]=0.2;
+    chunk_candidates[5]=0.5;/*;chunk_candidates[6]=0.5;/*chunk_candidates[7]=0.5;chunk_candidates[8]=0.005;chunk_candidates[9]=0.0025;*/
     
     srand(time(NULL));
     if(std::strncmp(argv[1],"Rand_Pond_Sum",13)==0){    

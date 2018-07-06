@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 #SBATCH -o glaberge_%j.out
-#SBATCH -t 0-2:00
+#SBATCH -t 0-10:00
 #SBATCH -p marvin
 #SBATCH -N 8
 for line in `cat $1`
@@ -9,8 +9,8 @@ do
 	#function and iterations read
 	param1=`echo $line | cut -d "," -f 1`
 	param2=`echo $line | cut -d "," -f 2`
-	param3=`echo $line | cut -d "," -f 3`
-        
+	param3=`echo $line | cut -d "," -f 3` 
+	param4=`echo $line | cut -d "," -f 4`
 	#find the right line
 	line1=`grep "//feature extraction ${param1}" "algorithms/static/${param2}_loop_level.cpp" -n | tr -dc '0-9'`
 	let "line1=line1+1"
@@ -26,7 +26,7 @@ do
 
         
 	#run the main.cpp to extract dynamic features and execution timesrun ~/hpxML/Training_data/matrix_mult/build/data ${param1} ${param3} -- -threads=8
-	srun ~/hpxML/Training_data/matrix_mult/build/data ${param1} ${param3} --hpx:threads=6
+	srun ~/hpxML/Training_data/matrix_mult/build/data ${param1} ${param3} "--hpx:threads=${param4}"
 	#comment the right for_each call
 	sed -i "${line1}s|  |//|" "./algorithms/static/${param2}_loop_level.cpp"
 	
