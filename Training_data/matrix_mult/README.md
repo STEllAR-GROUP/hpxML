@@ -4,11 +4,8 @@ This directory allows for data generation. To generate data, lambda functions ar
 
 here are the different function which are defines in headers files at algorithm/dynamic_and_execution/ here are the different functions
 
-1. Rand_Ponderated_Sum()
 1. Swap()
-1. Finite_Diff_Step()
 1. Stream()
-1. Max_Sum_Row()
 1. Cosine()
 1. Matrix_Vector_Mult()
 1. Diadic_Prod()
