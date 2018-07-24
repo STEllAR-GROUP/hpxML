@@ -63,6 +63,8 @@ void implementing_binary_logistic_regression_model(){
     //learning two classes    
     std::cout <<"\n****************** Binary logistic regression model ******************\n"<<std::endl;
 
+
+    //reading first line
     std::ifstream myfile ("./../inputs/par_if.dat");
     getline(myfile, line);
     std::stringstream ss(line);
@@ -76,6 +78,11 @@ void implementing_binary_logistic_regression_model(){
     getline(ss, str, ' ');
     std::cout<<str<<std::endl;
     std::size_t number_of_multi_classes = std::stoi(str);
+
+
+
+
+
     //initializing
     float** experimental_results_two_class = new float*[number_of_experiments_two_class];
     float** execution_times_two_class = new float*[number_of_experiments_two_class];
@@ -85,6 +92,7 @@ void implementing_binary_logistic_regression_model(){
         execution_times_two_class[n] = new float[2];
     }
     int* targets_two_class = new int[number_of_experiments_two_class];    
+
 
     //reading input data
     reading_input_values(number_of_experiments_two_class, number_of_features_two_class, number_of_multi_classes, 
@@ -103,7 +111,7 @@ void implementing_binary_logistic_regression_model(){
 }
 
 void implementing_multinomial_logistic_regression_model(){
-    float threshold = 0.05;
+    float threshold = 0.1;
     std::string line;
     
     //learning multi classes    
@@ -114,6 +122,8 @@ void implementing_multinomial_logistic_regression_model(){
     // prefetching distance training data:
     //std::ifstream myfile ("./../inputs/data_prefetch.dat");
     
+
+    //read first line
     getline(myfile, line);
     std::stringstream ss(line);
     std::string str;
@@ -124,6 +134,11 @@ void implementing_multinomial_logistic_regression_model(){
     getline(ss, str, ' ');
     std::size_t number_of_multi_classes = std::stoi(str);
 
+    //read second line
+    //
+    //
+    //
+    
     //initializing     
     int* targets_multi_class = new int[number_of_experiments_multi_class];
     float** experimental_results_multi_class = new float*[number_of_experiments_multi_class];
@@ -146,6 +161,7 @@ void implementing_multinomial_logistic_regression_model(){
     std::cout<<"\nThe predicated weights for each features are: "<<std::endl;    
     my_nw.retrieving_weights_multi_classes_into_text_file();
     my_nw.printing_predicted_output_multi_class();
+    my_nw.misclassification_ratio();
     my_nw.finalizing_step();       
 }
 
