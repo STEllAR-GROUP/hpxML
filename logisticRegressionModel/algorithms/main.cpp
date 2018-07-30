@@ -135,9 +135,20 @@ void implementing_multinomial_logistic_regression_model(){
     std::size_t number_of_multi_classes = std::stoi(str);
 
     //read second line
-    //
-    //
-    //
+    
+    float* chunk_size_candidates=new float[number_of_multi_classes];
+    getline(myfile,line);
+    std::stringstream ss2(line);
+    for(int i(0);i<number_of_features_multi_class+number_of_multi_classes;i++){
+        if(i<number_of_features_multi_class){
+	    getline(ss2,str,' ');
+	}
+	else{
+	    getline(ss2,str,' ');
+	    chunk_size_candidates[i-number_of_features_multi_class]=std::stof(str,NULL);
+	}
+    }   
+    
     
     //initializing     
     int* targets_multi_class = new int[number_of_experiments_multi_class];
@@ -162,7 +173,19 @@ void implementing_multinomial_logistic_regression_model(){
     my_nw.retrieving_weights_multi_classes_into_text_file();
     my_nw.printing_predicted_output_multi_class();
     my_nw.misclassification_ratio();
-    my_nw.finalizing_step();       
+    my_nw.Total_times();
+    my_nw.finalizing_step();   
+
+    //releasing memory
+    delete[] chunk_size_candidates;
+    delete[] targets_multi_class;
+
+    for(std::size_t n = 0; n < number_of_experiments_multi_class; n++) {
+        delete[] experimental_results_multi_class[n];
+        delete[] execution_times_multi_class[n];
+    }
+    delete[] experimental_results_multi_class;
+    delete[] execution_times_multi_class;
 }
 
 int main(int argc, const char * argv[]) {  

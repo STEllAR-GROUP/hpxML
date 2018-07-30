@@ -111,6 +111,7 @@ public:
 	void retrieving_weights_multi_classes_into_text_file();
 	void printing_predicted_output_multi_class();
 	void misclassification_ratio();
+	void Total_times();
 	void finalizing_step();
 };
 
@@ -243,18 +244,18 @@ void multinomial_logistic_regression_model::learning_weights_multi_classes() {
 	//computing_all_output();
 	//estimating_output_multiclass();
 
-	while(threshold < least_squared_err && itr<300) {
+	while(threshold < least_squared_err && itr<50000) {
 		computing_all_gradient();				
 		new_values_for_weightsm();				
 		updating_values_of_weights_multi_class();
 		computing_all_output(experimental_results,outputsm);
 		estimating_output_multiclass(outputsm,predicted_output_multi_class);
 		least_squared_err = computing_new_least_squared_err_multi_class();
-		//std::cout<<"("<<itr<<")"<<"Least_squared_err =\t" << least_squared_err<<std::endl;		
-		//printing_weights_multi_class();		
+		std::cout<<"("<<itr<<")"<<"Least_squared_err =\t" << least_squared_err<<std::endl;		
+		printing_weights_multi_class();		
 		itr++;
 	}
-	//std::cout<<"("<<itr<<") => "<<"Least_squared_err =\t" << least_squared_err<<std::endl;
+	std::cout<<"("<<itr<<") => "<<"Least_squared_err =\t" << least_squared_err<<std::endl;
 }
 
 void multinomial_logistic_regression_model::normalizing_weights_multi_class() {	
@@ -286,7 +287,7 @@ void multinomial_logistic_regression_model::normalizing_weights_multi_class() {
 }
 
 void multinomial_logistic_regression_model::learning_multi_classes() {
-//	normalizing_weights_multi_class();
+	normalizing_weights_multi_class();
 	experimental_results_trans = experimental_results.transpose();
 	learning_weights_multi_classes();
 }
@@ -342,6 +343,29 @@ void multinomial_logistic_regression_model::misclassification_ratio(){
 	std::cout<<"\n number of error predicted is\t"<<num_err<<" out of "<<number_of_experiments<<std::endl;
 }
 
+void multinomial_logistic_regression_model::Total_times(){
+    double optimal_time=0;
+    double actual_time=0;
+    double min_t;
+    std::vector<double> times_candidates(number_of_classes,0);
+    for(std::size_t n=0;n<number_of_experiments;n++){
+        actual_time+=execution_times(n,predicted_output_multi_class[n]);
+	min_t=execution_times(n,0);
+	for(std::size_t c=0;c<number_of_classes;c++){
+	    times_candidates[c]+=execution_times(n,c);
+	    if(execution_times(n,c)<min_t){
+	        min_t=execution_times(n,c);
+	    }
+	}
+	optimal_time+=min_t;
+
+    }
+    std::cout<<"The total is :"<<actual_time<<std::endl;
+    std::cout<<"The optimal time is "<<optimal_time<<std::endl;
+    for(std::size_t c=0;c<number_of_classes;c++){
+        std::cout<<"The time for candidate "<<c<<" is "<<times_candidates[c]<<std::endl;
+    }
+}
 
 
 
