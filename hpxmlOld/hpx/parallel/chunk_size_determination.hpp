@@ -41,16 +41,16 @@ namespace hpx { namespace parallel {
         double candidates[] = {0.5,1/8,1/32,1/128,1/512};
     	
         // Chunk_Size>1/threads is an error
-	while(1/candidates[determined_class]<features[0]){
+        while(1/candidates[determined_class]<features[0]){
 	    determined_class+=1;
-	}
+        }
         
     	double chunk_size = candidates[determined_class] * features[4];
 
         //CS*size<1 is an error
-	if(candidates[determined_class]*features[4]<1){
+        if(candidates[determined_class]*features[4]<1){
 	    chunk_size=1;
-	}
+        }
 
 
     	return hpx::parallel::dynamic_chunk_size(chunk_size);
