@@ -195,7 +195,7 @@ namespace checker_detail
     }
 }
 
-
+//options
 static llvm::cl::OptionCategory MyToolCategory("my-tool options");
 
 cl::opt<bool> ConvertBool("C",cl::desc("Converts the loop"),cl::cat(MyToolCategory));
@@ -263,33 +263,6 @@ public:
                         LangOptions()
                 ).str();
 
-                /////comment/////
-		 /*
-                //for tests & creating training data:                
-                for (auto it = call->arg_begin(); it != call->arg_end(); ++it)
-                {   
-                    if (isa<DeclRefExpr>(*it))
-                    {
-                        std::cout<<"5"<<std::endl;
-			const Expr* lambda_expr = *it;
-                                        
-                        const CXXRecordDecl* lambda_record =
-                            lambda_expr->getBestDynamicClassType();
-                
-                        if (!lambda_record->isLambda())
-                            continue;            
-                                                            
-                        const CXXMethodDecl* lambda_callop =
-                            lambda_record->getLambdaCallOperator();
-                    
-                        Stmt* lambda_body = lambda_callop->getBody();                                        
-                        analyze_statement(lambda_body, stats);
-
-                        // Printing out the extracted data
-                        llvm::outs() << stats;
-                    }
-                }*/
-                ////comment ///////
                 /////////////////////////////////////////////////////////////////// 
 
                 // Determining if policy is par_if                
@@ -403,102 +376,102 @@ private:
 		
 		//loop conversion
 		if(ConvertBool){
-			// Get the source range and manager
-			SourceRange range1 = call->getSourceRange();
-			range1.setEnd(call->getArg(0)->getExprLoc());
-			SourceRange range2 = call->getSourceRange();
-			range2.setBegin(call->getArg(1)->getExprLoc().getLocWithOffset(-1));
-			range2.setEnd(range2.getEnd().getLocWithOffset(2));
+		    // Get the source range and manager
+		    SourceRange range1 = call->getSourceRange();
+		    range1.setEnd(call->getArg(0)->getExprLoc());
+		    SourceRange range2 = call->getSourceRange();
+		    range2.setBegin(call->getArg(1)->getExprLoc().getLocWithOffset(-1));
+		    range2.setEnd(range2.getEnd().getLocWithOffset(2));
+			
+		    SourceRange iter_first_range(call->getArg(1)->getExprLoc(), 
+						    call->getArg(2)->getExprLoc().getLocWithOffset(-2));
+
+		    SourceRange iter_last_range(call->getArg(2)->getExprLoc(), 
+						    call->getArg(3)->getExprLoc().getLocWithOffset(-2));
+					  
+		    std::string first_iter =
+			Lexer::getSourceText(
+			    CharSourceRange::getCharRange(iter_first_range), SM,
+			    LangOptions()
+			).str();                
 			    
-			SourceRange iter_first_range(call->getArg(1)->getExprLoc(), 
-							call->getArg(2)->getExprLoc().getLocWithOffset(-2));
+		    std::string last_iter =
+			Lexer::getSourceText(
+			    CharSourceRange::getCharRange(iter_last_range), SM,
+			    LangOptions()
+			).str();                    
 
-			SourceRange iter_last_range(call->getArg(2)->getExprLoc(), 
-							call->getArg(3)->getExprLoc().getLocWithOffset(-2));
-					      
-			std::string first_iter =
-			    Lexer::getSourceText(
-				CharSourceRange::getCharRange(iter_first_range), SM,
-				LangOptions()
-			    ).str();                
-				
-			std::string last_iter =
-			    Lexer::getSourceText(
-				CharSourceRange::getCharRange(iter_last_range), SM,
-				LangOptions()
-			    ).str();                    
+		    // Use LLVM's lexer to get source text.
+		    llvm::StringRef ref1 =
+			Lexer::getSourceText(
+			    CharSourceRange::getCharRange(range1), SM,
+			    LangOptions()
+			);
+		    llvm::StringRef ref2 =
+			Lexer::getSourceText(
+			    CharSourceRange::getCharRange(range2), SM,
+			    LangOptions()
+			);
 
-			// Use LLVM's lexer to get source text.
-			llvm::StringRef ref1 =
-			    Lexer::getSourceText(
-				CharSourceRange::getCharRange(range1), SM,
-				LangOptions()
-			    );
-			llvm::StringRef ref2 =
-			    Lexer::getSourceText(
-				CharSourceRange::getCharRange(range2), SM,
-				LangOptions()
-			    );
+		    // Passing static info extracted at compile time into runtime
+		    std::string data = "{hpx::get_os_thread_count(), " + 
+					std::to_string(stats.num_ops) + 
+					", " + std::to_string(stats.num_float_ops) + 
+					", " + std::to_string(stats.num_comparison_ops) + 
+					", std::size_t(std::distance(" + first_iter + ", " + last_iter + "))" +
+					", " + std::to_string(stats.deepest_loop_level) + "}";
 
-			// Passing static info extracted at compile time into runtime
-			std::string data = "{hpx::get_os_thread_count(), " + 
-					    std::to_string(stats.num_ops) + 
-					    ", " + std::to_string(stats.num_float_ops) + 
-					    ", " + std::to_string(stats.num_comparison_ops) + 
-					    ", std::size_t(std::distance(" + first_iter + ", " + last_iter + "))" +
-					    ", " + std::to_string(stats.deepest_loop_level) + "}";
+		    std::string new_call;
 
-			std::string new_call;
+		    // Examining code if current policy has any executor to be reattached
+		    SourceRange policy_range(call->getArg(0)->getExprLoc(), 
+					    call->getArg(1)->getExprLoc().getLocWithOffset(-2));
 
-			// Examining code if current policy has any executor to be reattached
-			SourceRange policy_range(call->getArg(0)->getExprLoc(), 
-						call->getArg(1)->getExprLoc().getLocWithOffset(-2));
+		    std::string policy_range_string =
+			Lexer::getSourceText(
+			    CharSourceRange::getCharRange(policy_range), SM,
+			    LangOptions()
+			).str();
 
-			std::string policy_range_string =
-			    Lexer::getSourceText(
-				CharSourceRange::getCharRange(policy_range), SM,
-				LangOptions()
-			    ).str();
+		    // extracting policy
+		    std::size_t pos_policy = policy_range_string.find(".");
+		    std::string policy = policy_range_string.substr(0, pos_policy);
 
-			// extracting policy
-			std::size_t pos_policy = policy_range_string.find(".");
-			std::string policy = policy_range_string.substr(0, pos_policy);
+		    // extracting executor
+		    std::size_t pos_exec = policy_range_string.find(".on");
+		    std::string exec;
 
-			// extracting executor
-			std::size_t pos_exec = policy_range_string.find(".on");
-			std::string exec;
+		    if (pos_exec != std::string::npos) 
+		    {
+			std::size_t next_pos = policy_range_string.find(")", (pos_exec + 1));
+			exec = policy_range_string.substr(pos_exec, (next_pos - pos_exec + 1));
+		    }
+		    else 
+		    {
+			exec = "";
+		    }
 
-			if (pos_exec != std::string::npos) 
-			{
-			    std::size_t next_pos = policy_range_string.find(")", (pos_exec + 1));
-			    exec = policy_range_string.substr(pos_exec, (next_pos - pos_exec + 1));
-			}
-			else 
-			{
-			    exec = "";
-			}
+		    if (exec == "") 
+		    {                
+		
+			new_call = "\n//DETERMING CHUNK SIZES BASED ON STATIC AND DYNAMIC FEATURES:"
+					    "\n\t" + ref1.str() +
+					    policy + ".with(hpx::parallel::chunk_size_determination(" + 
+					    data + ")), " + 
+					    ref2.str();
+		    }
+		    else 
+		    {
 
-			if (exec == "") 
-			{                
-		    
-			    new_call = "\n//DETERMING CHUNK SIZES BASED ON STATIC AND DYNAMIC FEATURES:"
-						"\n\t" + ref1.str() +
-						policy + ".with(hpx::parallel::chunk_size_determination(" + 
-						data + ")), " + 
-						ref2.str();
-			}
-			else 
-			{
+			new_call = "\n//DETERMING CHUNK SIZES BASED ON STATIC AND DYNAMIC FEATURES:"
+					    "\n\t" + ref1.str() +
+					    policy + ".with(hpx::parallel::chunk_size_determination(" + 
+					    data + "))" + exec + 
+					    ", " + ref2.str();
+		    }
 
-			    new_call = "\n//DETERMING CHUNK SIZES BASED ON STATIC AND DYNAMIC FEATURES:"
-						"\n\t" + ref1.str() +
-						policy + ".with(hpx::parallel::chunk_size_determination(" + 
-						data + "))" + exec + 
-						", " + ref2.str();
-			}
-
-			rewriter.ReplaceText(SourceRange(range1.getBegin(), range2.getEnd()), new_call);
-			rewriter.overwriteChangedFiles();
+		    rewriter.ReplaceText(SourceRange(range1.getBegin(), range2.getEnd()), new_call);
+		    rewriter.overwriteChangedFiles();
 		}
             }            
         }
@@ -531,122 +504,122 @@ private:
                 }
 		
 		if(ConvertBool){
-			//Get the source range and manager.
-			SourceRange range1 = call->getSourceRange();
-			range1.setEnd(call->getArg(0)->getExprLoc());
-			SourceRange range2 = call->getSourceRange();
-			range2.setBegin(call->getArg(1)->getExprLoc().getLocWithOffset(-1));
-			range2.setEnd(range2.getEnd().getLocWithOffset(2));
-			    
-			SourceRange iter_first_range(call->getArg(1)->getExprLoc(), 
-							call->getArg(2)->getExprLoc().getLocWithOffset(-2));
-
-			SourceRange iter_last_range(call->getArg(2)->getExprLoc(), 
-							call->getArg(3)->getExprLoc().getLocWithOffset(-2));
-					      
-			std::string first_iter =
-			    Lexer::getSourceText(
-				CharSourceRange::getCharRange(iter_first_range), SM,
-				LangOptions()
-			    ).str();                
-				
-			std::string last_iter =
-			    Lexer::getSourceText(
-				CharSourceRange::getCharRange(iter_last_range), SM,
-				LangOptions()
-			    ).str();                    
-
-			//Use LLVM's lexer to get source text.
-			llvm::StringRef ref1 =
-			    Lexer::getSourceText(
-				CharSourceRange::getCharRange(range1), SM,
-				LangOptions()
-			    );
-			llvm::StringRef ref2 =
-			    Lexer::getSourceText(
-				CharSourceRange::getCharRange(range2), SM,
-				LangOptions()
-			    );
-
-			// Passing static info extracted at compile time into runtime
-			std::string data = "{hpx::get_os_thread_count(), " + 
-					std::to_string(stats.num_ops) + 
-					", " + std::to_string(stats.num_float_ops) + 
-					", " + std::to_string(stats.num_comparison_ops) + 
-					", std::size_t(std::distance(" + first_iter + ", " + last_iter + "))" +
-					", " + std::to_string(stats.deepest_loop_level) + "}";
-
-			std::string new_call;
-
-			// Examining code if current policy has any executor or parameters to be reattached
-			SourceRange policy_range(call->getArg(0)->getExprLoc(), 
-						    call->getArg(1)->getExprLoc().getLocWithOffset(-2));
-
-			std::string policy_range_string =
-			    Lexer::getSourceText(
-				CharSourceRange::getCharRange(policy_range), SM,
-				LangOptions()
-			    ).str();
-
-			// Extracting policy
-			std::size_t pos_policy = policy_range_string.find(".");
-			std::string policy = policy_range_string.substr(0, pos_policy);
-
-			// Extracting parameters
-			std::string policy_param;
-			std::size_t pos_param_begin = policy_range_string.find(".with(");
-			if(pos_param_begin != std::string::npos) {
-			    std::size_t pos_param_end = policy_range_string.find(")", pos_param_begin + 1);
-			    policy_param = policy_range_string.substr(pos_param_begin, (pos_param_end - pos_param_begin + 1));
-			}
-
-			// Extracting executors
-			std::string policy_exec;
-			std::size_t pos_exec_begin = policy_range_string.find(".on(");
-			if(pos_exec_begin != std::string::npos) {
-			    std::size_t pos_exec_end = policy_range_string.find(")", pos_exec_begin + 1);
-			    policy_exec = policy_range_string.substr((pos_exec_begin + 4), (pos_exec_end - pos_exec_begin - 4));
-			}
+		    //Get the source range and manager.
+		    SourceRange range1 = call->getSourceRange();
+		    range1.setEnd(call->getArg(0)->getExprLoc());
+		    SourceRange range2 = call->getSourceRange();
+		    range2.setBegin(call->getArg(1)->getExprLoc().getLocWithOffset(-1));
+		    range2.setEnd(range2.getEnd().getLocWithOffset(2));
 			
+		    SourceRange iter_first_range(call->getArg(1)->getExprLoc(), 
+						    call->getArg(2)->getExprLoc().getLocWithOffset(-2));
 
-			// Reattaching parameters and executors to the current policy
-			std::string seq_param_exec = "";
-			std::string par_param_exec = "";
-
-			if(pos_param_begin != std::string::npos) {
-			    seq_param_exec += policy_param;
-			    par_param_exec += policy_param;
-			}
-
-			if(pos_exec_begin != std::string::npos) {
-			    seq_param_exec += ".on(hpx::parallel::seq_wrapper(" +
-						policy_exec + "))";
-			    par_param_exec += ".on(" + policy_exec + ")";
-			}
-
-			if (seq_param_exec == "") {
+		    SourceRange iter_last_range(call->getArg(2)->getExprLoc(), 
+						    call->getArg(3)->getExprLoc().getLocWithOffset(-2));
+					  
+		    std::string first_iter =
+			Lexer::getSourceText(
+			    CharSourceRange::getCharRange(iter_first_range), SM,
+			    LangOptions()
+			).str();                
 			    
-			    new_call = //adding exec and param to be attached
-				"\n//DETERMING EXECUTION POLICY BASED ON STATIC AND DYNAMIC FEATURES:"
-				"\n \tif (hpx::parallel::seq_or_par(" + 
-				data + ")) \n \t \t" + ref1.str() +
-				"hpx::parallel::seq," + ref2.str() +
-				"\n \telse \n \t \t"  + ref1.str() +
-				"hpx::parallel::par," + ref2.str();
-			}
-			else {
+		    std::string last_iter =
+			Lexer::getSourceText(
+			    CharSourceRange::getCharRange(iter_last_range), SM,
+			    LangOptions()
+			).str();                    
 
-			    new_call = //adding exec and param to be attached
-				"\n//DETERMING EXECUTION POLICY BASED ON STATIC AND DYNAMIC FEATURES:"
-				"\n \tif (hpx::parallel::seq_or_par(" + 
-				data + ")) \n \t \t" + ref1.str() +
-				"hpx::parallel::seq" + seq_param_exec + "," + ref2.str() +
-				"\n \telse \n \t \t"  + ref1.str() +
-				"hpx::parallel::par" + par_param_exec + "," + ref2.str();
-			}
-			    
-			rewriter.ReplaceText(SourceRange(range1.getBegin(), range2.getEnd()), new_call);
-			rewriter.overwriteChangedFiles();
+		    //Use LLVM's lexer to get source text.
+		    llvm::StringRef ref1 =
+			Lexer::getSourceText(
+			    CharSourceRange::getCharRange(range1), SM,
+			    LangOptions()
+			);
+		    llvm::StringRef ref2 =
+			Lexer::getSourceText(
+			    CharSourceRange::getCharRange(range2), SM,
+			    LangOptions()
+			);
+
+		    // Passing static info extracted at compile time into runtime
+		    std::string data = "{hpx::get_os_thread_count(), " + 
+				    std::to_string(stats.num_ops) + 
+				    ", " + std::to_string(stats.num_float_ops) + 
+				    ", " + std::to_string(stats.num_comparison_ops) + 
+				    ", std::size_t(std::distance(" + first_iter + ", " + last_iter + "))" +
+				    ", " + std::to_string(stats.deepest_loop_level) + "}";
+
+		    std::string new_call;
+
+		    // Examining code if current policy has any executor or parameters to be reattached
+		    SourceRange policy_range(call->getArg(0)->getExprLoc(), 
+						call->getArg(1)->getExprLoc().getLocWithOffset(-2));
+
+		    std::string policy_range_string =
+			Lexer::getSourceText(
+			    CharSourceRange::getCharRange(policy_range), SM,
+			    LangOptions()
+			).str();
+
+		    // Extracting policy
+		    std::size_t pos_policy = policy_range_string.find(".");
+		    std::string policy = policy_range_string.substr(0, pos_policy);
+
+		    // Extracting parameters
+		    std::string policy_param;
+		    std::size_t pos_param_begin = policy_range_string.find(".with(");
+		    if(pos_param_begin != std::string::npos) {
+			std::size_t pos_param_end = policy_range_string.find(")", pos_param_begin + 1);
+			policy_param = policy_range_string.substr(pos_param_begin, (pos_param_end - pos_param_begin + 1));
+		    }
+
+		    // Extracting executors
+		    std::string policy_exec;
+		    std::size_t pos_exec_begin = policy_range_string.find(".on(");
+		    if(pos_exec_begin != std::string::npos) {
+			std::size_t pos_exec_end = policy_range_string.find(")", pos_exec_begin + 1);
+			policy_exec = policy_range_string.substr((pos_exec_begin + 4), (pos_exec_end - pos_exec_begin - 4));
+		    }
+		    
+
+		    // Reattaching parameters and executors to the current policy
+		    std::string seq_param_exec = "";
+		    std::string par_param_exec = "";
+
+		    if(pos_param_begin != std::string::npos) {
+			seq_param_exec += policy_param;
+			par_param_exec += policy_param;
+		    }
+
+		    if(pos_exec_begin != std::string::npos) {
+			seq_param_exec += ".on(hpx::parallel::seq_wrapper(" +
+					    policy_exec + "))";
+			par_param_exec += ".on(" + policy_exec + ")";
+		    }
+
+		    if (seq_param_exec == "") {
+			
+			new_call = //adding exec and param to be attached
+			    "\n//DETERMING EXECUTION POLICY BASED ON STATIC AND DYNAMIC FEATURES:"
+			    "\n \tif (hpx::parallel::seq_or_par(" + 
+			    data + ")) \n \t \t" + ref1.str() +
+			    "hpx::parallel::seq," + ref2.str() +
+			    "\n \telse \n \t \t"  + ref1.str() +
+			    "hpx::parallel::par," + ref2.str();
+		    }
+		    else {
+
+			new_call = //adding exec and param to be attached
+			    "\n//DETERMING EXECUTION POLICY BASED ON STATIC AND DYNAMIC FEATURES:"
+			    "\n \tif (hpx::parallel::seq_or_par(" + 
+			    data + ")) \n \t \t" + ref1.str() +
+			    "hpx::parallel::seq" + seq_param_exec + "," + ref2.str() +
+			    "\n \telse \n \t \t"  + ref1.str() +
+			    "hpx::parallel::par" + par_param_exec + "," + ref2.str();
+		    }
+			
+		    rewriter.ReplaceText(SourceRange(range1.getBegin(), range2.getEnd()), new_call);
+		    rewriter.overwriteChangedFiles();
 		}
             }            
         }
@@ -679,81 +652,81 @@ private:
                 }
 
 		if(ConvertBool){
-			// Get the source range and manager.
-			SourceRange range1 = call->getSourceRange();
-			range1.setEnd(call->getArg(0)->getExprLoc());
-			SourceRange range2 = call->getSourceRange();
-			range2.setBegin(call->getArg(1)->getExprLoc().getLocWithOffset(-1));
-			range2.setEnd(range2.getEnd().getLocWithOffset(2));
+		    // Get the source range and manager.
+		    SourceRange range1 = call->getSourceRange();
+		    range1.setEnd(call->getArg(0)->getExprLoc());
+		    SourceRange range2 = call->getSourceRange();
+		    range2.setBegin(call->getArg(1)->getExprLoc().getLocWithOffset(-1));
+		    range2.setEnd(range2.getEnd().getLocWithOffset(2));
+			
+		    SourceRange iter_first_range(call->getArg(1)->getExprLoc(), 
+						    call->getArg(2)->getExprLoc().getLocWithOffset(-2));
+
+		    SourceRange iter_last_range(call->getArg(2)->getExprLoc(), 
+						    call->getArg(3)->getExprLoc().getLocWithOffset(-2));
+					  
+		    std::string first_iter =
+			Lexer::getSourceText(
+			    CharSourceRange::getCharRange(iter_first_range), SM,
+			    LangOptions()
+			).str();                
 			    
-			SourceRange iter_first_range(call->getArg(1)->getExprLoc(), 
-							call->getArg(2)->getExprLoc().getLocWithOffset(-2));
+		    std::string last_iter =
+			Lexer::getSourceText(
+			    CharSourceRange::getCharRange(iter_last_range), SM,
+			    LangOptions()
+			).str();                    
 
-			SourceRange iter_last_range(call->getArg(2)->getExprLoc(), 
-							call->getArg(3)->getExprLoc().getLocWithOffset(-2));
-					      
-			std::string first_iter =
-			    Lexer::getSourceText(
-				CharSourceRange::getCharRange(iter_first_range), SM,
-				LangOptions()
-			    ).str();                
-				
-			std::string last_iter =
-			    Lexer::getSourceText(
-				CharSourceRange::getCharRange(iter_last_range), SM,
-				LangOptions()
-			    ).str();                    
+		    // Use LLVM's lexer to get source text.
+		    llvm::StringRef ref1 =
+			Lexer::getSourceText(
+			    CharSourceRange::getCharRange(range1), SM,
+			    LangOptions()
+			);
+		    llvm::StringRef ref2 =
+			Lexer::getSourceText(
+			    CharSourceRange::getCharRange(range2), SM,
+			    LangOptions()
+			);
 
-			// Use LLVM's lexer to get source text.
-			llvm::StringRef ref1 =
-			    Lexer::getSourceText(
-				CharSourceRange::getCharRange(range1), SM,
-				LangOptions()
-			    );
-			llvm::StringRef ref2 =
-			    Lexer::getSourceText(
-				CharSourceRange::getCharRange(range2), SM,
-				LangOptions()
-			    );
+		    // Passing static info extracted at compile time into runtime
+		    std::string data = "{hpx::get_os_thread_count(), " + 
+					std::to_string(stats.num_ops) + 
+					", " + std::to_string(stats.num_float_ops) + 
+					", " + std::to_string(stats.num_comparison_ops) + 
+					", std::size_t(std::distance(" + first_iter + ", " + last_iter + "))" +
+					", " + std::to_string(stats.deepest_loop_level) + "}";
 
-			// Passing static info extracted at compile time into runtime
-			std::string data = "{hpx::get_os_thread_count(), " + 
-					    std::to_string(stats.num_ops) + 
-					    ", " + std::to_string(stats.num_float_ops) + 
-					    ", " + std::to_string(stats.num_comparison_ops) + 
-					    ", std::size_t(std::distance(" + first_iter + ", " + last_iter + "))" +
-					    ", " + std::to_string(stats.deepest_loop_level) + "}";
+		    std::string new_call;
 
-			std::string new_call;
+		    // Examining code if current policy has any executor or parameters to be reattached
+		    SourceRange policy_range(call->getArg(0)->getExprLoc(), 
+						call->getArg(1)->getExprLoc().getLocWithOffset(-2));
 
-			// Examining code if current policy has any executor or parameters to be reattached
-			SourceRange policy_range(call->getArg(0)->getExprLoc(), 
-						    call->getArg(1)->getExprLoc().getLocWithOffset(-2));
+		    std::string policy_range_string =
+			Lexer::getSourceText(
+			    CharSourceRange::getCharRange(policy_range), SM,
+			    LangOptions()
+			).str();
 
-			std::string policy_range_string =
-			    Lexer::getSourceText(
-				CharSourceRange::getCharRange(policy_range), SM,
-				LangOptions()
-			    ).str();
+		    // extracting prefetching_distance_factor_ and tuple from policy
+		    std::size_t pos_policy_prefix = policy_range_string.find(",");
+		    std::string policy_prefix = policy_range_string.substr(0, pos_policy_prefix);
 
-			// extracting prefetching_distance_factor_ and tuple from policy
-			std::size_t pos_policy_prefix = policy_range_string.find(",");
-			std::string policy_prefix = policy_range_string.substr(0, pos_policy_prefix);
-
-			std::size_t pos_tuple = policy_range_string.find(",", pos_policy_prefix + 1);
-			std::string tuple = policy_range_string.substr(pos_tuple);
-			 
-			new_call = "\n//DETERMING PREFETCHER DISTANCE BASED ON STATIC AND DYNAMIC FEATURES:"
-					    "\n\t" + ref1.str() + 
-					    policy_prefix + 
-					    ", hpx::parallel::prefetching_distance_determination(" +
-					    data + ")" + 
-					    tuple + 
-					    ref2.str();
+		    std::size_t pos_tuple = policy_range_string.find(",", pos_policy_prefix + 1);
+		    std::string tuple = policy_range_string.substr(pos_tuple);
+		     
+		    new_call = "\n//DETERMING PREFETCHER DISTANCE BASED ON STATIC AND DYNAMIC FEATURES:"
+					"\n\t" + ref1.str() + 
+					policy_prefix + 
+					", hpx::parallel::prefetching_distance_determination(" +
+					data + ")" + 
+					tuple + 
+					ref2.str();
 
 
-			rewriter.ReplaceText(SourceRange(range1.getBegin(), range2.getEnd()), new_call);
-			rewriter.overwriteChangedFiles();
+		    rewriter.ReplaceText(SourceRange(range1.getBegin(), range2.getEnd()), new_call);
+		    rewriter.overwriteChangedFiles();
 		}
             }            
         }
