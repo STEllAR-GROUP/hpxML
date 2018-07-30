@@ -32,52 +32,11 @@ int factorial(int n){
     }
 }
 
-void Max_Sum_Row(int iterations,std::vector<double> chunk_candidates) {
-     
-    int vector_size=iterations;
-    int matrix_size=iterations*iterations;
-
-    auto time_range = boost::irange(0, vector_size);
-    std::vector<double> A;
-    std::vector<double> B;
-    std::vector<double> C(vector_size);
-    vector_generator(A,matrix_size,10,100);
-    vector_generator(B,matrix_size,10,100);   
-
-    auto f = [&](int i) {
-	double result1=0.0;
-        double result2=0.0;
-        for(int k(0);k<vector_size;k++){
-	    result1+=A[vector_size*i+k];
-	    result2+=B[vector_size*i+k];
-	}
-	C[i]=std::max(result1,result2);
-
-    };
-   std::cout<<vector_size<<" "<<hpx::get_os_thread_count()<<" ";
-    double t_chunk=0.0;
-    double N_mean=10;
-    double mean_time;
-    for (int i(0);i<chunk_candidates.size();i++){
-	mean_time=0;
-	for(int j(0);j<N_mean;j++){
-	t_chunk=mysecond();
-        hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(vector_size*chunk_candidates[i])), time_range.begin(), time_range.end(), f);
-        mean_time+= mysecond() - t_chunk;
-	}
-	std::cout<<mean_time/N_mean<<" ";
-    }
-    std::cout<<""<<std::endl;
-      
-
-}
     
 void Matrix_Vector_Mult(int iterations,std::vector<double> chunk_candidates) {
    
     int vector_size=iterations;
     int matrix_size=iterations*iterations;
-
-    auto time_range = boost::irange(0, iterations);
     std::vector<double> A;
     std::vector<double> B;
     std::vector<double> C(matrix_size);
@@ -104,22 +63,34 @@ void Matrix_Vector_Mult(int iterations,std::vector<double> chunk_candidates) {
     };
    
    std::cout<<vector_size<<" "<<hpx::get_os_thread_count()<<" ";
+
+    auto time_range=boost::irange(0,vector_size);
+    int Nrep=10;
     double t_chunk=0.0;
-    double N_mean=10;
     double mean_time;
+    double elapsed_time;
     for (int i(0);i<chunk_candidates.size();i++){
 	mean_time=0;
-	for(int j(0);j<N_mean;j++){
-	t_chunk=mysecond();
-        hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(vector_size*chunk_candidates[i])), time_range.begin(), time_range.end(), f);
-        mean_time+= mysecond() - t_chunk;
+	for(int j(0);j<Nrep+1;j++){
+	    if(chunk_candidates[i]*vector_size>1){
+	    t_chunk=mysecond();
+            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(vector_size*chunk_candidates[i])), time_range.begin(), time_range.end(), f);
+            elapsed_time= mysecond() - t_chunk;
+	    }
+	    else{
+	    t_chunk=mysecond();
+            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(1)), time_range.begin(), time_range.end(), f);
+            elapsed_time= mysecond() - t_chunk;
+	    }
+	    if(j!=0){
+	        mean_time+=elapsed_time;
+ 	    }
 	}
-	std::cout<<mean_time/N_mean<<" ";
+	std::cout<<mean_time/Nrep<<" ";
     }
     std::cout<<""<<std::endl;
-    
-    
 }
+    
 
 
 
@@ -127,7 +98,6 @@ void Diadic_Prod(int iterations,std::vector<double> chunk_candidates) {
    
     int vector_size=iterations;
     int matrix_size=iterations*iterations;
-    auto time_range = boost::irange(0, iterations);
     std::vector<double> A;
     std::vector<double> B;
     std::vector<double> C(matrix_size);
@@ -140,25 +110,40 @@ void Diadic_Prod(int iterations,std::vector<double> chunk_candidates) {
     };
    
    std::cout<<vector_size<<" "<<hpx::get_os_thread_count()<<" ";
+
+
+    auto time_range=boost::irange(0,vector_size);
     double t_chunk=0.0;
-    double N_mean=10;
+    int Nrep=10;
     double mean_time;
+    double elapsed_time;
     for (int i(0);i<chunk_candidates.size();i++){
 	mean_time=0;
-	for(int j(0);j<N_mean;j++){
-	t_chunk=mysecond();
-        hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(vector_size*chunk_candidates[i])), time_range.begin(), time_range.end(), f);
-        mean_time+= mysecond() - t_chunk;
+	for(int j(0);j<Nrep+1;j++){
+	    if(chunk_candidates[i]*vector_size>1){
+	    t_chunk=mysecond();
+            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(vector_size*chunk_candidates[i])), time_range.begin(), time_range.end(), f);
+            elapsed_time= mysecond() - t_chunk;
+	    }
+	    else{
+	    t_chunk=mysecond();
+            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(1)), time_range.begin(), time_range.end(), f);
+            elapsed_time= mysecond() - t_chunk;
+	    }
+	    if(j!=0){
+	        mean_time+=elapsed_time;
+ 	    }
 	}
-	std::cout<<mean_time/N_mean<<" ";
+	std::cout<<mean_time/Nrep<<" ";
     }
     std::cout<<""<<std::endl;
-    
+   
 }
+
+
  void Cosine(int iterations,std::vector<double> chunk_candidates) {
    
     int vector_size=iterations;
-    auto time_range = boost::irange(0, iterations);
     std::vector<double> A,B(vector_size,0);
     vector_generator(A,vector_size,10,1000);
     auto f=[&](int i){
@@ -168,19 +153,32 @@ void Diadic_Prod(int iterations,std::vector<double> chunk_candidates) {
     };
    
    std::cout<<vector_size<<" "<<hpx::get_os_thread_count()<<" ";
+
+
+    auto time_range=boost::irange(0,vector_size);
     double t_chunk=0.0;
-    double N_mean=10;
+    int Nrep=10;
     double mean_time;
+    double elapsed_time;
     for (int i(0);i<chunk_candidates.size();i++){
 	mean_time=0;
-	for(int j(0);j<N_mean;j++){
-	t_chunk=mysecond();
-        hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(vector_size*chunk_candidates[i])), time_range.begin(), time_range.end(), f);
-        mean_time+= mysecond() - t_chunk;
+	for(int j(0);j<Nrep+1;j++){
+	    if(chunk_candidates[i]*vector_size>1){
+	    t_chunk=mysecond();
+            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(vector_size*chunk_candidates[i])), time_range.begin(), time_range.end(), f);
+            elapsed_time= mysecond() - t_chunk;
+	    }
+	    else{
+	    t_chunk=mysecond();
+            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(1)), time_range.begin(), time_range.end(), f);
+            elapsed_time= mysecond() - t_chunk;
+	    }
+	    if(j!=0){
+	        mean_time+=elapsed_time;
+ 	    }
 	}
-	std::cout<<mean_time/N_mean<<" ";
+	std::cout<<mean_time/Nrep<<" ";
     }
     std::cout<<""<<std::endl;
-    
-}
    
+}

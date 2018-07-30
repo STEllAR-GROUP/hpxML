@@ -15,7 +15,7 @@
 #include <iterator>
 #include <hpx/parallel/executors/dynamic_chunk_size.hpp>
  
-#define lambda_inner_iteration 0                                                                                 
+#define lambda_inner_iteration 0                                                                                                                                                                       
 
 namespace hpx { namespace parallel {struct adaptive_chunk_size {}; } }
 
@@ -43,34 +43,6 @@ int factorial(int n){
         return result;
     }
 }
-void Max_Sum_Row(int iterations,std::vector<double> chunk_candidates) {
-     
-    int vector_size=iterations;
-    int matrix_size=iterations*iterations;
-
-    auto time_range = boost::irange(0, vector_size);
-    std::vector<double> A;
-    std::vector<double> B;
-    std::vector<double> C(vector_size);
-    vector_generator(A,matrix_size,10,100);
-    vector_generator(B,matrix_size,10,100);   
-
-    auto f = [&](int i) {
-	double result1=0.0;
-        double result2=0.0;
-        for(int k(0);k<lambda_inner_iteration;k++){
-	    result1+=A[vector_size*i+k];
-	    result2+=B[vector_size*i+k];
-	}
-	C[i]=std::max(result1,result2);
-
-    };
-   //feature extraction Max_Sum_Row
-//  hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::adaptive_chunk_size()), time_range.begin(), time_range.end(), f);
-    
-}
-    
-
 
 void Matrix_Vector_Mult(int iterations,std::vector<double> chunk_candidates) {
    
@@ -107,7 +79,6 @@ void Matrix_Vector_Mult(int iterations,std::vector<double> chunk_candidates) {
 }
 
 
-
 void Diadic_Prod(int iterations,std::vector<double> chunk_candidates) {
    
     int vector_size=iterations;
@@ -127,7 +98,9 @@ void Diadic_Prod(int iterations,std::vector<double> chunk_candidates) {
 //  hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::adaptive_chunk_size()), time_range.begin(), time_range.end(), f);
     
 }
- void Cosine(int iterations,std::vector<double> chunk_candidates) {
+
+///////////////
+void Cosine(int iterations,std::vector<double> chunk_candidates) {
    
     int vector_size=iterations;
     auto time_range = boost::irange(0, iterations);

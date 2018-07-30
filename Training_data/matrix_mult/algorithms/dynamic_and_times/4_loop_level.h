@@ -25,31 +25,40 @@ void Tensor_generator(int iterations,std::vector<double> chunk_candidates) {
     auto time_range = boost::irange(0, iterations);
     
     std::vector<std::vector<double>> A(iterations*iterations,std::vector<double>(iterations*iterations,0));
-    srand(1);
     auto f = [&](int i){
         for(int j(0);j<vector_size;j++){
 	    for(int k(0);k<vector_size;k++){
 	        for(int l(0);l<vector_size;l++){
-		    A[i*vector_size+j][k*vector_size+l]=rand()%1000+10;		            
+		    A[i*vector_size+j][k*vector_size+l]=i+j+k+l;		            
 		}
 	    }
 	}
     };
     
    std::cout<<vector_size<<" "<<hpx::get_os_thread_count()<<" ";
+
     double t_chunk=0.0;
-    double N_mean=10;
+    double Nrep=10;
     double mean_time;
+    double elapsed_time;
     for (int i(0);i<chunk_candidates.size();i++){
 	mean_time=0;
-	for(int j(0);j<N_mean;j++){
-	t_chunk=mysecond();
-        hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(vector_size*chunk_candidates[i])), time_range.begin(), time_range.end(), f);
-        mean_time+= mysecond() - t_chunk;
+	for(int j(0);j<Nrep+1;j++){
+	    if(chunk_candidates[i]*vector_size>1){
+	    t_chunk=mysecond();
+            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(vector_size*chunk_candidates[i])), time_range.begin(), time_range.end(), f);
+            elapsed_time= mysecond() - t_chunk;
+	    }
+	    else{
+	    t_chunk=mysecond();
+            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(1)), time_range.begin(), time_range.end(), f);
+            elapsed_time= mysecond() - t_chunk;
+	    }
+	    if(j!=0){
+	        mean_time+=elapsed_time;
+ 	    }
 	}
-	std::cout<<mean_time/N_mean<<" ";
+	std::cout<<mean_time/Nrep<<" ";
     }
     std::cout<<""<<std::endl;
-
 }
-

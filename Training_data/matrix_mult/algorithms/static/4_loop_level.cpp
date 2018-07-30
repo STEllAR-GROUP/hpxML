@@ -19,7 +19,7 @@
 #include <iterator>
 #include <hpx/parallel/executors/dynamic_chunk_size.hpp>
 
-#define lambda_inner_iteration 0                                 
+#define lambda_inner_iteration 0                                                                 
 
 namespace hpx { namespace parallel {struct adaptive_chunk_size {}; } }
 
@@ -48,7 +48,7 @@ void Tensor_generator(int iterations,std::vector<double> chunk_candidates,std::o
         for(int j(0);j<lambda_inner_iteration;j++){
 	    for(int k(0);k<lambda_inner_iteration;k++){
 	        for(int l(0);l<lambda_inner_iteration;l++){
-		    A[i*vector_size+j][k*vector_size+l]=rand()%1000+10;		            
+		    A[i*vector_size+j][k*vector_size+l]=i+j+k+l;		            
 		    }
 	    }
 	}

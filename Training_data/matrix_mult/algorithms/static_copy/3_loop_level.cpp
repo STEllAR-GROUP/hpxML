@@ -18,7 +18,7 @@
 #include <iterator>
 #include <hpx/parallel/executors/dynamic_chunk_size.hpp>
 
-#define lambda_inner_iteration 0                                                                   
+#define lambda_inner_iteration 0                                                                                                                                       
 
 namespace hpx { namespace parallel {struct adaptive_chunk_size {}; } }
 
@@ -34,44 +34,6 @@ void vector_generator(std::vector<T> &A,int size,double min,double max){
     }
 }
 
-
-void Triples(int iterations,std::vector<double> chunk_candidates) {
- 
-    int vector_size=iterations;
-    auto time_range = boost::irange(0, vector_size);
-    std::vector<int> A;
-    std::vector<int> B;
-    std::vector<int> C;
-    srand(1);
-    for(int i(0);i<vector_size;i++){
-        A.push_back(rand()%10+5);
-        B.push_back(rand()%10+5);
-        C.push_back(rand()%10+5);
-
-    }
-
-    std::vector<std::vector<int>> D;
-    std::vector<int> add;
-    auto f=[&](int i){
-        for(int j(0);j<lambda_inner_iteration;j++){
-	     for(int k(0);k<lambda_inner_iteration;k++){
-	         if(A[i]==B[j] && B[j]==C[k]){
-	             add.push_back(i);
-		     add.push_back(j);
-		     add.push_back(k);
-		     D.push_back(add);
-		     add.clear();
-                 }
-	     }
-        }
-    };	
-
-   //feature extraction Triples
-//  hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::adaptive_chunk_size()), time_range.begin(), time_range.end(), f);
-  
-
-
-}
 
 void Matrix_Matrix_Mult(int iterations,std::vector<double> chunk_candidates) {
          
@@ -161,7 +123,27 @@ void Matrix_Matrix_Mult(int iterations,std::vector<double> chunk_candidates) {
 
 }
 
+void Max(int iterations,std::vector<double> chunk_candidates) {
+         
+    int vector_size=iterations;
+    auto time_range = boost::irange(0, vector_size);
+    std::vector<double> A;
+    vector_generator(A,vector_size*100*100,10,1000);   
+    std::vector<double> max(vector_size,0);
+    auto f = [&](int i) {
+	for(int j(0);j<100;j++){
+	    for(int k(0);k<100;k++){
+	        if(A[i+vector_size*j+vector_size*100*k]>max[i]){
+		    max[i]=max[i];
+		}
+	    }
+	}	    
+    };
+    //feature extraction Max
+//  hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::adaptive_chunk_size()), time_range.begin(), time_range.end(), f);
 
+
+}
 int hpx_main(int argc, char* argv[])
 {
 
@@ -172,4 +154,3 @@ int main(int argc, char* argv[])
 {
     return hpx::init(argc, argv);
 }
-

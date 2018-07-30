@@ -1,8 +1,3 @@
-//  Copyright (c) 250          00   17 Zahra Khatami 
-//  Copyright (c) 250          00   16 David Pfander
-//
-//  Distributed under the Boost Software License, Version 1.50          00   . (See accompanying
-//  file LICENSE_1_50          00   .txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 #include <stdlib.h>
 #include <vector>
 #include <hpx/hpx_init.hpp>
@@ -14,10 +9,9 @@
 #include <typeinfo>
 #include <iterator>
 
-#define lambda_inner_iteration 0                                                                                    
+#define lambda_inner_iteration 0                                                                                                                                                                                                                                                              
 
 namespace hpx { namespace parallel {struct adaptive_chunk_size {}; } }
-
 
 double random_double(double min,double max){
     return (min+1)+(((double) rand())/(double) RAND_MAX)*(max-(min+1));
@@ -29,26 +23,14 @@ void vector_generator(std::vector<T> &A,int size,double min,double max){
         A.push_back(random_double(min,max));
     }
 }
-	
 /////////////////////////////////////////////////////////////////////////////////////////////////////
-void Rand_Pond_Sum(int iterations,std::vector<double> chunk_candidates) {
-  
-    int vector_size=iterations;
-    std::vector<double> A;
-    std::vector<double> B;
-    std::vector<double> C(vector_size);
-    vector_generator(A,vector_size,10,100);
-    vector_generator(B,vector_size,10,100);
-
+void Nothing(int iterations,std::vector<double> chunk_candidates) {
+    int vector_size=iterations;  
     auto time_range = boost::irange(0 , vector_size); 
     auto f = [&](int i) {
-        double result=0.0;
-	result+=(rand()%10+1)*A[i];
-	result+=(rand()%10+1)*B[i];
-	C[i]=result;
-};
+    };
 
- //feature extraction Rand_Pond_Sum
+ //feature extraction Nothing
 //  hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::adaptive_chunk_size()), time_range.begin(), time_range.end(), f);
   
 }
@@ -75,33 +57,6 @@ void Swap(int iterations,std::vector<double> chunk_candidates) {
 }
   
 
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void Finite_Diff_Step(int iterations,std::vector<double> chunk_candidates) {
-      
-    int vector_size=iterations;
-    std::vector<double> A;
-    std::vector<double> B(vector_size);
-    vector_generator(A,vector_size,10,100);
-
-    auto time_range = boost::irange(0, vector_size); 
-    
-    auto f=[&](int i){
-        if(i==0){
-	    B[i]=(A[i]+A[i+1])/2;
-	}
-	else if(i==(vector_size-1)){
-	    B[i]=(A[i]+A[i-1])/2;
-	}
-	else {
-	    B[i]=(A[i-1]+A[i]+A[i+1])/2;
-	}
-    };
-
-  //feature extraction Finite_Diff_Step
-// hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::adaptive_chunk_size()), time_range.begin(), time_range.end(), f);
-
-}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////// 	
 void Stream(int iterations,std::vector<double> chunk_candidates) {
