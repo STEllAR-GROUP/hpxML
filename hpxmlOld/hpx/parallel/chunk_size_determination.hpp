@@ -39,9 +39,7 @@ namespace hpx { namespace parallel {
 
         //candidates
         double candidates[] = {0.5,1/8,1/32,1/128,1/512};
-        //manually modify obvious errors
-	
-
+    	
         // Chunk_Size>1/threads is an error
 	while(1/candidates[determined_class]<features[0]){
 	    determined_class+=1;
