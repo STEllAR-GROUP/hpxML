@@ -106,11 +106,17 @@ void implementing_multinomial_logistic_regression_cross_validation(){
         experimental_results_multi_class[n] = new float[number_of_features_multi_class];
         execution_times_multi_class[n] = new float[number_of_multi_classes];
     }
-   
+    int* threads_total=new int[number_of_experiments_multi_class];
+
     //reading real input data
     reading_input_values(number_of_experiments_multi_class, number_of_features_multi_class, number_of_multi_classes, 
                           experimental_results_multi_class, targets_multi_class, execution_times_multi_class, myfile);
 
+    for(int i(0);i<number_of_experiments_multi_class;i++){
+        threads_total[i]=experimental_results_multi_class[i][5];
+    }
+    
+    
     float* averages;							//parameters for normalization
     float* averages_2;							//parameters for normalization
     float* var;									//parameters for normalization	
@@ -184,6 +190,7 @@ void implementing_multinomial_logistic_regression_cross_validation(){
         experimental_results_test.resize(test_length,number_of_features_multi_class);
 	outputsm.resize(test_length,number_of_multi_classes);
         int* predictions_test=new int[test_length];
+	int* threads=new int[test_length];
         
 	train_index=0;
         test_index=0;
@@ -196,6 +203,7 @@ void implementing_multinomial_logistic_regression_cross_validation(){
                 for(size_t j(0);j<number_of_features_multi_class;j++){
 	            experimental_results_test(test_index,j)=experimental_results_multi_class[n][j];
 	        }
+		threads[test_index]=threads_total[n];
 	        test_index+=1;
 	    }    
 	   
@@ -234,10 +242,16 @@ void implementing_multinomial_logistic_regression_cross_validation(){
         Models[i].computing_all_output(experimental_results_test,outputsm);
         Models[i].estimating_output_multiclass(outputsm,predictions_test);
 	
+
+
 	//print prediction in a prediction file
     
         for(int j(0);j<test_length;j++){
+	    while(1/chunk_size_candidates[predictions_test[j]]<threads[j]){
+	       predictions_test[j]+=1;
+	    }
 	    std::cout<<chunk_size_candidates[predictions_test[j]]<<std::endl;
+	   // std::cout<<1/chunk_size_candidates[predictions_test[j]]<<" "<<threads[j]<<std::endl;
 	}
 
 
@@ -255,11 +269,12 @@ void implementing_multinomial_logistic_regression_cross_validation(){
 	delete[] execution_times_train;
 
 	delete[] predictions_test;
-
+        delete[] threads;
     }
     delete[] averages;
     delete[] averages_2;
     delete[] var;
+    delete[] threads_total;
 
 }
 
