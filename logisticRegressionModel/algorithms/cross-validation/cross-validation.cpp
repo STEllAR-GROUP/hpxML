@@ -14,7 +14,7 @@ using namespace Eigen;
 
 
 void reading_input_values(std::size_t number_of_experiments, std::size_t number_of_features, std::size_t number_of_multi_classes, 
-                                        float** experimental_results, int* targets, float** execution_times_multi_class, std::ifstream& myfile) {
+                                        float** experimental_results, int* targets, float** execution_times_multi_class,float* candidates, std::ifstream& myfile) {
 
     std::string line;
     std::size_t e = 0;
@@ -43,7 +43,7 @@ void reading_input_values(std::size_t number_of_experiments, std::size_t number_
             getline(ss, str, ' ');
             float time_ = std::atof(str.c_str());
             execution_times_multi_class[e][c] = time_;
-            if(time_ < t_min) {
+            if(time_ < t_min && candidates[c]*experimental_results[e][4]>1) {
                 t_min = time_;
                 which_class = c;
             }
@@ -60,7 +60,7 @@ void reading_input_values(std::size_t number_of_experiments, std::size_t number_
 
 
 void implementing_multinomial_logistic_regression_cross_validation(){
-    float threshold = 0.1;
+    float threshold = 0.05;
     int k=10;
     std::string line;
     
@@ -110,12 +110,12 @@ void implementing_multinomial_logistic_regression_cross_validation(){
 
     //reading real input data
     reading_input_values(number_of_experiments_multi_class, number_of_features_multi_class, number_of_multi_classes, 
-                          experimental_results_multi_class, targets_multi_class, execution_times_multi_class, myfile);
+                          experimental_results_multi_class, targets_multi_class, execution_times_multi_class,chunk_size_candidates, myfile);
 
     for(int i(0);i<number_of_experiments_multi_class;i++){
         threads_total[i]=experimental_results_multi_class[i][5];
     }
-    
+     
     
     float* averages;							//parameters for normalization
     float* averages_2;							//parameters for normalization
@@ -243,7 +243,6 @@ void implementing_multinomial_logistic_regression_cross_validation(){
         Models[i].estimating_output_multiclass(outputsm,predictions_test);
 	
 
-
 	//print prediction in a prediction file
     
         for(int j(0);j<test_length;j++){
@@ -251,7 +250,6 @@ void implementing_multinomial_logistic_regression_cross_validation(){
 	       predictions_test[j]+=1;
 	    }
 	    std::cout<<chunk_size_candidates[predictions_test[j]]<<std::endl;
-	   // std::cout<<1/chunk_size_candidates[predictions_test[j]]<<" "<<threads[j]<<std::endl;
 	}
 
 

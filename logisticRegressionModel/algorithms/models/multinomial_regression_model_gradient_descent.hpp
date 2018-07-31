@@ -251,7 +251,7 @@ void multinomial_logistic_regression_model::learning_weights_multi_classes() {
 		computing_all_output(experimental_results,outputsm);
 		estimating_output_multiclass(outputsm,predicted_output_multi_class);
 		least_squared_err = computing_new_least_squared_err_multi_class();
-		std::cout<<"("<<itr<<")"<<"Least_squared_err =\t" << least_squared_err<<std::endl;		
+   	        std::cout<<"("<<itr<<")"<<"Least_squared_err =\t" << least_squared_err<<std::endl;		
 		printing_weights_multi_class();		
 		itr++;
 	}

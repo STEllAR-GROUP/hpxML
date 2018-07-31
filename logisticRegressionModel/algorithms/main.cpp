@@ -12,7 +12,7 @@
 #include "models/regression_models.hpp"
 
 void reading_input_values(std::size_t number_of_experiments, std::size_t number_of_features, std::size_t number_of_multi_classes, 
-                                        float** experimental_results, int* targets, float** execution_times_multi_class, std::ifstream& myfile) {
+                                        float** experimental_results, int* targets, float** execution_times_multi_class,float * candidates, std::ifstream& myfile) {
 
     std::string line;
     std::size_t e = 0;
@@ -41,7 +41,7 @@ void reading_input_values(std::size_t number_of_experiments, std::size_t number_
             getline(ss, str, ' ');
             float time_ = std::atof(str.c_str());
             execution_times_multi_class[e][c] = time_;
-            if(time_ < t_min) {
+            if(time_ < t_min && candidates[c]*experimental_results[e][4]>1){
                 t_min = time_;
                 which_class = c;
             }
@@ -55,7 +55,7 @@ void reading_input_values(std::size_t number_of_experiments, std::size_t number_
     }
 }
 
-
+/*
 void implementing_binary_logistic_regression_model(){
     float threshold = 0.2;
     std::string line;
@@ -108,17 +108,17 @@ void implementing_binary_logistic_regression_model(){
     my_nw.retrieving_weights_two_classes_into_txt_file();
     my_nw.printing_predicted_output_two_class();
     my_nw.finalizing_step();
-}
+}*/
 
 void implementing_multinomial_logistic_regression_model(){
-    float threshold = 0.1;
+    float threshold = 0.02;
     std::string line;
     
     //learning multi classes    
     std::cout <<"\n****************** Multi-class logistic regression model ******************\n"<<std::endl;
     //reading input data : number of experiments, number of feautures and number of output_classes in each experiments
     //chunk size training data:
-    std::ifstream myfile("./../inputs/data_chunk.dat");
+    std::ifstream myfile("./../inputs/train.dat");
     // prefetching distance training data:
     //std::ifstream myfile ("./../inputs/data_prefetch.dat");
     
@@ -161,8 +161,8 @@ void implementing_multinomial_logistic_regression_model(){
 
     //reading real input data
     reading_input_values(number_of_experiments_multi_class, number_of_features_multi_class, number_of_multi_classes, 
-                          experimental_results_multi_class, targets_multi_class, execution_times_multi_class, myfile);
-       
+                          experimental_results_multi_class, targets_multi_class, execution_times_multi_class,chunk_size_candidates, myfile);
+    
     multinomial_logistic_regression_model my_nw(number_of_experiments_multi_class, number_of_features_multi_class,
                                                  number_of_multi_classes, threshold, experimental_results_multi_class, 
                                                  targets_multi_class, execution_times_multi_class);
