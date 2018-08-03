@@ -22,8 +22,10 @@ class multinomial_logistic_regression_model {
 	MatrixXf weightsm; 							//weights of our learning network : F * K
 	MatrixXf outputsm;							//outputs of the training data : N * K
 	MatrixXf gradient;							//gradient of E : F * K
+	int number_of_features;
+	int number_of_classes;
 	
-        void initialize_weigths(std::size_t number_of_experiments,std::size_t number_of_features,std::size_t number_of_classes,float initial_values);
+        void initialize(std::size_t number_expr,std::size_t number_features,std::size_t number_classes,float initial_values);
 	
 	void computing_all_output(MatrixXf X,MatrixXf& Y);
 	void computing_all_gradient(MatrixXf X,MatrixXf Y);
@@ -44,17 +46,19 @@ public:
 	void convert_target_to_binary(int* targets, MatrixXf& Binary);	
 	void convert_binary_to_target(MatrixXf Binary,int* targets);
 	void fit(MatrixXf X,MatrixXf Y,MatrixXf execution_times,float eta,float threshold,float time_treshold,int Max_ite,bool print);
-        void predict(MatrixXf X,MatrixXf Y,int* predictions);
+        void predict(MatrixXf X,int* predictions);
 	float computing_new_least_squared_err_multi_class(MatrixXf execution_times,int* predictions,int* real,float time_threshold);	
 	//void retrieving_weights_multi_classes_into_text_file();
-	void misclassification_ratio(int* predictions, int* real,int number_of_classes,int number_of_experiments);
-        void Total_times(int number_of_classes,int number_of_experiments,int* predictions,MatrixXf execution_times);
+	void misclassification_ratio(int* predictions, int* real,int number_of_experiments);
+        void Total_times(int* predictions,MatrixXf execution_times);
 };
 
-void multinomial_logistic_regression_model::initialize_weigths(std::size_t number_of_experiments,std::size_t number_of_features, std::size_t number_of_classes,float initial_values){
-    weightsm=MatrixXf::Random(number_of_classes,number_of_features);
-    gradient=MatrixXf::Random(number_of_classes,number_of_features);
-    outputsm=MatrixXf::Random(number_of_experiments,number_of_classes);
+void multinomial_logistic_regression_model::initialize(std::size_t number_of_experiments,std::size_t number_features, std::size_t number_classes,float initial_values){
+    weightsm=MatrixXf::Random(number_classes,number_features);
+    gradient=MatrixXf::Random(number_classes,number_features);
+    outputsm=MatrixXf::Random(number_of_experiments,number_classes);
+    number_of_features=number_features;
+    number_of_classes=number_classes;
 
     //initializing weights
     for(std::size_t f = 0; f < number_of_classes; f++) {
@@ -96,18 +100,18 @@ void multinomial_logistic_regression_model::computing_all_output(MatrixXf X,Matr
 	MatrixXf sum_w_experimental_results = MatrixXf::Zero(X.rows(),1);
 	
 	//w^T * X
-	MatrixXf W_X = MatrixXf::Random(Y.cols(), X.rows());
+	MatrixXf W_X = MatrixXf::Random(number_of_classes, X.rows());
 	W_X = weightsm * X.transpose();
 	//sigma(exp(wQ))
 	for(std::size_t n = 0; n < X.rows(); n++) {
-		for(std::size_t k = 0; k < Y.cols(); k++) {
+		for(std::size_t k = 0; k < number_of_classes; k++) {
 			sum_w_experimental_results(n, 0) += exp(W_X(k, n));
 		}
 	}
 	
 	//normalisation
 	for(std::size_t n = 0; n < X.rows(); n++) {
-		for(std::size_t k = 0; k < Y.cols(); k++) {		
+		for(std::size_t k = 0; k < number_of_classes; k++) {		
 			Y(n,k) = float(exp(W_X(k, n))/sum_w_experimental_results(n, 0)); 
 		}
 	}
@@ -154,9 +158,8 @@ void multinomial_logistic_regression_model::fit(MatrixXf X,MatrixXf Y,MatrixXf e
 	int* predictions=new int[X.rows()];
 	int* real=new int[X.rows()];
 	convert_binary_to_target(Y,real);
-        //initializing weights,gradients,outputsm
-        initialize_weigths(X.rows(),X.cols(),Y.cols(),0.1);
-
+        //initializing weights,gradients,outputsm and constants
+        initialize(X.rows(),X.cols(),Y.cols(),0.1);
 	computing_all_output(X,outputsm);
        // computing_all_output(X,outputsm);
 	while(threshold < least_squared_err && itr<Max_ite) {
@@ -172,16 +175,17 @@ void multinomial_logistic_regression_model::fit(MatrixXf X,MatrixXf Y,MatrixXf e
 		itr++;
 	}
 	if(print){std::cout<<"("<<itr<<") => "<<"Least_squared_err =\t" << least_squared_err<<std::endl;}
-	misclassification_ratio(predictions,real,Y.cols(),X.rows());
-	Total_times(Y.cols(),X.rows(),predictions,execution_times);
+	misclassification_ratio(predictions,real,X.rows());
+	Total_times(predictions,execution_times);
 	delete[] predictions;
 	delete[] real;
 }
-void multinomial_logistic_regression_model::predict(MatrixXf X,MatrixXf Y,int* predictions){
-    //forward propogation
-    computing_all_output(X,Y);
-    convert_binary_to_target(Y,predictions);
-}
+//void multinomial_logistic_regression_model::predict(MatrixXf X,int* predictions){
+//    //forward propogation
+//    MatrixXf Y=MatrixXf::Zero(X.rows(),number_of_classes);
+//   computing_all_output(X,Y);
+//    convert_binary_to_target(Y,predictions);
+//}
 
 /*
 //retrieving information into the external file, which is going to be used at runtime
@@ -211,7 +215,7 @@ void multinomial_logistic_regression_model::retrieving_weights_multi_classes_int
 }
 */
 
-void multinomial_logistic_regression_model::misclassification_ratio(int* predictions, int* real,int number_of_classes,int number_of_experiments){
+void multinomial_logistic_regression_model::misclassification_ratio(int* predictions, int* real,int number_of_experiments){
 	std::size_t num_err = 0;
 	MatrixXi confusion_matrix=MatrixXi::Zero(number_of_classes,number_of_classes);
 	for(std::size_t n = 0; n < number_of_experiments; n++) {		
@@ -224,12 +228,12 @@ void multinomial_logistic_regression_model::misclassification_ratio(int* predict
 	std::cout<<"\n number of misclassifications predicted is\t"<<num_err<<" out of "<<number_of_experiments<<std::endl;
 }
 
-void multinomial_logistic_regression_model::Total_times(int number_of_classes,int number_of_experiments,int* predictions,MatrixXf execution_times){
+void multinomial_logistic_regression_model::Total_times(int* predictions,MatrixXf execution_times){
     double optimal_time=0;
     double actual_time=0;
     double min_t;
     std::vector<double> times_candidates(number_of_classes,0);
-    for(std::size_t n=0;n<number_of_experiments;n++){
+    for(std::size_t n=0;n<execution_times.rows();n++){
         actual_time+=execution_times(n,predictions[n]);
 	min_t=execution_times(n,0);
 	for(std::size_t c=0;c<number_of_classes;c++){

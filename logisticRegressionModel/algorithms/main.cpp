@@ -201,7 +201,6 @@ void implementing_multinomial_logistic_regression_model(){
     }
   
    
-   
    multinomial_logistic_regression_model my_nw;
                                                            
    //convert targets to binary to get Y 
