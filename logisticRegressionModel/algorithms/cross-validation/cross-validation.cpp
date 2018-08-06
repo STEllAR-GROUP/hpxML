@@ -14,7 +14,7 @@ using namespace Eigen;
 
 
 void reading_input_values(std::size_t number_of_experiments, std::size_t number_of_features, std::size_t number_of_multi_classes, 
-                                        float** experimental_results, int* targets, float** execution_times_multi_class,float* candidates, std::ifstream& myfile) {
+                                        MatrixXf& experimental_results, int* targets, MatrixXf& execution_times_multi_class,float* candidates, std::ifstream& myfile) {
 
     std::string line;
     std::size_t e = 0;
@@ -32,7 +32,7 @@ void reading_input_values(std::size_t number_of_experiments, std::size_t number_
         //reading features:
         while(f < number_of_features) {
             getline(ss, str, ' ');
-            experimental_results[e][f] = std::atof(str.c_str());
+            experimental_results(e,f) = std::atof(str.c_str());
             f++;
         }
 
@@ -42,8 +42,8 @@ void reading_input_values(std::size_t number_of_experiments, std::size_t number_
         for(int c = 0; c < number_of_multi_classes; c++) {
             getline(ss, str, ' ');
             float time_ = std::atof(str.c_str());
-            execution_times_multi_class[e][c] = time_;
-            if(time_ < t_min && candidates[c]*experimental_results[e][4]>1) {
+            execution_times_multi_class(e,c) = time_;
+            if(time_ < t_min){// && candidates[c]*experimental_results[e][4]>1) {
                 t_min = time_;
                 which_class = c;
             }
@@ -60,7 +60,10 @@ void reading_input_values(std::size_t number_of_experiments, std::size_t number_
 
 
 void implementing_multinomial_logistic_regression_cross_validation(){
-    float threshold = 0.05;
+    float threshold = 0.08;
+    float time_threshold=0.2;
+    float eta=0.01;
+    int Max_ite=50000;
     int k=10;
     std::string line;
     
@@ -68,7 +71,7 @@ void implementing_multinomial_logistic_regression_cross_validation(){
     std::cout <<"\n****************** Multi-class logistic regression model cross Validation ******************\n"<<std::endl;
     //reading input data : number of experiments, number of feautures and number of output_classes in each experiments
     //chunk size training data:
-    std::ifstream myfile("./../../inputs/train.dat");
+    std::ifstream myfile("./../../inputs/matrix_mul_uniform_log.dat");
     // prefetching distance training data:
     //std::ifstream myfile ("./../inputs/data_prefetch.dat");
     
@@ -100,12 +103,8 @@ void implementing_multinomial_logistic_regression_cross_validation(){
     
     //initializing     
     int* targets_multi_class = new int[number_of_experiments_multi_class];
-    float** experimental_results_multi_class = new float*[number_of_experiments_multi_class];
-    float** execution_times_multi_class = new float*[number_of_experiments_multi_class];
-    for(std::size_t n = 0; n < number_of_experiments_multi_class; n++) {
-        experimental_results_multi_class[n] = new float[number_of_features_multi_class];
-        execution_times_multi_class[n] = new float[number_of_multi_classes];
-    }
+    MatrixXf experimental_results_multi_class= MatrixXf::Random(number_of_experiments_multi_class,number_of_features_multi_class);
+    MatrixXf execution_times_multi_class=MatrixXf::Random(number_of_experiments_multi_class,number_of_multi_classes);
     int* threads_total=new int[number_of_experiments_multi_class];
 
     //reading real input data
@@ -113,7 +112,7 @@ void implementing_multinomial_logistic_regression_cross_validation(){
                           experimental_results_multi_class, targets_multi_class, execution_times_multi_class,chunk_size_candidates, myfile);
 
     for(int i(0);i<number_of_experiments_multi_class;i++){
-        threads_total[i]=experimental_results_multi_class[i][5];
+        threads_total[i]=experimental_results_multi_class(i,number_of_features_multi_class-1);
     }
      
     
@@ -133,8 +132,8 @@ void implementing_multinomial_logistic_regression_cross_validation(){
     //computing average and variance values for each feature
     for(std::size_t i = 0; i < number_of_experiments_multi_class; i++) {		
 	for(std::size_t j = 0; j < number_of_features_multi_class; j++) {
-	    averages[j] += experimental_results_multi_class[i][j];
-	    averages_2[j] += (std::pow(experimental_results_multi_class[i][j], 2.0));
+	    averages[j] += experimental_results_multi_class(i,j);
+	    averages_2[j] += (std::pow(experimental_results_multi_class(i,j), 2.0));
 	}
     }
     for(std::size_t i = 0; i < number_of_features_multi_class; i++) {		
@@ -145,7 +144,7 @@ void implementing_multinomial_logistic_regression_cross_validation(){
 
     for(std::size_t n = 0; n < number_of_experiments_multi_class; n++) {
 	for(std::size_t f = 0; f < number_of_features_multi_class; f++) {
-	    experimental_results_multi_class[n][f] = float((experimental_results_multi_class[n][f] - averages[f])/var[f]);
+	    experimental_results_multi_class(n,f) = float((experimental_results_multi_class(n,f) - averages[f])/var[f]);
 	}
     }
 
@@ -156,14 +155,26 @@ void implementing_multinomial_logistic_regression_cross_validation(){
     int last_delta=delta+(number_of_experiments_multi_class % k);
     int train_length,test_length;
     int train_index,test_index;
+    float error=0;
 
-    //store the regressions in a vector
-    std::vector<multinomial_logistic_regression_model> Models;
     
-    //initialize test sets tables
+    //initialize test sets table
+    MatrixXf experimental_results_train(1,1);
+    MatrixXf execution_times_train(1,1);
+    MatrixXf targets_train(1,1);
     MatrixXf experimental_results_test(1,1);
-    MatrixXf outputsm(1,1);
-    
+    MatrixXf execution_times_test(1,1);
+
+    //initialize logistic regression
+     multinomial_logistic_regression_model my_nw;
+
+    //convert predictions to dummy variables
+    MatrixXf targets(number_of_experiments_multi_class,number_of_multi_classes);
+    my_nw.convert_target_to_binary(targets_multi_class,targets);
+
+
+   
+   //loop over k subsets
     for(int i(0);i<k;i++){
 
         //dividing into train sets and test sets
@@ -177,21 +188,18 @@ void implementing_multinomial_logistic_regression_cross_validation(){
 	train_length=number_of_experiments_multi_class-test_length;
 
 	//initializing train sets
-	int* targets_train = new int[train_length];
-        float** experimental_results_train = new float*[train_length];
-        float** execution_times_train = new float*[train_length];
-        for(std::size_t n = 0; n < train_length; n++) {
-            experimental_results_train[n] = new float[number_of_features_multi_class];
-            execution_times_train[n] = new float[number_of_multi_classes];
-        }
-
+        experimental_results_train.resize(train_length,number_of_features_multi_class);
+        execution_times_train.resize(train_length,number_of_multi_classes);
+	targets_train.resize(train_length,number_of_multi_classes);
 
         //initialization od test sets
         experimental_results_test.resize(test_length,number_of_features_multi_class);
-	outputsm.resize(test_length,number_of_multi_classes);
+	execution_times_test.resize(test_length,number_of_multi_classes);
         int* predictions_test=new int[test_length];
+	int* targets_test=new int[test_length];
 	int* threads=new int[test_length];
         
+	
 	train_index=0;
         test_index=0;
 	//getting the train set
@@ -201,8 +209,13 @@ void implementing_multinomial_logistic_regression_cross_validation(){
 	        //test set
     	        //features
                 for(size_t j(0);j<number_of_features_multi_class;j++){
-	            experimental_results_test(test_index,j)=experimental_results_multi_class[n][j];
+	            experimental_results_test(test_index,j)=experimental_results_multi_class(n,j);
+		
 	        }
+	        for(size_t j(0);j<number_of_multi_classes;j++){
+	            execution_times_test(test_index,j)=execution_times_multi_class(n,j);
+	            targets_test[test_index]=targets_multi_class[n];	
+		}
 		threads[test_index]=threads_total[n];
 	        test_index+=1;
 	    }    
@@ -212,67 +225,53 @@ void implementing_multinomial_logistic_regression_cross_validation(){
 	        //train set
 	        //features
                 for(size_t j(0);j<number_of_features_multi_class;j++){
-	            experimental_results_train[train_index][j]=experimental_results_multi_class[n][j];
+	            experimental_results_train(train_index,j)=experimental_results_multi_class(n,j);
 	        }
 	        //targets
-	        targets_train[train_index]=targets_multi_class[n];
 	        //Execution_times
                 for(size_t j(0);j<number_of_multi_classes;j++){
-	            execution_times_train[train_index][j]=execution_times_multi_class[n][j];
-	        }
+	            execution_times_train(train_index,j)=execution_times_multi_class(n,j);
+	            targets_train(train_index,j)=targets(n,j);
+		}
 	        train_index+=1;
 	    }
 	}
         
  
    
- 
-     //getting the test set
 
-       
-        //implementing cross validaiton with k subsets
-    
-        //generate with training set
-        Models.push_back(multinomial_logistic_regression_model(train_length, number_of_features_multi_class,
-                                                 number_of_multi_classes, threshold, experimental_results_train, 
-                                                 targets_train, execution_times_train));
-                                                          
-        Models[i].learning_multi_classes();
-       // get predictions on test set
-        Models[i].computing_all_output(experimental_results_test,outputsm);
-        Models[i].estimating_output_multiclass(outputsm,predictions_test);
-	
+        //fit the train setmy_nw.fit(experimental_results_train,targets_train,execution_times_train,eta,threshold,time_threshold,Max_ite,false);
+	my_nw.fit(experimental_results_train,targets_train,execution_times_train,eta,threshold,time_threshold,Max_ite,false);
+        //predict on test set
+	my_nw.predict(experimental_results_test,predictions_test);
 
-	//print prediction in a prediction file
+/*
+        //print prediction in a prediction file
     
         for(int j(0);j<test_length;j++){
 	    while(1/chunk_size_candidates[predictions_test[j]]<threads[j]){
 	       predictions_test[j]+=1;
 	    }
 	    std::cout<<chunk_size_candidates[predictions_test[j]]<<std::endl;
+	   // std::cout<<threads[j]<<std::endl;
 	}
+*/
 
+        //get the error on test set
+        error= my_nw.computing_new_least_squared_err_multi_class(execution_times_test,predictions_test,targets_test,time_threshold); 
+        std::cout<<error<<std::endl;
 
-
-
-        Models[i].finalizing_step();  
-
-        for(std::size_t n = 0; n < train_length; n++) {
-            delete[] experimental_results_train[n];
-            delete[] execution_times_train[n];
-        }
-	
-	delete[] targets_train;
-	delete[] experimental_results_train;
-	delete[] execution_times_train;
 
 	delete[] predictions_test;
+	delete[] targets_test;
         delete[] threads;
     }
     delete[] averages;
     delete[] averages_2;
     delete[] var;
     delete[] threads_total;
+    delete[] chunk_size_candidates;
+    delete[] targets_multi_class;
 
 }
 

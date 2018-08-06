@@ -48,7 +48,7 @@ public:
 	void fit(MatrixXf X,MatrixXf Y,MatrixXf execution_times,float eta,float threshold,float time_treshold,int Max_ite,bool print);
         void predict(MatrixXf X,int* predictions);
 	float computing_new_least_squared_err_multi_class(MatrixXf execution_times,int* predictions,int* real,float time_threshold);	
-	//void retrieving_weights_multi_classes_into_text_file();
+        void retrieving_weights_multi_classes_into_text_file(float* averages,float* var,std::ofstream& outputFile);	
 	void misclassification_ratio(int* predictions, int* real,int number_of_experiments);
         void Total_times(int* predictions,MatrixXf execution_times);
 };
@@ -174,29 +174,24 @@ void multinomial_logistic_regression_model::fit(MatrixXf X,MatrixXf Y,MatrixXf e
 		}		
 		itr++;
 	}
-	if(print){std::cout<<"("<<itr<<") => "<<"Least_squared_err =\t" << least_squared_err<<std::endl;}
-	misclassification_ratio(predictions,real,X.rows());
-	Total_times(predictions,execution_times);
+	if(print){std::cout<<"("<<itr<<") => "<<"Least_squared_err =\t" << least_squared_err<<std::endl;
+	    misclassification_ratio(predictions,real,X.rows());
+	    Total_times(predictions,execution_times);
+	}
 	delete[] predictions;
 	delete[] real;
 }
-//void multinomial_logistic_regression_model::predict(MatrixXf X,int* predictions){
-//    //forward propogation
-//    MatrixXf Y=MatrixXf::Zero(X.rows(),number_of_classes);
-//   computing_all_output(X,Y);
-//    convert_binary_to_target(Y,predictions);
-//}
+void multinomial_logistic_regression_model::predict(MatrixXf X,int* predictions){
+    //forward propogation
+    MatrixXf Y=MatrixXf::Zero(X.rows(),number_of_classes);
+    computing_all_output(X,Y);
+    convert_binary_to_target(Y,predictions);
+}
 
-/*
+
 //retrieving information into the external file, which is going to be used at runtime
-void multinomial_logistic_regression_model::retrieving_weights_multi_classes_into_text_file() {	
+void multinomial_logistic_regression_model::retrieving_weights_multi_classes_into_text_file(float* averages,float* var,std::ofstream& outputFile) {	
   
-  // for learning model on chunk_size training data
-	std::ofstream outputFile("inputs/data_chunk.dat");
-  
-  // for learning model on prefetching distance training data:
-  //std::ofstream outputFile("inputs/data_prefetch.dat");
-
 	//normalization parameters (variance and average) in the first line
 	for(std::size_t p = 0; p < number_of_features - 1; p++) {
 		outputFile << var[p] << " " << averages[p] << " "; 
@@ -213,7 +208,7 @@ void multinomial_logistic_regression_model::retrieving_weights_multi_classes_int
 		}
 	}
 }
-*/
+
 
 void multinomial_logistic_regression_model::misclassification_ratio(int* predictions, int* real,int number_of_experiments){
 	std::size_t num_err = 0;
