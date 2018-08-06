@@ -13,15 +13,6 @@ here are the different function which are defines in headers files at algorithm/
 1. Matrix_Matrix_Mult()
 1. Tensor_generator()
 
-More can easily be added.
-
-Experiments are scheduled using the *train.sbatch* file using 
-```
-sbatch train.sbatch training.txt
-```
-training.txt is a file where every line is structured like the following
-
-```
-function_name,header_file_index,number_of_iterations_number_of_threads
+Look at the wiki section for more details.
 ```
 
