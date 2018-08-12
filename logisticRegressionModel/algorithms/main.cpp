@@ -116,10 +116,10 @@ void implementing_binary_logistic_regression_model(){
 }
 */
 void implementing_multinomial_logistic_regression_model(){
-    float threshold = 0.08;
+    float threshold = 0.02;
     float eta=0.01;
-    float time_threshold=0.2;
-    int Max_ite=50000;
+    float time_threshold=0.1;
+    int Max_ite=5000;
 
     std::string line;
     
@@ -200,13 +200,11 @@ void implementing_multinomial_logistic_regression_model(){
 	}
     }
   
-   
    multinomial_logistic_regression_model my_nw;
                                                            
    //convert targets to binary to get Y 
    my_nw.convert_target_to_binary(targets_multi_class,Y); 
     
-     
     my_nw.fit(experimental_results,Y,execution_times,eta,threshold,time_threshold,Max_ite,true);
     std::cout<<"\nLearning has been done!\n"<<std::endl;
     //std::cout<<"\nThe predicated weights for each features are: "<<std::endl;    

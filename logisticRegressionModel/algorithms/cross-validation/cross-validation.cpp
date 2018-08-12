@@ -60,10 +60,10 @@ void reading_input_values(std::size_t number_of_experiments, std::size_t number_
 
 
 void implementing_multinomial_logistic_regression_cross_validation(){
-    float threshold = 0.08;
-    float time_threshold=0.2;
+    float threshold = 0.02;
+    float time_threshold=0.1;
     float eta=0.01;
-    int Max_ite=50000;
+    int Max_ite=5000;
     int k=10;
     std::string line;
     
@@ -71,10 +71,8 @@ void implementing_multinomial_logistic_regression_cross_validation(){
     std::cout <<"\n****************** Multi-class logistic regression model cross Validation ******************\n"<<std::endl;
     //reading input data : number of experiments, number of feautures and number of output_classes in each experiments
     //chunk size training data:
-    std::ifstream myfile("./../../inputs/matrix_mul_uniform_log.dat");
-    // prefetching distance training data:
-    //std::ifstream myfile ("./../inputs/data_prefetch.dat");
-    
+    //std::ifstream myfile("./../../inputs/matrix_mul_uniform_log.dat");
+    std::ifstream myfile("./../../inputs/train.dat");
 
     //read first line
     getline(myfile, line);
@@ -245,7 +243,6 @@ void implementing_multinomial_logistic_regression_cross_validation(){
         //predict on test set
 	my_nw.predict(experimental_results_test,predictions_test);
 
-/*
         //print prediction in a prediction file
     
         for(int j(0);j<test_length;j++){
@@ -255,11 +252,11 @@ void implementing_multinomial_logistic_regression_cross_validation(){
 	    std::cout<<chunk_size_candidates[predictions_test[j]]<<std::endl;
 	   // std::cout<<threads[j]<<std::endl;
 	}
-*/
+
 
         //get the error on test set
-        error= my_nw.computing_new_least_squared_err_multi_class(execution_times_test,predictions_test,targets_test,time_threshold); 
-        std::cout<<error<<std::endl;
+        //error= my_nw.computing_new_least_squared_err_multi_class(execution_times_test,predictions_test,targets_test,time_threshold); 
+        //std::cout<<"The error is : "<<error<<std::endl;
 
 
 	delete[] predictions_test;

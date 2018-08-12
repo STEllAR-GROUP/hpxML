@@ -20,8 +20,10 @@ using namespace Eigen;
 class multinomial_logistic_regression_model {
 
 	MatrixXf weightsm; 							//weights of our learning network : F * K
+	MatrixXf biases;
 	MatrixXf outputsm;							//outputs of the training data : N * K
-	MatrixXf gradient;							//gradient of E : F * K
+	MatrixXf gradientw;							//gradient of E : F * K
+	MatrixXf gradientb;
 	int number_of_features;
 	int number_of_classes;
 	
@@ -35,11 +37,13 @@ class multinomial_logistic_regression_model {
 	
 public:
 	multinomial_logistic_regression_model() {
-	
-		weightsm = MatrixXf::Random(10,10);
-		gradient = MatrixXf::Random(10,10);
-		outputsm = MatrixXf::Random(10,10);
-
+    	    MatrixXf weightsm;
+	    MatrixXf biases;
+	    MatrixXf outputsm;							//outputs of the training data : N * K
+	    MatrixXf gradientw;							//gradient of E : F * K
+	    MatrixXf gradientb;
+	    int number_of_features;
+	    int number_of_classes;
 
 	}
 
@@ -55,15 +59,18 @@ public:
 
 void multinomial_logistic_regression_model::initialize(std::size_t number_of_experiments,std::size_t number_features, std::size_t number_classes,float initial_values){
     weightsm=MatrixXf::Random(number_classes,number_features);
-    gradient=MatrixXf::Random(number_classes,number_features);
+    biases=MatrixXf::Random(number_classes,1);
+    gradientw=MatrixXf::Random(number_classes,number_features);
+    gradientb=MatrixXf::Random(number_classes,1);
     outputsm=MatrixXf::Random(number_of_experiments,number_classes);
     number_of_features=number_features;
     number_of_classes=number_classes;
 
     //initializing weights
-    for(std::size_t f = 0; f < number_of_classes; f++) {
-	for(std::size_t k = 0; k < number_of_features; k++) {
-	    weightsm(f, k) = initial_values;
+    for(std::size_t  c= 0; c < number_of_classes; c++) {
+        biases(c,0)=0;
+	for(std::size_t f = 0; f < number_of_features; f++) {
+	    weightsm(c, f) = initial_values;
 	}
     }
 }
@@ -84,7 +91,7 @@ void multinomial_logistic_regression_model::convert_target_to_binary(int* target
 
 
 void multinomial_logistic_regression_model::convert_binary_to_target(MatrixXf Binary,int* target) {	
-	for(std::size_t n = 0; n < Binary.rows(); n++) {
+        for(std::size_t n = 0; n < Binary.rows(); n++) {
 		float prob = MIN_FLOAT;
 		for(std::size_t k = 0; k < Binary.cols(); k++) {
 			if(prob < Binary(n, k)) {
@@ -98,10 +105,14 @@ void multinomial_logistic_regression_model::convert_binary_to_target(MatrixXf Bi
 //computing outputs
 void multinomial_logistic_regression_model::computing_all_output(MatrixXf X,MatrixXf& Y) {
 	MatrixXf sum_w_experimental_results = MatrixXf::Zero(X.rows(),1);
-	
 	//w^T * X
 	MatrixXf W_X = MatrixXf::Random(number_of_classes, X.rows());
 	W_X = weightsm * X.transpose();
+
+        //Add biases
+	for(int i(0);i<X.rows();i++){
+	    W_X.col(i)+=biases;
+	}
 	//sigma(exp(wQ))
 	for(std::size_t n = 0; n < X.rows(); n++) {
 		for(std::size_t k = 0; k < number_of_classes; k++) {
@@ -120,11 +131,19 @@ void multinomial_logistic_regression_model::computing_all_output(MatrixXf X,Matr
 //computing gradient 
 void multinomial_logistic_regression_model::computing_all_gradient(MatrixXf X,MatrixXf Y){
 	//initializing
-	gradient *= 0.0;
-//	std::cout<<outputsm<<std::endl;
+	float sum=0;
+	gradientw *= 0.0;
+	gradientb*=0.0;
 	MatrixXf Substraction=(outputsm-Y);
-	gradient=Substraction.transpose()*X;
-//	std::cout<<Substraction<<std::endl;
+	gradientw=Substraction.transpose()*X;
+        //biases
+	for(int i(0);i<number_of_classes;i++){
+	    sum=0;
+	    for(int j(0);j<X.rows();j++){
+	        sum+=Substraction(j,i);
+	    }
+	    gradientb(i,0)=sum;
+	}
 }
 
 
@@ -142,7 +161,8 @@ float multinomial_logistic_regression_model::computing_new_least_squared_err_mul
 
 //updating weights
 void multinomial_logistic_regression_model::updating_values_of_weigths_multi_class(float eta) {	
-	weightsm= weightsm- eta*gradient;
+	weightsm= weightsm- eta*gradientw;
+	biases=biases-eta*gradientb;
 }
 
 void multinomial_logistic_regression_model::printing_weights_multi_class() {
@@ -171,6 +191,7 @@ void multinomial_logistic_regression_model::fit(MatrixXf X,MatrixXf Y,MatrixXf e
    	        if(print){
 		    std::cout<<"("<<itr<<")"<<"Least_squared_err =\t" << least_squared_err<<std::endl;		
 		    printing_weights_multi_class();
+		    std::cout<<"biases = "<<biases<<std::endl;
 		}		
 		itr++;
 	}
