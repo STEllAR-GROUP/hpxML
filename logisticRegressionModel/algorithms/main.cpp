@@ -68,9 +68,13 @@ void implementing_binary_logistic_regression_model(){
     //learning two classes    
     std::cout <<"\n****************** Binary logistic regression model ******************\n"<<std::endl;
 
+<<<<<<< HEAD
 
     //reading first line
     std::ifstream myfile ("./../inputs/par_if.dat");
+=======
+    std::ifstream myfile ("../inputs/par_if.dat");
+>>>>>>> Stellar/submodules
     getline(myfile, line);
     std::stringstream ss(line);
     std::string str;
@@ -80,8 +84,12 @@ void implementing_binary_logistic_regression_model(){
     getline(ss, str, ' ');
     std::cout<<str<<std::endl;
     std::size_t number_of_features_two_class = std::stoi(str);
+<<<<<<< HEAD
     getline(ss, str, ' ');
     std::cout<<str<<std::endl;
+=======
+    //getline(ss, str, ' ');
+>>>>>>> Stellar/submodules
     std::size_t number_of_multi_classes = std::stoi(str);
 
 
