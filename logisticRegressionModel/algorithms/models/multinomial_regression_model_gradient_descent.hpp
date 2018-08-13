@@ -1,4 +1,5 @@
-//  Copyright (c) 2017 Zahra Khatami and Gabriel Laberge 
+//  Copyright (c) 2018 Gabriel Laberge 
+//  Copyright (c) 2017 Zahra Khatami
 //
 // Train your data, then record them in an output file stated in "retrieving_weights_multi_classes_into_text_file"
 
