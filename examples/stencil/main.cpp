@@ -16,8 +16,8 @@
 
 #include <hpx/util/high_resolution_timer.hpp>
 
-#include <hpx/parallel/executors/sequential_execution_wrapper.hpp>
-#include <hpx/parallel/seq_or_par.hpp>
+#include <hpxml/parallel/executors/sequential_execution_wrapper.hpp>
+#include <hpxml/parallel/seq_or_par.hpp>
 #include <hpx/parallel/chunk_size_determination.hpp>
 #include <hpx/parallel/prefetching_distance_determination.hpp>
 #include <hpx/parallel/executors/dynamic_chunk_size.hpp>
