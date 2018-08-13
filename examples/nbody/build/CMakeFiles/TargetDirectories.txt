@@ -1,7 +1,0 @@
-/home/zahra/Desktop/HPXML/examples/nbody/build/CMakeFiles/install/strip.dir
-/home/zahra/Desktop/HPXML/examples/nbody/build/CMakeFiles/install/local.dir
-/home/zahra/Desktop/HPXML/examples/nbody/build/CMakeFiles/install.dir
-/home/zahra/Desktop/HPXML/examples/nbody/build/CMakeFiles/list_install_components.dir
-/home/zahra/Desktop/HPXML/examples/nbody/build/CMakeFiles/rebuild_cache.dir
-/home/zahra/Desktop/HPXML/examples/nbody/build/CMakeFiles/edit_cache.dir
-/home/zahra/Desktop/HPXML/examples/nbody/build/CMakeFiles/main_exe.dir
