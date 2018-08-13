@@ -3,7 +3,7 @@
 """
 Created on Tue Jun 19 12:57:03 2018
 
-@author: gabriel
+@author: Gabriel Laberge
 """
 
 # importing libraries

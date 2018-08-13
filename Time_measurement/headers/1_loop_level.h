@@ -1,8 +1,5 @@
-//  Copyright (c) 2017 Zahra Khatami 
-//  Copyright (c) 2016 David Pfander
+//  Copyright (c) 2018 Gabriel Laberge
 //
-//  Distributed under the Boost Software License, Version 1.0. (See accompanying
-//  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 #include <stdlib.h>
 #include<ctime>
 #include <vector>
@@ -51,7 +48,7 @@ double Var(std::vector<double> times){
     return var/(times.size()-1);
 }
 
-void Nothing(int iterations,int chunk_candidate) {
+void Nothing(int iterations,double chunk_candidate) {
     
     int vector_size=iterations;
     
@@ -69,12 +66,12 @@ void Nothing(int iterations,int chunk_candidate) {
     for(int j(0);j<Nrep+1;j++){
         if(chunk_candidate*vector_size>1){
             t_chunk=mysecond();
-            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(vector_size*chunk_candidate)), time_range.begin(), time_range.end(), f);
+            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::execution::dynamic_chunk_size(vector_size*chunk_candidate)), time_range.begin(), time_range.end(), f);
             elapsed_time= mysecond() - t_chunk;
 	}
         else{
 	    t_chunk=mysecond();
-            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(1)), time_range.begin(), time_range.end(), f);
+            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::execution::dynamic_chunk_size(1)), time_range.begin(), time_range.end(), f);
             elapsed_time= mysecond() - t_chunk;
 	}
 	if(j!=0){
@@ -88,7 +85,7 @@ void Nothing(int iterations,int chunk_candidate) {
    
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
-void Swap(int iterations,int chunk_candidate) {
+void Swap(int iterations,float chunk_candidate) {
     
     int vector_size=iterations;
     std::vector<double> A;
@@ -114,12 +111,12 @@ void Swap(int iterations,int chunk_candidate) {
     for(int j(0);j<Nrep+1;j++){
         if(chunk_candidate*vector_size>1){
             t_chunk=mysecond();
-            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(vector_size*chunk_candidate)), time_range.begin(), time_range.end(), f);
+            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::execution::dynamic_chunk_size(vector_size*chunk_candidate)), time_range.begin(), time_range.end(), f);
             elapsed_time= mysecond() - t_chunk;
 	}
         else{
 	    t_chunk=mysecond();
-            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(1)), time_range.begin(), time_range.end(), f);
+            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::execution::dynamic_chunk_size(1)), time_range.begin(), time_range.end(), f);
             elapsed_time= mysecond() - t_chunk;
 	}
 	if(j!=0){
@@ -134,7 +131,7 @@ void Swap(int iterations,int chunk_candidate) {
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////// 	
-void Stream(int iterations,int chunk_candidate) {
+void Stream(int iterations,float chunk_candidate) {
         
     int vector_size=iterations;
     std::vector<double> A;
@@ -163,12 +160,12 @@ void Stream(int iterations,int chunk_candidate) {
     for(int j(0);j<Nrep+1;j++){
         if(chunk_candidate*vector_size>1){
             t_chunk=mysecond();
-            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(vector_size*chunk_candidate)), time_range.begin(), time_range.end(), f);
+            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::execution::dynamic_chunk_size(vector_size*chunk_candidate)), time_range.begin(), time_range.end(), f);
             elapsed_time= mysecond() - t_chunk;
 	}
         else{
 	    t_chunk=mysecond();
-            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(1)), time_range.begin(), time_range.end(), f);
+            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::execution::dynamic_chunk_size(1)), time_range.begin(), time_range.end(), f);
             elapsed_time= mysecond() - t_chunk;
 	}
 	if(j!=0){
@@ -178,3 +175,45 @@ void Stream(int iterations,int chunk_candidate) {
     std::cout<<Mean(times)<<","<<Var(times)<<std::endl;
  
 }
+
+/////////////////////////////////////////////////
+void Stencil(int iterations,double chunk_candidate) {
+        
+    int vector_size=iterations;
+    std::vector<double> A;
+    std::vector<double> B(iterations);
+    vector_generator(A,vector_size,10,100);
+    
+    auto f=[&](int i){
+        if(0<i && i<iterations-1){
+	    B[i]=1/2*A[i-1]+A[i]+1/2*A[i+1];
+	}   
+    };
+
+    auto time_range = boost::irange(0, vector_size);
+    double t_chunk=0.0;
+    double Nrep=10;
+    double mean_time;
+    double elapsed_time;
+    std::vector<double> times(Nrep);
+    mean_time=0;
+    for(int j(0);j<Nrep+1;j++){
+        if(chunk_candidate*vector_size>1){
+            t_chunk=mysecond();
+            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::execution::dynamic_chunk_size(vector_size*chunk_candidate)), time_range.begin(), time_range.end(), f);
+            elapsed_time= mysecond() - t_chunk;
+	}
+        else{
+	    t_chunk=mysecond();
+            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::execution::dynamic_chunk_size(1)), time_range.begin(), time_range.end(), f);
+            elapsed_time= mysecond() - t_chunk;
+	}
+	if(j!=0){
+	    times[j-1]=elapsed_time;
+ 	}
+    }
+    std::cout<<Mean(times)<<","<<Var(times)<<std::endl;
+
+}
+
+

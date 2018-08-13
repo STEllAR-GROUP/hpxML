@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+#Developpers Gabriel Laberge 
+
+
 # importing libraries
 import numpy as np
 from sklearn import svm,neural_network,neighbors

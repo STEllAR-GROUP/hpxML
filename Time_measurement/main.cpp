@@ -1,6 +1,4 @@
-//  Copyright (c) 2017 Zahra Khatami 
-//  Copyright (c) 2016 David Pfander
-//
+// Copyright (c) 2018 Gabriel Laberge
 //  Distributed under the Boost Software License, Version 1.0. (See accompanying
 //  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 #include <stdlib.h>
@@ -54,8 +52,11 @@ int hpx_main(int argc, char* argv[])
     else if(std::strncmp(argv[1],"Tensor_generator",16)==0){
         Tensor_generator(iterations,chunk_candidate);
     }
-    else if(std::strncmp(argv[1],"Max",16)==0){
+    else if(std::strncmp(argv[1],"Max",3)==0){
         Max(iterations,chunk_candidate);
+    }
+    else if(std::strncmp(argv[1],"Stencil",7)==0){
+       Stencil(iterations,chunk_candidate);
     }
     else{ std::cout<<"Function not found"<<std::endl;}
     return hpx::finalize();

@@ -1,8 +1,5 @@
-//  Copyright (c) 2017 Zahra Khatami 
-//  Copyright (c) 2016 David Pfander
-//
-//  Distributed under the Boost Software License, Version 1.0. (See accompanying
-//  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+//  Copyright (c) 2018 Gabriel Laberge 
+
 #include <stdlib.h>
 #include<cmath>
 #include<ctime>
@@ -19,7 +16,7 @@
 #include <iterator>
 #include <hpx/parallel/executors/dynamic_chunk_size.hpp>
 
-#define lambda_inner_iteration 0                                                 
+#define lambda_inner_iteration 0                                                                 
 
 namespace hpx { namespace parallel {struct adaptive_chunk_size {}; } }
 

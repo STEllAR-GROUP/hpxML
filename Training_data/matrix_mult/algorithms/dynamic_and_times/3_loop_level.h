@@ -152,12 +152,12 @@ void Matrix_Matrix_Mult(int iterations,std::vector<double> chunk_candidates) {
 	for(int j(0);j<Nrep+1;j++){
 	    if(chunk_candidates[i]*vector_size>1){
 	    t_chunk=mysecond();
-            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(vector_size*chunk_candidates[i])), time_range.begin(), time_range.end(), f);
+            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::execution::dynamic_chunk_size(vector_size*chunk_candidates[i])), time_range.begin(), time_range.end(), f);
             elapsed_time= mysecond() - t_chunk;
 	    }
 	    else{
 	    t_chunk=mysecond();
-            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(1)), time_range.begin(), time_range.end(), f);
+            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::execution::dynamic_chunk_size(1)), time_range.begin(), time_range.end(), f);
             elapsed_time= mysecond() - t_chunk;
 	    }
 	    if(j!=0){
@@ -198,12 +198,12 @@ void Max(int iterations,std::vector<double> chunk_candidates) {
 	for(int j(0);j<Nrep+1;j++){
 	    if(chunk_candidates[i]*vector_size>1){
 	    t_chunk=mysecond();
-            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(vector_size*chunk_candidates[i])), time_range.begin(), time_range.end(), f);
+            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::execution::dynamic_chunk_size(vector_size*chunk_candidates[i])), time_range.begin(), time_range.end(), f);
             elapsed_time= mysecond() - t_chunk;
 	    }
 	    else{
 	    t_chunk=mysecond();
-            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(1)), time_range.begin(), time_range.end(), f);
+            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::execution::dynamic_chunk_size(1)), time_range.begin(), time_range.end(), f);
             elapsed_time= mysecond() - t_chunk;
 	    }
 	    if(j!=0){

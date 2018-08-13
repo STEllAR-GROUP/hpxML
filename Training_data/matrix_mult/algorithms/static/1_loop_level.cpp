@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include <vector>
 #include <hpx/hpx_init.hpp>
+//Copyright (c) 2018 Gabriel Laberge
+
 #include <hpx/parallel/algorithms/for_each.hpp>
 #include <hpx/util/high_resolution_timer.hpp>
 #include <boost/range/irange.hpp>
@@ -23,6 +25,7 @@ void vector_generator(std::vector<T> &A,int size,double min,double max){
         A.push_back(random_double(min,max));
     }
 }
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 void Nothing(int iterations,std::vector<double> chunk_candidates) {
     int vector_size=iterations;  
@@ -81,6 +84,26 @@ void Stream(int iterations,std::vector<double> chunk_candidates) {
      //feature extraction Stream
 // hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::adaptive_chunk_size()), time_range.begin(), time_range.end(), f);
 }
+
+
+/////////////////////////////////////////////////
+void Stencil(int iterations,std::vector<double> chunk_candidates) {
+        
+    int vector_size=iterations;
+    std::vector<double> A;
+    std::vector<double B(iterations);
+    vector_generator(A,vector_size,10,100);
+
+    
+    auto f=[&](int i){
+        if(0<i && i<iterations-1){
+	    B[i]=1/2*A[i-1]+A[i]+1/2*A[i+1];
+	}   
+    };
+    //feature extraction Stencil  
+// hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::adaptive_chunk_size()), time_range.begin(), time_range.end(), f);
+}
+
 
 int hpx_main(int argc, char* argv[])
 {

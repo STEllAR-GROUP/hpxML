@@ -1,5 +1,4 @@
-//  Copyright (c) 2017 Zahra Khatami 
-//  Copyright (c) 2016 David Pfander
+//  Copyright (c) 2018 Gabriel Laberge 
 //
 //  Distributed under the Boost Software License, Version 1.0. (See accompanying
 //  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -74,12 +73,12 @@ void Matrix_Vector_Mult(int iterations,std::vector<double> chunk_candidates) {
 	for(int j(0);j<Nrep+1;j++){
 	    if(chunk_candidates[i]*vector_size>1){
 	    t_chunk=mysecond();
-            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(vector_size*chunk_candidates[i])), time_range.begin(), time_range.end(), f);
+            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::execution::dynamic_chunk_size(vector_size*chunk_candidates[i])), time_range.begin(), time_range.end(), f);
             elapsed_time= mysecond() - t_chunk;
 	    }
 	    else{
 	    t_chunk=mysecond();
-            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(1)), time_range.begin(), time_range.end(), f);
+            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::execution::dynamic_chunk_size(1)), time_range.begin(), time_range.end(), f);
             elapsed_time= mysecond() - t_chunk;
 	    }
 	    if(j!=0){
@@ -122,12 +121,12 @@ void Diadic_Prod(int iterations,std::vector<double> chunk_candidates) {
 	for(int j(0);j<Nrep+1;j++){
 	    if(chunk_candidates[i]*vector_size>1){
 	    t_chunk=mysecond();
-            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(vector_size*chunk_candidates[i])), time_range.begin(), time_range.end(), f);
+            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::execution::dynamic_chunk_size(vector_size*chunk_candidates[i])), time_range.begin(), time_range.end(), f);
             elapsed_time= mysecond() - t_chunk;
 	    }
 	    else{
 	    t_chunk=mysecond();
-            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(1)), time_range.begin(), time_range.end(), f);
+            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::execution::dynamic_chunk_size(1)), time_range.begin(), time_range.end(), f);
             elapsed_time= mysecond() - t_chunk;
 	    }
 	    if(j!=0){
@@ -165,12 +164,12 @@ void Diadic_Prod(int iterations,std::vector<double> chunk_candidates) {
 	for(int j(0);j<Nrep+1;j++){
 	    if(chunk_candidates[i]*vector_size>1){
 	    t_chunk=mysecond();
-            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(vector_size*chunk_candidates[i])), time_range.begin(), time_range.end(), f);
+            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::execution::dynamic_chunk_size(vector_size*chunk_candidates[i])), time_range.begin(), time_range.end(), f);
             elapsed_time= mysecond() - t_chunk;
 	    }
 	    else{
 	    t_chunk=mysecond();
-            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(1)), time_range.begin(), time_range.end(), f);
+            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::execution::dynamic_chunk_size(1)), time_range.begin(), time_range.end(), f);
             elapsed_time= mysecond() - t_chunk;
 	    }
 	    if(j!=0){

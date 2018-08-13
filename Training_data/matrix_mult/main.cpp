@@ -1,3 +1,4 @@
+// Copyright (c) 2018 Gabriel Laberge
 //  Copyright (c) 2017 Zahra Khatami 
 //  Copyright (c) 2016 David Pfander
 //
@@ -29,25 +30,19 @@ int hpx_main(int argc, char* argv[])
     // Initialization 
     //
     int iterations=strtol(argv[2],NULL,10);
-    std::vector<double> chunk_candidates(6);
-    chunk_candidates[0]=0.005;chunk_candidates[1]=0.01;chunk_candidates[2]=0.05;chunk_candidates[3]=0.1;chunk_candidates[4]=0.2;
-    chunk_candidates[5]=0.5;/*;chunk_candidates[6]=0.5;/*chunk_candidates[7]=0.5;chunk_candidates[8]=0.005;chunk_candidates[9]=0.0025;*/
-    
+    std::vector<double> chunk_candidates(5);
+    chunk_candidates[0]=0.5;chunk_candidates[1]=0.125;chunk_candidates[2]=0.03125;chunk_candidates[3]=0.0078125;chunk_candidates[4]=0.001953125;
+    /*chunk_candidates[5]=0.5;;chunk_candidates[6]=0.5;/*chunk_candidates[7]=0.5;chunk_candidates[8]=0.005;chunk_candidates[9]=0.0025;*/
     srand(time(NULL));
-    if(std::strncmp(argv[1],"Rand_Pond_Sum",13)==0){    
-        Rand_Pond_Sum(iterations,chunk_candidates); 
+    
+    if(std::strncmp(argv[1],"Nothing",7)==0){    
+        Nothing(iterations,chunk_candidates); 
     }   
     else if(std::strncmp(argv[1],"Swap",4)==0){
 	Swap(iterations,chunk_candidates);    
     }
-    else if(std::strncmp(argv[1],"Finite_Diff_Step",16)==0){
-	Finite_Diff_Step(iterations,chunk_candidates);    
-    }
     else if(std::strncmp(argv[1],"Stream",6)==0){
 	Stream(iterations,chunk_candidates);   
-    }
-    else if(std::strncmp(argv[1],"Max_Sum_Row",11)==0){
-        Max_Sum_Row(iterations,chunk_candidates);
     }
     else if(std::strncmp(argv[1],"Matrix_Vector_Mult",18)==0){
 	Matrix_Vector_Mult(iterations,chunk_candidates);    
@@ -59,15 +54,18 @@ int hpx_main(int argc, char* argv[])
 	Cosine(iterations,chunk_candidates);   
     }
 
-    else if(std::strncmp(argv[1],"Triples",7)==0){
-	Triples(iterations,chunk_candidates);    
-    }
     else if(std::strncmp(argv[1],"Matrix_Matrix_Mult",20)==0){
         Matrix_Matrix_Mult(iterations,chunk_candidates);
     }
     else if(std::strncmp(argv[1],"Tensor_generator",16)==0){
         Tensor_generator(iterations,chunk_candidates);
     
+    }
+    else if(std::strncmp(argv[1],"Stencil",7)==0){
+        Stencil(iterations,chunk_candidates);
+    }
+    else if(std::strncmp(argv[1],"Max",3)==0){
+    	Max(iterations,chunk_candidates);
     }
     else{ std::cout<<"Function not found"<<std::endl;}
 

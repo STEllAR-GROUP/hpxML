@@ -1,8 +1,5 @@
-//  Copyright (c) 2017 Zahra Khatami 
-//  Copyright (c) 2016 David Pfander
+//  Copyright (c) 2018 Gabriel Laberge
 //
-//  Distributed under the Boost Software License, Version 1.0. (See accompanying
-//  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 #include <stdlib.h>
 #include<ctime>
 #include <vector>
@@ -113,12 +110,12 @@ void Matrix_Matrix_Mult(int iterations,float chunk_candidate) {
     for(int j(0);j<Nrep+1;j++){
         if(chunk_candidate*vector_size>1){
             t_chunk=mysecond();
-            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(vector_size*chunk_candidate)), time_range.begin(), time_range.end(), f);
+            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::execution::dynamic_chunk_size(vector_size*chunk_candidate)), time_range.begin(), time_range.end(), f);
             elapsed_time= mysecond() - t_chunk;
 	}
         else{
 	    t_chunk=mysecond();
-            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(1)), time_range.begin(), time_range.end(), f);
+            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::execution::dynamic_chunk_size(1)), time_range.begin(), time_range.end(), f);
             elapsed_time= mysecond() - t_chunk;
 	}
 	if(j!=0){
@@ -130,7 +127,7 @@ void Matrix_Matrix_Mult(int iterations,float chunk_candidate) {
 }
 
 
-void Max(int iterations,int chunk_candidate) {
+void Max(int iterations,float chunk_candidate) {
          
     int vector_size=iterations;
     auto time_range = boost::irange(0, vector_size);
@@ -157,12 +154,12 @@ void Max(int iterations,int chunk_candidate) {
     for(int j(0);j<Nrep+1;j++){
         if(chunk_candidate*vector_size>1){
             t_chunk=mysecond();
-            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(vector_size*chunk_candidate)), time_range.begin(), time_range.end(), f);
+            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::execution::dynamic_chunk_size(vector_size*chunk_candidate)), time_range.begin(), time_range.end(), f);
             elapsed_time= mysecond() - t_chunk;
 	}
         else{
 	    t_chunk=mysecond();
-            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(1)), time_range.begin(), time_range.end(), f);
+            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::execution::dynamic_chunk_size(1)), time_range.begin(), time_range.end(), f);
             elapsed_time= mysecond() - t_chunk;
 	}
 	if(j!=0){
