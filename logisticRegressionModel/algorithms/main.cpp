@@ -100,7 +100,7 @@ void implementing_binary_logistic_regression_model(){
 }
 
 void implementing_multinomial_logistic_regression_model(){
-    float threshold = 0.05;
+    float threshold = 0.1;
     std::string line;
     
     //learning multi classes    

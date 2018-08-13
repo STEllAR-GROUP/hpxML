@@ -18,11 +18,11 @@
 #include <hpx/parallel/util/numa_allocator.hpp>
 
 //new classes for implementing machine learning techniques
-#include <hpx/parallel/seq_or_par.hpp>
-#include <hpx/parallel/chunk_size_determination.hpp>
-#include <hpx/parallel/prefetching_distance_determination.hpp>
+#include <hpxml/parallel/seq_or_par.hpp.cpp>
+#include <hpxml/parallel/chunk_size_determination.hpp>
+#include <hpxml/parallel/prefetching_distance_determination.hpp>
 #include <hpx/parallel/executors/dynamic_chunk_size.hpp>
-#include <hpx/parallel/executors/adaptive_chunk_size.hpp>
+#include <hpxml/parallel/executors/adaptive_chunk_size.hpp>
 
 #include <boost/format.hpp>
 #include <boost/range/functions.hpp>
