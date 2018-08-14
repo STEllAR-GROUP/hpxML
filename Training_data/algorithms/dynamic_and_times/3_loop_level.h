@@ -37,7 +37,7 @@ double var(std::vector<double> times){
 
 
 
-void Matrix_Matrix_Mult(int iterations,std::vector<double> chunk_candidates) {
+void Matrix_Matrix_Mult(int iterations,std::vector<double> chunk_candidates,bool Print_dynamic_features) {
          
 
     int vector_size=iterations;
@@ -119,29 +119,10 @@ void Matrix_Matrix_Mult(int iterations,std::vector<double> chunk_candidates) {
         }
     };
 
-
-   std::cout<<vector_size<<" "<<hpx::get_os_thread_count()<<" ";
-   /* double t_chunk=0.0;
-    std::vector<double> means(10);
-    double t_mean;
-    double elapsed_time;
-    for (int i(0);i<chunk_candidates.size();i++){
-	for(int j(0);j<10;j++){
-	    t_mean=0;
-	    for(int k(0);k<repetitions+1;k++){
-	        t_chunk=mysecond();
-                hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::dynamic_chunk_size(vector_size*chunk_candidates[i])), time_range.begin(), time_range.end(), f);
-	       elapsed_time=mysecond()-t_chunk;
-	        if(k!=0){
-                    t_mean+=elapsed_time;
-	        }
-	    }
-	    t_mean/=repetitions;
-	    means[j]=t_mean;
-        }
-    std::cout<<var(means)<<" ";
+    if (Print_dynamic_features) {
+        std::cout<<vector_size<<" "<<hpx::get_os_thread_count()<<" ";
     }
-    std::cout<<""<<std::endl;*/
+
 
     double t_chunk=0.0;
     double Nrep=10;
@@ -169,7 +150,7 @@ void Matrix_Matrix_Mult(int iterations,std::vector<double> chunk_candidates) {
     std::cout<<""<<std::endl;
 
 }
-void Max(int iterations,std::vector<double> chunk_candidates) {
+void Max(int iterations,std::vector<double> chunk_candidates,bool Print_dynamic_features) {
          
     int vector_size=iterations;
     auto time_range = boost::irange(0, vector_size);
@@ -186,8 +167,9 @@ void Max(int iterations,std::vector<double> chunk_candidates) {
 	}	    
     };
 
-
-   std::cout<<vector_size<<" "<<hpx::get_os_thread_count()<<" ";
+    if (Print_dynamic_features) {
+        std::cout<<vector_size<<" "<<hpx::get_os_thread_count()<<" ";
+    }
 
     double t_chunk=0.0;
     double Nrep=10;

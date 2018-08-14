@@ -32,7 +32,7 @@ int factorial(int n){
 }
 
     
-void Matrix_Vector_Mult(int iterations,std::vector<double> chunk_candidates) {
+void Matrix_Vector_Mult(int iterations,std::vector<double> chunk_candidates,bool Print_dynamic_features) {
    
     int vector_size=iterations;
     int matrix_size=iterations*iterations;
@@ -60,8 +60,10 @@ void Matrix_Vector_Mult(int iterations,std::vector<double> chunk_candidates) {
 	    C[i+3]=result4;
 	}
     };
-   
-   std::cout<<vector_size<<" "<<hpx::get_os_thread_count()<<" ";
+
+    if (Print_dynamic_features) {
+        std::cout<<vector_size<<" "<<hpx::get_os_thread_count()<<" ";
+    } 
 
     auto time_range=boost::irange(0,vector_size);
     int Nrep=10;
@@ -93,7 +95,7 @@ void Matrix_Vector_Mult(int iterations,std::vector<double> chunk_candidates) {
 
 
 
-void Diadic_Prod(int iterations,std::vector<double> chunk_candidates) {
+void Diadic_Prod(int iterations,std::vector<double> chunk_candidates,bool Print_dynamic_features) {
    
     int vector_size=iterations;
     int matrix_size=iterations*iterations;
@@ -108,8 +110,9 @@ void Diadic_Prod(int iterations,std::vector<double> chunk_candidates) {
 	}
     };
    
-   std::cout<<vector_size<<" "<<hpx::get_os_thread_count()<<" ";
-
+    if (Print_dynamic_features) {
+        std::cout<<vector_size<<" "<<hpx::get_os_thread_count()<<" ";
+    } 
 
     auto time_range=boost::irange(0,vector_size);
     double t_chunk=0.0;
@@ -140,7 +143,7 @@ void Diadic_Prod(int iterations,std::vector<double> chunk_candidates) {
 }
 
 
- void Cosine(int iterations,std::vector<double> chunk_candidates) {
+ void Cosine(int iterations,std::vector<double> chunk_candidates,bool Print_dynamic_features) {
    
     int vector_size=iterations;
     std::vector<double> A,B(vector_size,0);
@@ -151,8 +154,9 @@ void Diadic_Prod(int iterations,std::vector<double> chunk_candidates) {
 	}
     };
    
-   std::cout<<vector_size<<" "<<hpx::get_os_thread_count()<<" ";
-
+    if (Print_dynamic_features) {
+        std::cout<<vector_size<<" "<<hpx::get_os_thread_count()<<" ";
+    } 
 
     auto time_range=boost::irange(0,vector_size);
     double t_chunk=0.0;

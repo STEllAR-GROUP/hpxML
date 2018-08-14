@@ -33,14 +33,15 @@ void vector_generator(std::vector<T> &A,int size,double min,double max){
     }
 }
 
-void Nothing(int iterations,std::vector<double> chunk_candidates) {
+void Nothing(int iterations,std::vector<double> chunk_candidates,bool Print_dynamic_features) {
     
     int vector_size=iterations;
     
     auto f=[&](int i){
     };
-  
-    std::cout<<vector_size<<" "<<hpx::get_os_thread_count()<<" ";
+    if (Print_dynamic_features) {
+        std::cout<<vector_size<<" "<<hpx::get_os_thread_count()<<" ";
+    }
 
     auto time_range=boost::irange(0,vector_size);
     int Nrep=10;
@@ -72,7 +73,7 @@ void Nothing(int iterations,std::vector<double> chunk_candidates) {
    
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
-void Swap(int iterations,std::vector<double> chunk_candidates) {
+void Swap(int iterations,std::vector<double> chunk_candidates,bool Print_dynamic_features) {
     
     int vector_size=iterations;
     std::vector<double> A;
@@ -87,7 +88,9 @@ void Swap(int iterations,std::vector<double> chunk_candidates) {
         B[i]=container;
     };
   
-    std::cout<<vector_size<<" "<<hpx::get_os_thread_count()<<" ";
+    if (Print_dynamic_features) {
+        std::cout<<vector_size<<" "<<hpx::get_os_thread_count()<<" ";
+    }
 
     auto time_range=boost::irange(0,vector_size);
     double t_chunk=0.0;
@@ -120,7 +123,7 @@ void Swap(int iterations,std::vector<double> chunk_candidates) {
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////// 	
-void Stream(int iterations,std::vector<double> chunk_candidates) {
+void Stream(int iterations,std::vector<double> chunk_candidates,bool Print_dynamic_features) {
         
     int vector_size=iterations;
     std::vector<double> A;
@@ -137,8 +140,11 @@ void Stream(int iterations,std::vector<double> chunk_candidates) {
 	C[i]=A[i]+B[i];
 	A[i]=B[i]+k*C[i];
     };
-  
-    std::cout<<vector_size<<" "<<hpx::get_os_thread_count()<<" ";
+
+    if (Print_dynamic_features) {
+        std::cout<<vector_size<<" "<<hpx::get_os_thread_count()<<" ";
+    }
+
     auto time_range=boost::irange(0,vector_size);
     double t_chunk=0.0;
     int Nrep=10;
@@ -167,7 +173,7 @@ void Stream(int iterations,std::vector<double> chunk_candidates) {
 }
 
 /////////////////////////////////////////////////
-void Stencil(int iterations,std::vector<double> chunk_candidates) {
+void Stencil(int iterations,std::vector<double> chunk_candidates,bool Print_dynamic_features) {
         
     int vector_size=iterations;
     std::vector<double> A;
@@ -180,8 +186,11 @@ void Stencil(int iterations,std::vector<double> chunk_candidates) {
 	    B[i]=1/2*A[i-1]+A[i]+1/2*A[i+1];
 	}   
     };
-  
-    std::cout<<vector_size<<" "<<hpx::get_os_thread_count()<<" ";
+
+    if (Print_dynamic_features) {
+        std::cout<<vector_size<<" "<<hpx::get_os_thread_count()<<" ";
+    } 
+    
     auto time_range=boost::irange(0,vector_size);
     double t_chunk=0.0;
     int Nrep=10;

@@ -16,47 +16,48 @@
 #include <iterator>
 #include <hpx/parallel/executors/dynamic_chunk_size.hpp>
 #include <hpx/runtime/get_os_thread_count.hpp>
-#include "headers/1_loop_level.h"
-#include "headers/2_loop_level.h"
-#include "headers/3_loop_level.h"
+#include "../Training_data/algorithms/dynamic_and_times/1_loop_level.h"
+#include "../Training_data/algorithms/dynamic_and_times/2_loop_level.h"
+#include "../Training_data/algorithms/dynamic_and_times/3_loop_level.h"
+#include "../Training_data/algorithms/dynamic_and_times/4_loop_level.h"
 #include<string>
-#include "headers/4_loop_level.h"
 
 int hpx_main(int argc, char* argv[])
 {
     // Initialization 
     int iterations=strtol(argv[2],NULL,10);
-    float chunk_candidate=strtof(argv[3],NULL);
+    std::vector<double> chunk_candidate(1);
+    chunk_candidate[0]=strtof(argv[3],NULL);
 
     if(std::strncmp(argv[1],"Nothing",7)==0){
-        Nothing(iterations,chunk_candidate);
+        Nothing(iterations,chunk_candidate,false);
     }
     else if(std::strncmp(argv[1],"Swap",4)==0){
-	Swap(iterations,chunk_candidate);    
+	Swap(iterations,chunk_candidate,false);    
     }
     else if(std::strncmp(argv[1],"Stream",6)==0){
-	Stream(iterations,chunk_candidate);   
+	Stream(iterations,chunk_candidate,false);   
     }
     else if(std::strncmp(argv[1],"Matrix_Vector_Mult",18)==0){
-	Matrix_Vector_Mult(iterations,chunk_candidate);    
+	Matrix_Vector_Mult(iterations,chunk_candidate,false);    
     }
     else if(std::strncmp(argv[1],"Diadic_Prod",11)==0){
-	Diadic_Prod(iterations,chunk_candidate);   
+	Diadic_Prod(iterations,chunk_candidate,false);   
     }
     else if(std::strncmp(argv[1],"Cosine",6)==0){
-	Cosine(iterations,chunk_candidate);   
+	Cosine(iterations,chunk_candidate,false);   
     }
     else if(std::strncmp(argv[1],"Matrix_Matrix_Mult",20)==0){
-        Matrix_Matrix_Mult(iterations,chunk_candidate);
+        Matrix_Matrix_Mult(iterations,chunk_candidate,false);
     }
     else if(std::strncmp(argv[1],"Tensor_generator",16)==0){
-        Tensor_generator(iterations,chunk_candidate);
+        Tensor_generator(iterations,chunk_candidate,false);
     }
     else if(std::strncmp(argv[1],"Max",3)==0){
-        Max(iterations,chunk_candidate);
+        Max(iterations,chunk_candidate,false);
     }
     else if(std::strncmp(argv[1],"Stencil",7)==0){
-       Stencil(iterations,chunk_candidate);
+       Stencil(iterations,chunk_candidate,false);
     }
     else{ std::cout<<"Function not found"<<std::endl;}
     return hpx::finalize();

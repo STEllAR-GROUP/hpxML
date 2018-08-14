@@ -1,3 +1,4 @@
+//  Copyright (c) 2018 Gabriel Laberge
 //  Copyright (c) 2017 Zahra Khatami 
 //  Copyright (c) 2016 David Pfander
 //
@@ -19,7 +20,7 @@
 #include <iterator>
 #include <hpx/parallel/executors/dynamic_chunk_size.hpp>
 
-void Tensor_generator(int iterations,std::vector<double> chunk_candidates) {
+void Tensor_generator(int iterations,std::vector<double> chunk_candidates,bool Print_dynamic_features) {
         
     int vector_size=iterations;
     auto time_range = boost::irange(0, iterations);
@@ -34,8 +35,10 @@ void Tensor_generator(int iterations,std::vector<double> chunk_candidates) {
 	    }
 	}
     };
-    
-   std::cout<<vector_size<<" "<<hpx::get_os_thread_count()<<" ";
+
+    if (Print_dynamic_features){ 
+        std::cout<<vector_size<<" "<<hpx::get_os_thread_count()<<" ";
+    }
 
     double t_chunk=0.0;
     double Nrep=10;
