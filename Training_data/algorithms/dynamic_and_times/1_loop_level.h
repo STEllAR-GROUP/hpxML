@@ -93,9 +93,7 @@ void Swap(int iterations, std::vector<double> chunk_candidates, bool Print_dynam
     
     auto f=[&](int i)
     {
-        double container = A[i];
-        A[i] = B[i];
-        B[i] = container;
+        std::swap(A[i],B[i]);
     };
   
     if (Print_dynamic_features) 

@@ -54,9 +54,7 @@ void Swap(int iterations, std::vector<double> chunk_candidates)
     auto time_range = boost::irange(0, vector_size); 
     auto f=[&](int i)
     {
-        double container = A[i];
-        A[i] = B[i];
-        B[i] = container;
+        swap(A[i],B[i]);
     };
   
   //feature extraction Swap
