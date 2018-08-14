@@ -23,7 +23,6 @@ void Tensor_generator(int iterations, std::vector<double> chunk_candidates, bool
 {
         
     int vector_size = iterations;
-    auto time_range = boost::irange(0, iterations);
     
     std::vector<std::vector<double>> A(iterations*iterations, std::vector<double>(iterations*iterations, 0));
     auto f = [&](int i){

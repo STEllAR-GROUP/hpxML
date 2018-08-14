@@ -1,52 +1,57 @@
 //  Copyright (c) 2018 Gabriel Laberge
 
-#include <stdlib.h>
-#include<ctime>
+#include <cstdlib>
+#include <ctime>
 #include <vector>
-#include<fstream>
-#include <hpx/hpx_init.hpp>
-#include <hpx/parallel/algorithms/for_each.hpp>
-#include <hpx/util/high_resolution_timer.hpp>
-#include <boost/range/irange.hpp>
-#include <vector>
+#include <fstream>
 #include <initializer_list>
 #include <algorithm>
 #include <typeinfo>
 #include <iterator>
+#include <hpx/hpx_init.hpp>
+#include <hpx/parallel/algorithms/for_each.hpp>
 #include <hpx/parallel/executors/dynamic_chunk_size.hpp>
+#include <hpx/util/high_resolution_timer.hpp>
+#include <boost/range/irange.hpp>
 
 #define lambda_inner_iteration 0                                                                                                                                                                                                                               
 
 namespace hpx { namespace parallel {struct adaptive_chunk_size {}; } }
 
 
-double random_double(double min,double max){
-    return (min+1)+(((double) rand())/(double) RAND_MAX)*(max-(min+1));
+double random_double(double min, double max)
+{
+    return (min + 1) + (((double) rand())/(double) RAND_MAX)*(max - (min + 1));
 }
 
 template<typename T>
-void vector_generator(std::vector<T> &A,int size,double min,double max){
-    for(std::size_t r = 0; r < size; r++) {
-        A.push_back(random_double(min,max));
+void vector_generator(std::vector<T> &A, int size, double min, double max)
+{
+    for(std::size_t r = 0; r < size; r++)
+    {
+        A.push_back(random_double(min, max));
     }
 }
 
 
-void Matrix_Matrix_Mult(int iterations,std::vector<double> chunk_candidates) {
+void Matrix_Matrix_Mult(int iterations, std::vector<double> chunk_candidates) 
+{
          
-
-    int vector_size=iterations;
-    int matrix_size=iterations*iterations;
+    int vector_size = iterations;
+    int matrix_size = iterations*iterations;
     auto time_range = boost::irange(0, vector_size);
     std::vector<double> A;
     std::vector<double> B;
     std::vector<double> C(matrix_size);
-    vector_generator(A,matrix_size,10,100);
-    vector_generator(B,matrix_size,10,100);   
+    vector_generator(A, matrix_size, 10, 100);
+    vector_generator(B, matrix_size, 10, 100);   
 
-    auto f = [&](int i) {
-        if(i % 4 == 0) {
-            for (int j = 0; j < lambda_inner_iteration; j += 4) {
+    auto f = [&](int i) 
+    {
+        if(i % 4 == 0) 
+        {
+            for (int j = 0; j < lambda_inner_iteration; j += 4) 
+            {
 
                 double result1 = 0.0;
                 double result2 = 0.0;
@@ -68,7 +73,8 @@ void Matrix_Matrix_Mult(int iterations,std::vector<double> chunk_candidates) {
                 double result15 = 0.0;
                 double result16 = 0.0;
 
-                for (int k = 0; k < lambda_inner_iteration; k++) {                  
+                for (int k = 0; k < lambda_inner_iteration; k++) 
+                {                  
 
                     result1 += A[i * vector_size + k] * B[j * vector_size + k];
                     result2 += A[i * vector_size + k] * B[(j + 1) * vector_size + k];
@@ -120,21 +126,24 @@ void Matrix_Matrix_Mult(int iterations,std::vector<double> chunk_candidates) {
 
 }
 
-void Max(int iterations,std::vector<double> chunk_candidates) {
+void Max(int iterations,std::vector<double> chunk_candidates) 
+{
          
-    int vector_size=iterations;
+    int vector_size = iterations;
     auto time_range = boost::irange(0, vector_size);
     std::vector<double> A;
-    vector_generator(A,vector_size*100*100,10,1000);   
-    std::vector<double> max(vector_size,0);
-    auto f = [&](int i) {
-	for(int j(0);j<100;j++){
-	    for(int k(0);k<100;k++){
-	        if(A[i+vector_size*j+vector_size*100*k]>max[i]){
-		    max[i]=max[i];
-		}
-	    }
-	}	    
+    vector_generator(A,vector_size*100*100, 10, 1000);   
+    std::vector<double> max(vector_size, 0);
+    auto f = [&](int i) 
+    {
+	    for(int j(0); j < 100; j++){
+	        for(int k(0); k < 100; k++){
+	            if(A[i + vector_size*j + vector_size*100*k] > max[i])
+                {
+		        max[i] = max[i+vector_size*j+vector_size*100*k];
+		        }
+	        }
+    	}	    
     };
     //feature extraction Max
 //  hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::adaptive_chunk_size()), time_range.begin(), time_range.end(), f);

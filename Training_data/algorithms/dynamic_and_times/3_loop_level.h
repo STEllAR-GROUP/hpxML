@@ -46,7 +46,6 @@ void Matrix_Matrix_Mult(int iterations, std::vector<double> chunk_candidates, bo
          
     int vector_size = iterations;
     int matrix_size = iterations*iterations;
-    auto time_range = boost::irange(0, vector_size);
     std::vector<double> A;
     std::vector<double> B;
     std::vector<double> C(matrix_size);
@@ -166,7 +165,6 @@ void Max(int iterations, std::vector<double> chunk_candidates, bool Print_dynami
 {
          
     int vector_size = iterations;
-    auto time_range = boost::irange(0, vector_size);
     std::vector<double> A;
     vector_generator(A,vector_size*100*100, 10, 1000);   
     std::vector<double> max(vector_size, 0);
@@ -178,7 +176,7 @@ void Max(int iterations, std::vector<double> chunk_candidates, bool Print_dynami
             {
                 if(A[i+vector_size*j+vector_size*100*k] > max[i])
                 {
-                max[i]=max[i+vector_size*j+vectr_size*100*k];
+                max[i]=max[i+vector_size*j+vector_size*100*k];
                 }
             }
 	    }	    

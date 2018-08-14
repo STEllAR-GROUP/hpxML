@@ -37,7 +37,7 @@ void reading_input_values(std::size_t number_of_experiments, std::size_t number_
         //reading features:
         while(f < number_of_features) {
             getline(ss, str, ' ');
-            experimental_results(e,f) = std::atof(str.c_str());
+            experimental_results(e, f) = std::atof(str.c_str());
             f++;
         }
 
@@ -47,7 +47,7 @@ void reading_input_values(std::size_t number_of_experiments, std::size_t number_
         for(int c = 0; c < number_of_multi_classes; c++) {
             getline(ss, str, ' ');
             float time_ = std::atof(str.c_str());
-            execution_times(e,c) = time_;
+            execution_times(e, c) = time_;
             if(time_ < t_min){// && candidates[c]*experimental_results(e,4)>1){
                 t_min = time_;
                 which_class = c;
