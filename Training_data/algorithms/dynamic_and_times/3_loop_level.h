@@ -3,55 +3,62 @@
 //
 //  Distributed under the Boost Software License, Version 1.0. (See accompanying
 //  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
-#include <stdlib.h>
+#include <cstdlib>
 #include<ctime>
 #include <vector>
 #include<fstream>
-#include <hpx/hpx_init.hpp>
-#include <hpx/parallel/algorithms/for_each.hpp>
-#include <hpx/util/high_resolution_timer.hpp>
-#include <boost/range/irange.hpp>
-#include <vector>
+#include<cmath>
 #include <initializer_list>
 #include <algorithm>
 #include <typeinfo>
 #include <iterator>
+#include <hpx/hpx_init.hpp>
+#include <hpx/parallel/algorithms/for_each.hpp>
+#include <hpx/util/high_resolution_timer.hpp>
 #include <hpx/parallel/executors/dynamic_chunk_size.hpp>
-#include<cmath>
-double Mean(std::vector<double> times){
-	double mean=0;
-	for(int i(0);i<times.size();i++){
-		mean+=times[i];
+#include <boost/range/irange.hpp>
+
+double Mean(std::vector<double> times)
+{
+	double mean = 0;
+	for(int i(0); i < times.size(); i++)
+    {
+		mean += times[i];
 	}
 	return mean/times.size();
 }
 
-double var(std::vector<double> times){
-	double var=0;
-	double mean=Mean(times);
-	for (int i(0);i<times.size();i++){
-		var+=std::pow(mean-times[i],2);
+double var(std::vector<double> times)
+{
+	double var = 0;
+	double mean = Mean(times);
+	for (int i(0); i < times.size(); i++)
+    {
+		var += std::pow(mean - times[i], 2);
 	}
-	return var/((times.size()-1)*std::pow(mean,2))*100;
+	return var/((times.size() - 1)*std::pow(mean, 2))*100;
 }
 
 
 
-void Matrix_Matrix_Mult(int iterations,std::vector<double> chunk_candidates,bool Print_dynamic_features) {
+void Matrix_Matrix_Mult(int iterations, std::vector<double> chunk_candidates, bool Print_dynamic_features)
+{
          
-
-    int vector_size=iterations;
-    int matrix_size=iterations*iterations;
+    int vector_size = iterations;
+    int matrix_size = iterations*iterations;
     auto time_range = boost::irange(0, vector_size);
     std::vector<double> A;
     std::vector<double> B;
     std::vector<double> C(matrix_size);
-    vector_generator(A,matrix_size,10,100);
-    vector_generator(B,matrix_size,10,100);   
+    vector_generator(A,matrix_size, 10, 100);
+    vector_generator(B,matrix_size, 10, 100);   
 
-    auto f = [&](int i) {
-        if(i % 4 == 0) {
-            for (int j = 0; j < vector_size; j += 4) {
+    auto f = [&](int i) 
+    {
+        if(i % 4 == 0) 
+        {
+            for (int j = 0; j < vector_size; j += 4) 
+            {
 
                 double result1 = 0.0;
                 double result2 = 0.0;
@@ -73,7 +80,8 @@ void Matrix_Matrix_Mult(int iterations,std::vector<double> chunk_candidates,bool
                 double result15 = 0.0;
                 double result16 = 0.0;
 
-                for (int k = 0; k < vector_size; k++) {                  
+                for (int k = 0; k < vector_size; k++) 
+                {                  
 
                     result1 += A[i * vector_size + k] * B[j * vector_size + k];
                     result2 += A[i * vector_size + k] * B[(j + 1) * vector_size + k];
@@ -118,82 +126,96 @@ void Matrix_Matrix_Mult(int iterations,std::vector<double> chunk_candidates,bool
             }
         }
     };
-
-    if (Print_dynamic_features) {
-        std::cout<<vector_size<<" "<<hpx::get_os_thread_count()<<" ";
+    if (Print_dynamic_features) 
+    {
+        std::cout<< vector_size << " " << hpx::get_os_thread_count() <<" ";
     }
 
-
-    double t_chunk=0.0;
-    double Nrep=10;
+    auto time_range = boost::irange(0, vector_size);
+    int Nrep = 10;
+    double t_chunk = 0.0;
     double mean_time;
     double elapsed_time;
-    for (int i(0);i<chunk_candidates.size();i++){
-	mean_time=0;
-	for(int j(0);j<Nrep+1;j++){
-	    if(chunk_candidates[i]*vector_size>1){
-	    t_chunk=mysecond();
+    for (int i(0);i < chunk_candidates.size(); i++)
+    {
+	mean_time = 0;
+	for(int j(0); j < Nrep + 1; j++)
+    {
+	    if(chunk_candidates[i]*vector_size > 1)
+        {
+	        t_chunk=mysecond();
             hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::execution::dynamic_chunk_size(vector_size*chunk_candidates[i])), time_range.begin(), time_range.end(), f);
-            elapsed_time= mysecond() - t_chunk;
+            elapsed_time = mysecond() - t_chunk;
 	    }
 	    else{
-	    t_chunk=mysecond();
+	        t_chunk = mysecond();
             hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::execution::dynamic_chunk_size(1)), time_range.begin(), time_range.end(), f);
-            elapsed_time= mysecond() - t_chunk;
+            elapsed_time = mysecond() - t_chunk;
 	    }
-	    if(j!=0){
-	        mean_time+=elapsed_time;
+	    if(j != 0)
+        {
+	        mean_time += elapsed_time;
  	    }
 	}
-	std::cout<<mean_time/Nrep<<" ";
+	std::cout<< mean_time/Nrep <<" ";
     }
-    std::cout<<""<<std::endl;
+    std::cout<< "" <<std::endl;
 
 }
-void Max(int iterations,std::vector<double> chunk_candidates,bool Print_dynamic_features) {
+void Max(int iterations, std::vector<double> chunk_candidates, bool Print_dynamic_features)
+{
          
-    int vector_size=iterations;
+    int vector_size = iterations;
     auto time_range = boost::irange(0, vector_size);
     std::vector<double> A;
-    vector_generator(A,vector_size*100*100,10,1000);   
-    std::vector<double> max(vector_size,0);
-    auto f = [&](int i) {
-	for(int j(0);j<100;j++){
-	    for(int k(0);k<100;k++){
-	        if(A[i+vector_size*j+vector_size*100*k]>max[i]){
-		    max[i]=max[i];
-		}
-	    }
-	}	    
+    vector_generator(A,vector_size*100*100, 10, 1000);   
+    std::vector<double> max(vector_size, 0);
+    auto f = [&](int i) 
+    {
+        for(int j(0); j < 100; j++)
+        {
+            for(int k(0); k < 100; k++)
+            {
+                if(A[i+vector_size*j+vector_size*100*k] > max[i])
+                {
+                max[i]=max[i+vector_size*j+vectr_size*100*k];
+                }
+            }
+	    }	    
     };
-
-    if (Print_dynamic_features) {
-        std::cout<<vector_size<<" "<<hpx::get_os_thread_count()<<" ";
+    if (Print_dynamic_features) 
+    {
+        std::cout<< vector_size << " " << hpx::get_os_thread_count() <<" ";
     }
 
-    double t_chunk=0.0;
-    double Nrep=10;
+    auto time_range = boost::irange(0, vector_size);
+    int Nrep = 10;
+    double t_chunk = 0.0;
     double mean_time;
     double elapsed_time;
-    for (int i(0);i<chunk_candidates.size();i++){
-	mean_time=0;
-	for(int j(0);j<Nrep+1;j++){
-	    if(chunk_candidates[i]*vector_size>1){
-	    t_chunk=mysecond();
+    for (int i(0);i < chunk_candidates.size(); i++)
+    {
+	mean_time = 0;
+	for(int j(0); j < Nrep + 1; j++)
+    {
+	    if(chunk_candidates[i]*vector_size > 1)
+        {
+	        t_chunk=mysecond();
             hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::execution::dynamic_chunk_size(vector_size*chunk_candidates[i])), time_range.begin(), time_range.end(), f);
-            elapsed_time= mysecond() - t_chunk;
+            elapsed_time = mysecond() - t_chunk;
 	    }
 	    else{
-	    t_chunk=mysecond();
+	        t_chunk = mysecond();
             hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::execution::dynamic_chunk_size(1)), time_range.begin(), time_range.end(), f);
-            elapsed_time= mysecond() - t_chunk;
+            elapsed_time = mysecond() - t_chunk;
 	    }
-	    if(j!=0){
-	        mean_time+=elapsed_time;
+	    if(j != 0)
+        {
+	        mean_time += elapsed_time;
  	    }
 	}
-	std::cout<<mean_time/Nrep<<" ";
+	std::cout<< mean_time/Nrep <<" ";
     }
-    std::cout<<""<<std::endl;
+    std::cout<< "" <<std::endl;
 
 }

@@ -8,21 +8,18 @@
 #include<ctime>
 #include <vector>
 #include<fstream>
-#include <hpx/hpx_init.hpp>
-#include <hpx/parallel/algorithms/for_each.hpp>
-#include <hpx/util/high_resolution_timer.hpp>
-#include <boost/range/irange.hpp>
-#include <vector>
+#include<string>
 #include <initializer_list>
 #include <algorithm>
 #include <typeinfo>
 #include <iterator>
+#include <hpx/hpx_init.hpp>
+#include <hpx/parallel/algorithms/for_each.hpp>
+#include <hpx/util/high_resolution_timer.hpp>
 #include <hpx/parallel/executors/dynamic_chunk_size.hpp>
-#include <hpx/runtime/get_os_thread_count.hpp>
 #include "algorithms/dynamic_and_times/1_loop_level.h"
 #include "algorithms/dynamic_and_times/2_loop_level.h"
 #include "algorithms/dynamic_and_times/3_loop_level.h"
-#include<string>
 #include "algorithms/dynamic_and_times/4_loop_level.h"
 
 int hpx_main(int argc, char* argv[])
