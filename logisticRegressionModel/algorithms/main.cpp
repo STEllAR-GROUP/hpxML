@@ -20,8 +20,9 @@ using namespace Eigen;
 
 
 
-void reading_input_values(std::size_t number_of_experiments, std::size_t number_of_features, std::size_t number_of_multi_classes, 
-                                        MatrixXf& experimental_results, int* targets, MatrixXf& execution_times,float * candidates, std::ifstream& myfile) {
+void reading_input_values(std::size_t number_of_experiments, std::size_t number_of_features, 
+                            std::size_t number_of_multi_classes, MatrixXf& experimental_results, 
+                            int* targets, MatrixXf& execution_times,float * candidates, std::ifstream& myfile) {
 
     std::string line;
     std::size_t e = 0;
@@ -166,8 +167,9 @@ void implementing_multinomial_logistic_regression_model() {
     MatrixXf Y = MatrixXf::Random(number_of_experiments,number_of_multi_classes);
 
     //reading real input data
-    reading_input_values(number_of_experiments, number_of_features, number_of_multi_classes, 
-                          experimental_results, targets_multi_class, execution_times,chunk_size_candidates, myfile);
+    reading_input_values(number_of_experiments, number_of_features,
+                        number_of_multi_classes, experimental_results, 
+                        targets_multi_class, execution_times,chunk_size_candidates, myfile);
     
    
    ////////normilazing features/////////
