@@ -248,7 +248,7 @@ public:
             { 
 		// Extracting policy as string
                 SourceRange policy(call->getArg(0)->getExprLoc(), 
-                                   call->getArg(1)->getExprLoc().getLocWithOffset(-2));
+                                    call->getArg(1)->getExprLoc().getLocWithOffset(-2));
 
                 std::string policy_string=
                     Lexer::getSourceText(
