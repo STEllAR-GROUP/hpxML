@@ -46,7 +46,6 @@ namespace hpx { namespace parallel {
         
     	double chunk_size = candidates[determined_class] * features[4];
 
-        //CS*size<1 is an error
         if(candidates[determined_class] * features[4] < 1) {
 	        chunk_size=1;
         }
