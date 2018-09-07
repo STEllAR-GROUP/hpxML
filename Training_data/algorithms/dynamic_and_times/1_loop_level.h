@@ -3,10 +3,11 @@
 //  Distributed under the Boost Software License, Version 1.0. (See accompanying
 //  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 #include <cstdlib>
-#include<ctime>
+#include <ctime>
 #include <vector>
-#include<fstream>
-#include<vector>
+#include <fstream>
+#include <vector>
+#include <cmath>
 #include <hpx/hpx_init.hpp>
 #include <initializer_list>
 #include <algorithm>
@@ -16,6 +17,8 @@
 #include <hpx/util/high_resolution_timer.hpp>
 #include <hpx/parallel/executors/dynamic_chunk_size.hpp>
 #include <boost/range/irange.hpp>
+
+using namespace hpx::parallel;
 
 double mysecond()
 {
@@ -35,6 +38,28 @@ void vector_generator(std::vector<T> &A, int size, double min, double max)
     }
 }
 
+double mean(std::vector<double> times) {
+    double mean = 0;
+    for (int i(0); i < times.size(); i++) {
+        mean += times[i];
+    }
+    mean /= times.size();
+    return mean;
+}
+
+
+double var(std::vector<double> times) {
+    double mean_time = mean(times);
+    double var = 0;
+    for (int i(0);i < times.size(); i++) {
+        var += std::pow(times[i] - mean_time,2);
+    }
+    var /= times.size() -1;
+    return var;
+}
+        
+
+
 void Nothing(int iterations, std::vector<double> chunk_candidates, bool Print_dynamic_features) {
     
     int vector_size = iterations;
@@ -50,30 +75,30 @@ void Nothing(int iterations, std::vector<double> chunk_candidates, bool Print_dy
     auto time_range = boost::irange(0, vector_size);
     int Nrep = 10;
     double t_chunk = 0.0;
-    double mean_time;
+    std::vector<double> all_times(Nrep, 0);
     double elapsed_time;
     for (int i(0);i < chunk_candidates.size(); i++)
     {
-	mean_time = 0;
-	for(int j(0); j < Nrep + 1; j++)
-    {
-	    if(chunk_candidates[i]*vector_size > 1)
+        for(int j(0); j < Nrep + 1; j++)
         {
-	        t_chunk=mysecond();
-            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::execution::dynamic_chunk_size(vector_size*chunk_candidates[i])), time_range.begin(), time_range.end(), f);
-            elapsed_time = mysecond() - t_chunk;
-	    }
-	    else{
-	        t_chunk = mysecond();
-            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::execution::dynamic_chunk_size(1)), time_range.begin(), time_range.end(), f);
-            elapsed_time = mysecond() - t_chunk;
-	    }
-	    if(j != 0)
-        {
-	        mean_time += elapsed_time;
- 	    }
-	}
-	std::cout<< mean_time/Nrep <<" ";
+            if(chunk_candidates[i]*vector_size > 1)
+            {
+                t_chunk=mysecond();
+                for_each(execution::par.with(execution::dynamic_chunk_size(vector_size*chunk_candidates[i])), 
+                                                                time_range.begin(), time_range.end(), f);
+                elapsed_time = mysecond() - t_chunk;
+            }
+            else{
+                t_chunk = mysecond();
+                for_each(execution::par.with(execution::dynamic_chunk_size(1)), time_range.begin(), time_range.end(), f);
+                elapsed_time = mysecond() - t_chunk;
+            }
+            if(j != 0)
+            {
+                all_times[j - 1] = elapsed_time;
+            }
+        }
+        std::cout<< mean(all_times) << " " << var(all_times) << " ";
     }
     std::cout<<""<<std::endl;
 }
@@ -100,37 +125,36 @@ void Swap(int iterations, std::vector<double> chunk_candidates, bool Print_dynam
     {
         std::cout<< vector_size << " " << hpx::get_os_thread_count() <<" ";
     }
-
     auto time_range = boost::irange(0, vector_size);
-    double t_chunk = 0.0;
     int Nrep = 10;
-    double mean_time;
+    double t_chunk = 0.0;
+    std::vector<double> all_times(Nrep, 0);
     double elapsed_time;
-    for (int i(0); i < chunk_candidates.size(); i++)
+    for (int i(0);i < chunk_candidates.size(); i++)
     {
-	mean_time = 0;
-	for(int j(0); j < Nrep + 1; j++)
-    {
-	    if(chunk_candidates[i]*vector_size > 1)
+        for(int j(0); j < Nrep + 1; j++)
         {
-	        t_chunk = mysecond();
-            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::execution::dynamic_chunk_size(vector_size*chunk_candidates[i])), time_range.begin(), time_range.end(), f);
-            elapsed_time = mysecond() - t_chunk;
-	    }
-	    else
-        {
-	        t_chunk = mysecond();
-            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::execution::dynamic_chunk_size(1)), time_range.begin(), time_range.end(), f);
-            elapsed_time = mysecond() - t_chunk;
-	    }
-	    if(j != 0)
-        {
-	        mean_time+=elapsed_time;
- 	    }
-	}
-	std::cout<< mean_time/Nrep <<" ";
+            if(chunk_candidates[i]*vector_size > 1)
+            {
+                t_chunk=mysecond();
+                for_each(execution::par.with(execution::dynamic_chunk_size(vector_size*chunk_candidates[i])), 
+                                                                time_range.begin(), time_range.end(), f);
+                elapsed_time = mysecond() - t_chunk;
+            }
+            else{
+                t_chunk = mysecond();
+                for_each(execution::par.with(execution::dynamic_chunk_size(1)), time_range.begin(), time_range.end(), f);
+                elapsed_time = mysecond() - t_chunk;
+            }
+            if(j != 0)
+            {
+                all_times[j - 1] = elapsed_time;
+            }
+        }
+        std::cout<< mean(all_times) << " " << var(all_times) << " ";
     }
-    std::cout<< "" <<std::endl;
+    std::cout<<""<<std::endl;
+
 }
 
 
@@ -161,36 +185,35 @@ void Stream(int iterations, std::vector<double> chunk_candidates, bool Print_dyn
     {
         std::cout<< vector_size << " " << hpx::get_os_thread_count() << " ";
     }
-
-    auto time_range=boost::irange(0, vector_size);
-    double t_chunk = 0.0;
+    auto time_range = boost::irange(0, vector_size);
     int Nrep = 10;
-    double mean_time;
+    double t_chunk = 0.0;
+    std::vector<double> all_times(Nrep, 0);
     double elapsed_time;
-    for (int i(0); i < chunk_candidates.size(); i++)
+    for (int i(0);i < chunk_candidates.size(); i++)
     {
-	mean_time = 0;
-	for(int j(0); j < Nrep + 1; j++)
-    {
-	    if(chunk_candidates[i]*vector_size > 1)
+        for(int j(0); j < Nrep + 1; j++)
         {
-	        t_chunk = mysecond();
-            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::execution::dynamic_chunk_size(vector_size*chunk_candidates[i])), time_range.begin(), time_range.end(), f);
-            elapsed_time = mysecond() - t_chunk;
-	    }
-	    else
-        {
-	        t_chunk = mysecond();
-            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::execution::dynamic_chunk_size(1)), time_range.begin(), time_range.end(), f);
-            elapsed_time = mysecond() - t_chunk;
-	    }
-	    if(j != 0){
-	        mean_time += elapsed_time;
- 	    }
-	}
-	std::cout<< mean_time/Nrep <<" ";
+            if(chunk_candidates[i]*vector_size > 1)
+            {
+                t_chunk=mysecond();
+                for_each(execution::par.with(execution::dynamic_chunk_size(vector_size*chunk_candidates[i])), 
+                                                                time_range.begin(), time_range.end(), f);
+                elapsed_time = mysecond() - t_chunk;
+            }
+            else{
+                t_chunk = mysecond();
+                for_each(execution::par.with(execution::dynamic_chunk_size(1)), time_range.begin(), time_range.end(), f);
+                elapsed_time = mysecond() - t_chunk;
+            }
+            if(j != 0)
+            {
+                all_times[j - 1] = elapsed_time;
+            }
+        }
+        std::cout<< mean(all_times) << " " << var(all_times) << " ";
     }
-    std::cout<< "" <<std::endl;
+    std::cout<<""<<std::endl;
 }
 
 /////////////////////////////////////////////////
@@ -214,37 +237,35 @@ void Stencil(int iterations, std::vector<double> chunk_candidates, bool Print_dy
     {
         std::cout<< vector_size << " " << hpx::get_os_thread_count() << " ";
     } 
-    
     auto time_range = boost::irange(0, vector_size);
-    double t_chunk = 0.0;
     int Nrep = 10;
-    double mean_time;
+    double t_chunk = 0.0;
+    std::vector<double> all_times(Nrep, 0);
     double elapsed_time;
     for (int i(0);i < chunk_candidates.size(); i++)
     {
-	mean_time = 0;
-	for(int j(0); j < Nrep + 1; j++)
-    {
-	    if(chunk_candidates[i]*vector_size > 1)
+        for(int j(0); j < Nrep + 1; j++)
         {
-	        t_chunk = mysecond();
-            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::execution::dynamic_chunk_size(vector_size*chunk_candidates[i])), time_range.begin(), time_range.end(), f);
-            elapsed_time = mysecond() - t_chunk;
-	    }
-	    else
-        {
-	        t_chunk = mysecond();
-            hpx::parallel::for_each(hpx::parallel::execution::par.with(hpx::parallel::execution::dynamic_chunk_size(1)), time_range.begin(), time_range.end(), f);
-            elapsed_time = mysecond() - t_chunk;
-	    }
-	    if(j != 0)
-        {
-	        mean_time += elapsed_time;
- 	    }
-	}
-	std::cout<< mean_time/Nrep <<" ";
+            if(chunk_candidates[i]*vector_size > 1)
+            {
+                t_chunk=mysecond();
+                for_each(execution::par.with(execution::dynamic_chunk_size(vector_size*chunk_candidates[i])), 
+                                                                time_range.begin(), time_range.end(), f);
+                elapsed_time = mysecond() - t_chunk;
+            }
+            else{
+                t_chunk = mysecond();
+                for_each(execution::par.with(execution::dynamic_chunk_size(1)), time_range.begin(), time_range.end(), f);
+                elapsed_time = mysecond() - t_chunk;
+            }
+            if(j != 0)
+            {
+                all_times[j - 1] = elapsed_time;
+            }
+        }
+        std::cout<< mean(all_times) << " " << var(all_times) << " ";
     }
-    std::cout<< "" <<std::endl;
+    std::cout<<""<<std::endl;   
 }
 
 
