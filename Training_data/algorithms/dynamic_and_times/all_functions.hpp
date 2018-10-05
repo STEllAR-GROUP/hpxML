@@ -10,7 +10,7 @@
 
 typedef std::map<std::string,void (*)(int, std::vector<double>, bool)> Map_pointers;
 
-void Fill_map(std::map<std::string, void (*)(int, std::vector<double>, bool)>& OPTIONS) {
+void Fill_map(Map_pointers& OPTIONS) {
     
     OPTIONS.insert( std::make_pair("Nothing", Nothing) );
     OPTIONS.insert( std::make_pair("Swap", Swap) );
