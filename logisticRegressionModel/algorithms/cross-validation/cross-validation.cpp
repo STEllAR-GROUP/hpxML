@@ -15,10 +15,9 @@
 
 using namespace Eigen;
 
-
 void reading_input_values(std::size_t number_of_experiments, std::size_t number_of_features, std::size_t number_of_multi_classes, 
                                         MatrixXf& experimental_results, int* targets, MatrixXf& execution_times_multi_class,
-                                        float* candidates, std::ifstream& myfile) {
+                                        MatrixXf& variance_of_time, float* candidates, std::ifstream& myfile) {
 
     std::string line;
     std::size_t e = 0;
@@ -36,7 +35,7 @@ void reading_input_values(std::size_t number_of_experiments, std::size_t number_
         //reading features:
         while(f < number_of_features) {
             getline(ss, str, ' ');
-            experimental_results(e,f) = std::atof(str.c_str());
+            experimental_results(e, f) = std::atof(str.c_str());
             f++;
         }
 
@@ -46,11 +45,15 @@ void reading_input_values(std::size_t number_of_experiments, std::size_t number_
         for(int c = 0; c < number_of_multi_classes; c++) {
             getline(ss, str, ' ');
             float time_ = std::atof(str.c_str());
-            execution_times_multi_class(e,c) = time_;
+            execution_times_multi_class(e, c) = time_;
             if(time_ < t_min){// && candidates[c]*experimental_results[e][4]>1) {
                 t_min = time_;
                 which_class = c;
             }
+            /*
+            getline(ss, str, ' ');
+            float variance_ = std::atof(str.c_str())
+            variance_of_time(e, c) = variance_;*/
         }
 
         //assiging the class of that experiments
@@ -107,11 +110,13 @@ void implementing_multinomial_logistic_regression_cross_validation() {
     int* targets_multi_class = new int[number_of_experiments_multi_class];
     MatrixXf experimental_results_multi_class = MatrixXf::Random(number_of_experiments_multi_class, number_of_features_multi_class);
     MatrixXf execution_times_multi_class = MatrixXf::Random(number_of_experiments_multi_class, number_of_multi_classes);
+    MatrixXf variance_of_time = MatrixXf::Random(number_of_experiments_multi_class, number_of_multi_classes);
     int* threads_total = new int[number_of_experiments_multi_class];
 
     //reading real input data
     reading_input_values(number_of_experiments_multi_class, number_of_features_multi_class, number_of_multi_classes, 
-                          experimental_results_multi_class, targets_multi_class, execution_times_multi_class,chunk_size_candidates, myfile);
+                          experimental_results_multi_class, targets_multi_class, execution_times_multi_class,
+                           variance_of_time, chunk_size_candidates, myfile);
 
     for(int i(0); i < number_of_experiments_multi_class; i++){
         threads_total[i] = experimental_results_multi_class(i, number_of_features_multi_class-1);

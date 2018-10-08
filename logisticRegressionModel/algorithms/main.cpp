@@ -22,7 +22,8 @@ using namespace Eigen;
 
 void reading_input_values(std::size_t number_of_experiments, std::size_t number_of_features, 
                             std::size_t number_of_multi_classes, MatrixXf& experimental_results, 
-                            int* targets, MatrixXf& execution_times,float * candidates, std::ifstream& myfile) {
+                            int* targets, MatrixXf& execution_times, MatrixXf& variance_of_time, 
+                                                          float * candidates, std::ifstream& myfile) {
 
     std::string line;
     std::size_t e = 0;
@@ -46,6 +47,7 @@ void reading_input_values(std::size_t number_of_experiments, std::size_t number_
         float t_min = std::numeric_limits<float>::max();
         int which_class;
         for(int c = 0; c < number_of_multi_classes; c++) {
+            //read exec time 
             getline(ss, str, ' ');
             float time_ = std::atof(str.c_str());
             execution_times(e, c) = time_;
@@ -53,6 +55,11 @@ void reading_input_values(std::size_t number_of_experiments, std::size_t number_
                 t_min = time_;
                 which_class = c;
             }
+            //read variance of time 
+
+            /*getline(ss, str, ' ');
+            float variance_ = std::atof(str.c_str());
+            variance_of_time(e, c) = variance_;*/
         }
 
         //assiging the class of that experiments
@@ -115,6 +122,7 @@ void implementing_binary_logistic_regression_model(){
     my_nw.finalizing_step();
 }
 */
+
 void implementing_multinomial_logistic_regression_model() {
 
     float threshold = 0.02;
@@ -145,7 +153,6 @@ void implementing_multinomial_logistic_regression_model() {
     std::size_t number_of_multi_classes = std::stoi(str);
 
     //read second line
-    
     float* chunk_size_candidates = new float[number_of_multi_classes];
     getline(myfile,line);
     std::stringstream ss2(line);
@@ -155,27 +162,26 @@ void implementing_multinomial_logistic_regression_model() {
 	}
 	    else {
 	        getline(ss2, str, ' ');
-	        chunk_size_candidates[i-number_of_features] = std::stof(str, NULL);
+	        chunk_size_candidates[i - number_of_features] = std::stof(str, NULL);
     	}
     }   
-    
-    
+       
     //initializing     
     int* targets_multi_class = new int[number_of_experiments];
-    MatrixXf experimental_results = MatrixXf::Random(number_of_experiments,number_of_features);
-    MatrixXf execution_times = MatrixXf::Random(number_of_experiments,number_of_multi_classes);
-    MatrixXf Y = MatrixXf::Random(number_of_experiments,number_of_multi_classes);
+    MatrixXf experimental_results = MatrixXf::Random(number_of_experiments, number_of_features);
+    MatrixXf execution_times = MatrixXf::Random(number_of_experiments, number_of_multi_classes);
+    MatrixXf variance_of_time = MatrixXf::Random(number_of_experiments, number_of_multi_classes);
+    MatrixXf Y = MatrixXf::Random(number_of_experiments, number_of_multi_classes);
 
     //reading real input data
-    reading_input_values(number_of_experiments, number_of_features,
-                        number_of_multi_classes, experimental_results, 
-                        targets_multi_class, execution_times,chunk_size_candidates, myfile);
+    reading_input_values(number_of_experiments, number_of_features,number_of_multi_classes, experimental_results,
+                        targets_multi_class, execution_times, variance_of_time, chunk_size_candidates, myfile);
     
    
    ////////normilazing features/////////
-   float* averages =new float[number_of_features];
-   float* averages_2 =new float[number_of_features];
-   float* var =new float[number_of_features];
+   float* averages = new float[number_of_features];
+   float* averages_2 = new float[number_of_features];
+   float* var = new float[number_of_features];
 
     for(std::size_t i = 0; i < number_of_features; i++) {
         averages[i] = 0;
