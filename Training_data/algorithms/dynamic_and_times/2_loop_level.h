@@ -93,9 +93,9 @@ void Matrix_Vector_Mult(int iterations, std::vector<double> chunk_candidates, bo
                 all_times[j - 1] = elapsed_time;
             }
         }
-        std::cout<< mean(all_times) << " " << var(all_times) << " ";
+        std::cout << mean(all_times) << " " << var(all_times) << " ";
     }
-    std::cout<<""<<std::endl;
+    std::cout << std::endl;
 }
     
 
@@ -150,9 +150,9 @@ void Diadic_Prod(int iterations, std::vector<double> chunk_candidates, bool Prin
                 all_times[j - 1] = elapsed_time;
             }
         }
-        std::cout<< mean(all_times) << " " << var(all_times) << " ";
+        std::cout << mean(all_times) << " " << var(all_times) << " ";
     }
-    std::cout<<""<<std::endl;
+    std::cout << std::endl;
 }
 
 
@@ -199,7 +199,7 @@ void Diadic_Prod(int iterations, std::vector<double> chunk_candidates, bool Prin
                 all_times[j - 1] = elapsed_time;
             }
         }
-        std::cout<< mean(all_times) << " " << var(all_times) << " ";
+        std::cout << mean(all_times) << " " << var(all_times) << " ";
     }
-    std::cout<<""<<std::endl;
+    std::cout << std::endl;
 }

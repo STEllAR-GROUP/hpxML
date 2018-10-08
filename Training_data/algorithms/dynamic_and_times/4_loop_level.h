@@ -68,7 +68,7 @@ void Tensor_generator(int iterations, std::vector<double> chunk_candidates, bool
                 all_times[j - 1] = elapsed_time;
             }
         }
-        std::cout<< mean(all_times) << " " << var(all_times) << " ";
+        std::cout << mean(all_times) << " " << var(all_times) << " ";
     }
-    std::cout<<""<<std::endl;
+    std::cout << std::endl;
 }

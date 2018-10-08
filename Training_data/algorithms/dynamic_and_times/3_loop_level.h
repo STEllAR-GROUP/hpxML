@@ -136,9 +136,9 @@ void Matrix_Matrix_Mult(int iterations, std::vector<double> chunk_candidates, bo
                 all_times[j - 1] = elapsed_time;
             }
         }
-        std::cout<< mean(all_times) << " " << var(all_times) << " ";
+        std::cout << mean(all_times) << " " << var(all_times) << " ";
     }
-    std::cout<<""<<std::endl;
+    std::cout << std::endl;
 }
 void Max(int iterations, std::vector<double> chunk_candidates, bool Print_dynamic_features)
 {
@@ -192,8 +192,8 @@ void Max(int iterations, std::vector<double> chunk_candidates, bool Print_dynami
                 all_times[j - 1] = elapsed_time;
             }
         }
-        std::cout<< mean(all_times) << " " << var(all_times) << " ";
+        std::cout << mean(all_times) << " " << var(all_times) << " ";
     }
-    std::cout<<""<<std::endl;
+    std::cout << std::endl;
 }
 

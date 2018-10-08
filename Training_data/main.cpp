@@ -38,7 +38,6 @@ int hpx_main(int argc, char* argv[])
     }
     else{ std::cout<< "Function not found" <<std::endl;}
 
-
     return hpx::finalize();
 }
 

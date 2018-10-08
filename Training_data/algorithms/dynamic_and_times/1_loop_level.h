@@ -98,9 +98,9 @@ void Nothing(int iterations, std::vector<double> chunk_candidates, bool Print_dy
                 all_times[j - 1] = elapsed_time;
             }
         }
-        std::cout<< mean(all_times) << " " << var(all_times) << " ";
+        std::cout << mean(all_times) << " " << var(all_times) << " ";
     }
-    std::cout<<""<<std::endl;
+    std::cout << std::endl;
 }
 
    
@@ -153,7 +153,7 @@ void Swap(int iterations, std::vector<double> chunk_candidates, bool Print_dynam
         }
         std::cout<< mean(all_times) << " " << var(all_times) << " ";
     }
-    std::cout<<""<<std::endl;
+    std::cout << std::endl;
 
 }
 
@@ -211,9 +211,9 @@ void Stream(int iterations, std::vector<double> chunk_candidates, bool Print_dyn
                 all_times[j - 1] = elapsed_time;
             }
         }
-        std::cout<< mean(all_times) << " " << var(all_times) << " ";
+        std::cout << mean(all_times) << " " << var(all_times) << " ";
     }
-    std::cout<<""<<std::endl;
+    std::cout << std::endl;
 }
 
 /////////////////////////////////////////////////
@@ -263,9 +263,9 @@ void Stencil(int iterations, std::vector<double> chunk_candidates, bool Print_dy
                 all_times[j - 1] = elapsed_time;
             }
         }
-        std::cout<< mean(all_times) << " " << var(all_times) << " ";
+        std::cout << mean(all_times) << " " << var(all_times) << " ";
     }
-    std::cout<<""<<std::endl;   
+    std::cout << std::endl;   
 }
 
 
