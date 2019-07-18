@@ -26,7 +26,6 @@
 #include <hpx/parallel/util/foreach_partitioner.hpp>
 #include <hpx/parallel/util/loop.hpp>
 #include <hpx/parallel/util/projection_identity.hpp>
-#include <hpx/parallel/util/compiler_static_information.hpp>
 #include <hpx/parallel/util/prefetching.hpp>
 
 #include <typeinfo>

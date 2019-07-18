@@ -7,6 +7,7 @@ set(HPX_DIR "${HPX_ROOT}/lib/cmake/HPX")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 find_package(HPX)
+find_package(Boost REQUIRED)
 
 include_directories(${HPX_INCLUDE_DIR})
 include_directories(../include)
@@ -27,3 +28,5 @@ add_hpx_executable(matrix_mult
     ESSENTIAL
     SOURCES matrix_mult/main.cpp
     COMPONENT_DEPENDENCIES iostreams)
+
+target_link_libraries(main_exe -L${Boost_LIBRARY_DIRS})

@@ -1,12 +1,13 @@
-//  Copyright (c) 2017 Zahra Khatami 
+//  Copyright (c) 2018 Gabriel Laberge 
+//  Copyright (c) 2017 Zahra Khatami
 //
 // Train your data, then record them in an output file stated in "retrieving_weights_multi_classes_into_text_file"
 
 #include <limits>
-#include <math.h>
+#include <cmath>
 #include <iostream>
-#include <stdlib.h>
-#include <time.h>
+#include <cstdlib>
+#include <ctime>
 #include <Eigen/Core>
 #include <Eigen/Dense>
 #include <Eigen/Eigen>
@@ -19,290 +20,209 @@ using namespace Eigen;
 
 class multinomial_logistic_regression_model {
 
-	std::size_t number_of_experiments;
-	std::size_t number_of_features;
-	std::size_t number_of_classes;
-	float threshold; 							//the convergence for estimating the final weights
-	float eta;
-	MatrixXf experimental_results; 				//the experimental values of the features of the training data	
-	MatrixXf experimental_results_trans;		//transpose of experimental_results
-	MatrixXf execution_times;					//execution time for each class for each experiment
 	MatrixXf weightsm; 							//weights of our learning network : F * K
-	MatrixXf weightsm_trans;					//transpose of weights : K * F
-	MatrixXf new_weightsm;						//updated weights after each step : F * K
-	int* real_output;							//real output of each experimental results
-	MatrixXf targets_multi_class;				//binary real output of each experimental results : N * K
+	MatrixXf biases;
 	MatrixXf outputsm;							//outputs of the training data : N * K
-	MatrixXf gradient;							//gradient of E : F * K
-	MatrixXf sum_w_experimental_results;		//used for computing output : N 
-	int* predicted_output_multi_class;			//predicted class of each experimental results
-	float* averages;							//parameters for normalization
-	float* averages_2;							//parameters for normalization
-	float* var;									//parameters for normalization
+	MatrixXf gradientw;							//gradient of E : F * K
+	MatrixXf gradientb;                         //gradient of bias
+	int number_of_features;
+	int number_of_classes;
 	
-
-	void normalizing_weights_multi_class();
-	void convert_target_to_binary(int* target_src, MatrixXf& targets_dst);	
-	int eye_kj(std::size_t k, std::size_t j);
-	void computing_all_output();
-	void computing_all_gradient();
-	void learning_weights_multi_classes();
-	void new_values_for_weightsm();
-	float computing_new_least_squared_err_multi_class();	
-	void updating_values_of_weights_multi_class();
+    void initialize(std::size_t number_expr, std::size_t number_features, std::size_t number_classes, float initial_values);
+	
+	void computing_all_output(MatrixXf X, MatrixXf& Y);
+	void computing_all_gradient(MatrixXf X, MatrixXf Y);
+	void updating_values_of_weigths_multi_class(float eta);
+	
 	void printing_weights_multi_class();
-	void estimating_output_multiclass();
-	void printing_computed_values(std::size_t row, std::size_t col, MatrixXf& mat);
 	
 public:
-	multinomial_logistic_regression_model(std::size_t number_of_expr, std::size_t number_of_ftrs, std::size_t number_of_cls, 
-											float th, float** expr_results, int* target_expr, float** exec_time) {
-		number_of_experiments = number_of_expr;
-		number_of_features = number_of_ftrs;
-		number_of_classes = number_of_cls;
-		threshold = th;
-		eta = 0.01;
-	
-		sum_w_experimental_results = MatrixXf::Random(number_of_experiments, 1);		
-		weightsm = MatrixXf::Random(number_of_features, number_of_classes);
-		weightsm_trans = MatrixXf::Random(number_of_classes, number_of_features);							
-		new_weightsm = MatrixXf::Random(number_of_features, number_of_classes);
-		gradient = MatrixXf::Random(number_of_features, number_of_classes);
-		experimental_results = MatrixXf(number_of_experiments, number_of_features);
-		experimental_results_trans = MatrixXf::Random(number_of_features, number_of_experiments);
-		execution_times = MatrixXf::Random(number_of_experiments, number_of_classes);
-		targets_multi_class = MatrixXf::Random(number_of_experiments, number_of_classes);
-		outputsm = MatrixXf::Random(number_of_experiments, number_of_classes);
-		predicted_output_multi_class = new int[number_of_experiments];
-		real_output = new int[number_of_experiments];
+	multinomial_logistic_regression_model() {
+    	MatrixXf weightsm;
+	    MatrixXf biases;
+	    MatrixXf outputsm;							//outputs of the training data : N * K
+	    MatrixXf gradientw;							//gradient of E : F * K
+	    MatrixXf gradientb;
+	    int number_of_features;
+	    int number_of_classes;
 
-		//variance and average of each features value for normalization
-		averages = new float[number_of_features];
-		averages_2 = new float[number_of_features];
-		var = new float[number_of_features];
-
-		//initializing weights
-		for(std::size_t f = 0; f < number_of_features; f++) {
-			for(std::size_t k = 0; k < number_of_classes; k++) {
-				weightsm(f, k) = 0.1;
-			}
-		}
-
-		for(std::size_t i = 0; i < number_of_experiments; i++) {
-
-			//initializing experimental_results
-			for(std::size_t f = 0; f < number_of_features; f++) {
-				experimental_results(i, f) = expr_results[i][f];
-			}
-
-			//initializing execution_times
-			for(std::size_t c = 0; c < number_of_classes; c++) {
-				execution_times(i, c) = exec_time[i][c];
-			}
-
-			//initializing real outputs
-			real_output[i] = target_expr[i];
-		}	
-		
-		//initializing targets_multi_class
-		convert_target_to_binary(target_expr, targets_multi_class);
-		outputsm = targets_multi_class;
 	}
 
-	void learning_multi_classes();
-	void retrieving_weights_multi_classes_into_text_file();
-	void printing_predicted_output_multi_class();
-	void finalizing_step();
+	void convert_target_to_binary(int* targets, MatrixXf& Binary);	
+	void convert_binary_to_target(MatrixXf Binary, int* targets);
+	void fit(MatrixXf X, MatrixXf Y, MatrixXf execution_times, float eta, float threshold, float time_treshold, int Max_ite, bool print);
+    void predict(MatrixXf X, int* predictions);
+	float computing_new_least_squared_err_multi_class(MatrixXf execution_times, int* predictions, int* real, float time_threshold);	
+    void retrieving_weights_multi_classes_into_text_file(float* averages, float* var, std::ofstream& outputFile);	
+	void misclassification_ratio(int* predictions, int* real, int number_of_experiments);
+    void Total_times(int* predictions, MatrixXf execution_times);
 };
 
-//it prints computed values : for testing
-void multinomial_logistic_regression_model::printing_computed_values(std::size_t row, std::size_t col, MatrixXf& mat) {
-	if(row != 0 && col != 0) {
-		for(std::size_t r = 0; r < row; r++) {
-			for(std::size_t c = 0; c < col; c++) {
-				printf("%f, ", mat(r, c));
-			}
-			std::cout<<std::endl;
-		}
-	}
-	else if(row == 0 && col != 0){
-		for(std::size_t c = 0; c < col; c++) {
-			printf("%f, ", mat(0, c));
-		}
-	}
-	else {
-		for(std::size_t r = 0; r < row; r++) {
-			printf("%f, ", mat(r, 0));
-		}
-	}
-	std::cout<<std::endl;
+void multinomial_logistic_regression_model::initialize(std::size_t number_of_experiments,
+                    std::size_t number_features, std::size_t number_classes, float initial_values){
+
+    weightsm = MatrixXf::Random(number_classes, number_features);
+    biases = MatrixXf::Random(number_classes, 1);
+    gradientw = MatrixXf::Random(number_classes, number_features);
+    gradientb = MatrixXf::Random(number_classes, 1);
+    outputsm = MatrixXf::Random(number_of_experiments, number_classes);
+    number_of_features = number_features;
+    number_of_classes = number_classes;
+
+    //initializing weights
+    for(std::size_t  c= 0; c < number_of_classes; c++) {
+        biases(c, 0) = 0;
+	    for(std::size_t f = 0; f < number_of_features; f++) {
+	        weightsm(c, f) = initial_values;
+    	}
+    }
 }
 
-void multinomial_logistic_regression_model::convert_target_to_binary(int* target_src, MatrixXf& targets_multi_class) {
-	for(std::size_t n = 0; n < number_of_experiments; n++) {
-		for(std::size_t k = 0; k < number_of_classes; k++) {
-			if(target_src[n] == k) {
-				targets_multi_class(n, k) = 1.0;
+
+void multinomial_logistic_regression_model::convert_target_to_binary(int* target, MatrixXf& Binary) {
+	for(std::size_t n = 0; n < Binary.rows(); n++) {
+		for(std::size_t k = 0; k < Binary.cols(); k++) {
+			if(target[n] == k) {
+				Binary(n, k) = 1.0;
 			}
 			else {
-				targets_multi_class(n, k) = 0.0;
+				Binary(n, k) = 0.0;
 			}
 		}
 	}
 }
 
-//Ikj
-int multinomial_logistic_regression_model::eye_kj(std::size_t k, std::size_t j) {
-	if(k == j) {
-		return 1;
+
+void multinomial_logistic_regression_model::convert_binary_to_target(MatrixXf Binary, int* target) {	
+        for(std::size_t n = 0; n < Binary.rows(); n++) {
+		float prob = MIN_FLOAT;
+		for(std::size_t k = 0; k < Binary.cols(); k++) {
+			if(prob < Binary(n, k)) {
+				target[n] = k;
+				prob = Binary(n, k);
+			}
+		}
 	}
-	return 0;
 }
 
 //computing outputs
-void multinomial_logistic_regression_model::computing_all_output() {
-	weightsm_trans = weightsm.transpose();
-	//w^T * Q
-	MatrixXf W_TQ_trans = MatrixXf::Random(number_of_classes, number_of_experiments);
-	W_TQ_trans = weightsm_trans * experimental_results_trans;
-	MatrixXf W_TQ = MatrixXf::Random(number_of_experiments, number_of_classes);
-	W_TQ = W_TQ_trans.transpose();
+void multinomial_logistic_regression_model::computing_all_output(MatrixXf X ,MatrixXf& Y) {
+	MatrixXf sum_w_experimental_results = MatrixXf::Zero(X.rows(), 1);
+	//w^T * X
+	MatrixXf W_X = MatrixXf::Random(number_of_classes, X.rows());
+	W_X = weightsm * X.transpose();
 
-	//sigma(exp(wQ))
-	for(std::size_t n = 0; n < number_of_experiments; n++) {
-		sum_w_experimental_results(n, 0) = 0.0;
-		for(std::size_t k = 0; k < number_of_classes; k++) {
-			sum_w_experimental_results(n, 0) += exp(W_TQ(n, k));
-		}
+    //Add biases
+	for(int i(0); i < X.rows(); i++){
+	    W_X.col(i) += biases;
 	}
 
-	//ynk
-	for(std::size_t n = 0; n < number_of_experiments; n++) {
+	//sigma(exp(wQ))
+	for(std::size_t n = 0; n < X.rows(); n++) {
+		for(std::size_t k = 0; k < number_of_classes; k++) {
+			sum_w_experimental_results(n, 0) += exp(W_X(k, n));
+		}
+	}
+	
+	//normalisation
+	for(std::size_t n = 0; n < X.rows(); n++) {
 		for(std::size_t k = 0; k < number_of_classes; k++) {		
-			outputsm(n, k) = float(exp(W_TQ(n, k))/sum_w_experimental_results(n, 0)); 
+			Y(n, k) = float(exp(W_X(k, n))/sum_w_experimental_results(n, 0)); 
 		}
 	}
 }
 
 //computing gradient 
-void multinomial_logistic_regression_model::computing_all_gradient(){
+void multinomial_logistic_regression_model::computing_all_gradient(MatrixXf X, MatrixXf Y){
 	//initializing
-	gradient *= 0.0;
-	for(std::size_t k = 0; k < number_of_classes; k++) {
-		for(std::size_t n = 0; n < number_of_experiments; n++) {
-			gradient.col(k) += (outputsm(n, k) - targets_multi_class(n, k)) * experimental_results_trans.col(n);
-		}
+	float sum=0;
+	gradientw *= 0.0;
+	gradientb *= 0.0;
+	MatrixXf Substraction = (outputsm - Y);
+	gradientw = Substraction.transpose()*X;
+    
+    //biases
+	for(int i(0); i < number_of_classes; i++){
+	    sum = 0;
+	    for(int j(0); j < X.rows(); j++){
+	        sum += Substraction(j, i);
+	    }
+	    gradientb(i, 0) = sum;
 	}
 }
 
-void multinomial_logistic_regression_model::new_values_for_weightsm() {	
-	new_weightsm = weightsm	- eta * gradient;
-}
 
-//computing leas squares err
-float multinomial_logistic_regression_model::computing_new_least_squared_err_multi_class() {	
+//computing least squares err
+float multinomial_logistic_regression_model::computing_new_least_squared_err_multi_class(MatrixXf execution_times,
+                                                                    int* predictions, int* real, float time_threshold) {	
 	std::size_t num_err = 0;
-	for(std::size_t n = 0; n < number_of_experiments; n++) {
-		if(abs(execution_times(n, predicted_output_multi_class[n]) - execution_times(n, real_output[n])) > 0.2) {
+	for(std::size_t n = 0; n < execution_times.rows(); n++) {
+		if(abs(execution_times(n, predictions[n]) - execution_times(n, real[n])) > time_threshold) {
 			num_err++;
 		}		
 	}
-	float prec = float(num_err) / number_of_experiments;
+	float prec = float(num_err) / execution_times.rows();
 	return prec;
 }
 
 //updating weights
-void multinomial_logistic_regression_model::updating_values_of_weights_multi_class() {	
-	weightsm = new_weightsm;
+void multinomial_logistic_regression_model::updating_values_of_weigths_multi_class(float eta) {	
+	weightsm -= eta*gradientw;
+	biases -= eta*gradientb;
 }
 
 void multinomial_logistic_regression_model::printing_weights_multi_class() {
-	printing_computed_values(number_of_features, number_of_classes, weightsm);
+	std::cout<< weightsm <<std::endl;
 	std::cout<<"\n --------------------\n";
 }
 
-//estimating class of each experimental results based on the computed weights
-void multinomial_logistic_regression_model::estimating_output_multiclass() {	
-	for(std::size_t n = 0; n < number_of_experiments; n++) {
-		float prob = MIN_FLOAT;
-		for(std::size_t k = 0; k < number_of_classes; k++) {
-			if(prob < outputsm(n, k)) {
-				predicted_output_multi_class[n] = k;
-				prob = outputsm(n, k);
-			}
-		}
-	}
-}
 
 //updating weights till error meets the defined threshold
-void multinomial_logistic_regression_model::learning_weights_multi_classes() {
+void multinomial_logistic_regression_model::fit(MatrixXf X, MatrixXf Y, MatrixXf execution_times, float eta,
+                                                float threshold, float time_treshold, int Max_ite, bool print) {
 	float least_squared_err = MAX_FLOAT;
 	std::size_t itr = 1;
-
-	//for some test, only for statring updating weights:
-	computing_all_gradient();				
-	new_values_for_weightsm();				
-	updating_values_of_weights_multi_class();
-	computing_all_output();
-	estimating_output_multiclass();
-
-	while(threshold < least_squared_err) {
-		computing_all_gradient();				
-		new_values_for_weightsm();				
-		updating_values_of_weights_multi_class();
-		computing_all_output();
-		estimating_output_multiclass();
-		least_squared_err = computing_new_least_squared_err_multi_class();
-		std::cout<<"("<<itr<<")"<<"Least_squared_err =\t" << least_squared_err<<std::endl;		
-		printing_weights_multi_class();		
+	int* predictions = new int[X.rows()];
+	int* real = new int[X.rows()];
+	convert_binary_to_target(Y, real);
+    
+    //initializing weights,gradients,outputsm and constants
+    initialize(X.rows(), X.cols(), Y.cols(), 0.1);
+	computing_all_output(X, outputsm);   
+       
+    // computing_all_output(X,outputsm);
+	while(threshold < least_squared_err && itr<Max_ite) {
+		computing_all_gradient(X, Y);								
+		updating_values_of_weigths_multi_class(eta);
+		computing_all_output(X, outputsm);
+		convert_binary_to_target(outputsm, predictions);
+		least_squared_err = computing_new_least_squared_err_multi_class(execution_times, predictions, real, time_treshold);
+   	    if(print){
+		    std::cout << "(" << itr << ")" <<"Least_squared_err =\t" << least_squared_err<<std::endl;		
+		    printing_weights_multi_class();
+		    std::cout << "biases = " << biases << std::endl;
+		}		
 		itr++;
 	}
-	std::cout<<"("<<itr<<") => "<<"Least_squared_err =\t" << least_squared_err<<std::endl;
+	if(print){std::cout << "(" << itr << ") => " << "Least_squared_err =\t" << least_squared_err<<std::endl;
+	    misclassification_ratio(predictions, real, X.rows());
+	    Total_times(predictions, execution_times);
+	}
+	delete[] predictions;
+	delete[] real;
+}
+void multinomial_logistic_regression_model::predict(MatrixXf X, int* predictions){
+    //forward propogation
+    MatrixXf Y=MatrixXf::Zero(X.rows(), number_of_classes);
+    computing_all_output(X, Y);
+    convert_binary_to_target(Y, predictions);
 }
 
-void multinomial_logistic_regression_model::normalizing_weights_multi_class() {	
-	//initializing
-	for(std::size_t i = 0; i < number_of_features; i++) {
-		averages[i] = 0;
-		averages_2[i] = 0;
-		var[i] = 0;
-	}
-
-	//computing average and variance values for each feature
-	for(std::size_t i = 0; i < number_of_experiments; i++) {		
-		for(std::size_t j = 0; j < number_of_features; j++) {
-			averages[j] += experimental_results(i, j);
-			averages_2[j] += (pow(experimental_results(i, j), 2.0));
-		}
-	}
-	for(std::size_t i = 0; i < number_of_features; i++) {		
-		averages[i] = float(averages[i]/number_of_experiments);
-		averages_2[i] = float(averages_2[i]/number_of_experiments);
-		var[i] = sqrt(averages_2[i] - pow(averages[i], 2.0));		
-	}
-
-	for(std::size_t n = 0; n < number_of_experiments; n++) {
-		for(std::size_t f = 0; f < number_of_features; f++) {
-			experimental_results(n, f) = float((experimental_results(n, f) - averages[f])/var[f]);
-		}
-	}
-}
-
-void multinomial_logistic_regression_model::learning_multi_classes() {
-	normalizing_weights_multi_class();
-	experimental_results_trans = experimental_results.transpose();
-	learning_weights_multi_classes();
-}
 
 //retrieving information into the external file, which is going to be used at runtime
-void multinomial_logistic_regression_model::retrieving_weights_multi_classes_into_text_file() {	
+void multinomial_logistic_regression_model::retrieving_weights_multi_classes_into_text_file(float* averages,
+                                                                        float* var, std::ofstream& outputFile) {	
   
-  // for learning model on chunk_size training data
-	std::ofstream outputFile("inputs/data_chunk.dat");
-  
-  // for learning model on prefetching distance training data:
-  //std::ofstream outputFile("inputs/data_prefetch.dat");
-
 	//normalization parameters (variance and average) in the first line
 	for(std::size_t p = 0; p < number_of_features - 1; p++) {
 		outputFile << var[p] << " " << averages[p] << " "; 
@@ -320,23 +240,41 @@ void multinomial_logistic_regression_model::retrieving_weights_multi_classes_int
 	}
 }
 
-void multinomial_logistic_regression_model::printing_predicted_output_multi_class(){
+
+void multinomial_logistic_regression_model::misclassification_ratio(int* predictions, int* real, int number_of_experiments){
 	std::size_t num_err = 0;
+	MatrixXi confusion_matrix=MatrixXi::Zero(number_of_classes, number_of_classes);
 	for(std::size_t n = 0; n < number_of_experiments; n++) {		
-		if(abs(execution_times(n, predicted_output_multi_class[n]) - execution_times(n, real_output[n])) > 0.2){
-			num_err++;
-			std::cout << "\n [" << n << "] =\t" << predicted_output_multi_class[n] << "\t" << real_output[n];
-		}
+	    confusion_matrix(predictions[n],real[n])+=1;
+	    if(predictions[n] != real[n]){
+	        num_err+=1;
+	    }
 	}
-	std::cout<<"\n number of error predicted is\t"<<num_err<<" out of "<<number_of_experiments<<std::endl;
+    std::cout << confusion_matrix << std::endl;
+	std::cout << "\n number of misclassifications predicted is\t" << num_err << " out of " << number_of_experiments <<std::endl;
 }
 
-void multinomial_logistic_regression_model::finalizing_step() {
+void multinomial_logistic_regression_model::Total_times(int* predictions, MatrixXf execution_times){
+    double optimal_time = 0;
+    double actual_time = 0;
+    double min_t;
+    std::vector<double> times_candidates(number_of_classes, 0);
+    for(std::size_t n=0; n < execution_times.rows(); n++){
+        actual_time += execution_times(n, predictions[n]);
+	    min_t = execution_times(n, 0);
+	    for(std::size_t c=0; c < number_of_classes; c++){
+	        times_candidates[c] += execution_times(n, c);
+	        if(execution_times(n, c) < min_t){
+	            min_t = execution_times(n, c);
+	        }
+	    }
+	    optimal_time += min_t;
+    }
 
-	//releasing memory
-	delete[] averages;
-	delete[] averages_2;
-	delete[] var;
-	delete[] predicted_output_multi_class;
-	delete[] real_output;
+    std::cout<< "The total is :" << actual_time <<std::endl;
+    std::cout<< "The optimal time is " << optimal_time <<std::endl;
+    for(std::size_t c=0; c < number_of_classes; c++){
+        std::cout<< "The time for candidate " << c << " is " << times_candidates[c] <<std::endl;
+    }
 }
+

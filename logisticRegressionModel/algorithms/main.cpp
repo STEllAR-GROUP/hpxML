@@ -1,28 +1,37 @@
 //  Copyright (c) 2017 BOARD OF SUPERVISORS OF LOUISIANA STATE UNIVERSITY AND AGRICULTURAL AND MECHANICAL COLLEGE
-//  Developers Zahra Khatami
+//  Developers Zahra Khatami, Gabriel Laberge
 //  Distributed under the Boost Software License, Version 1.0. (See accompanying
 //  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
-#include <math.h>
+#include <cmath>
 #include <iostream>
 #include <string> 
 #include <fstream>
 #include <sstream>
 #include <limits>
 #include "models/regression_models.hpp"
+#include <Eigen/Core>
+#include <Eigen/Dense>
+#include <Eigen/Eigen>
+#include <Eigen/LU>
 
-void reading_input_values(std::size_t number_of_experiments, std::size_t number_of_features, std::size_t number_of_multi_classes, 
-                                        float** experimental_results, int* targets, float** execution_times_multi_class, std::ifstream& myfile) {
+
+using namespace Eigen;
+
+
+
+void reading_input_values(std::size_t number_of_experiments, std::size_t number_of_features, 
+                            std::size_t number_of_multi_classes, MatrixXf& experimental_results, 
+                            int* targets, MatrixXf& execution_times, MatrixXf& variance_of_time, 
+                                                          float * candidates, std::ifstream& myfile) {
 
     std::string line;
     std::size_t e = 0;
-    // Number of each class experiments
-    std::vector<std::size_t> num_class(number_of_multi_classes, 0);
 
     //assigning values for experimental_results:
     while(e < number_of_experiments) {
 
-        getline(myfile, line);
+    	getline(myfile, line);
         std::stringstream ss(line);
         std::string str;
         std::size_t f = 0;
@@ -30,7 +39,7 @@ void reading_input_values(std::size_t number_of_experiments, std::size_t number_
         //reading features:
         while(f < number_of_features) {
             getline(ss, str, ' ');
-            experimental_results[e][f] = std::atof(str.c_str());
+            experimental_results(e, f) = std::atof(str.c_str());
             f++;
         }
 
@@ -38,24 +47,28 @@ void reading_input_values(std::size_t number_of_experiments, std::size_t number_
         float t_min = std::numeric_limits<float>::max();
         int which_class;
         for(int c = 0; c < number_of_multi_classes; c++) {
+            //read exec time 
             getline(ss, str, ' ');
             float time_ = std::atof(str.c_str());
-            execution_times_multi_class[e][c] = time_;
-            if(time_ < t_min) {
+            execution_times(e, c) = time_;
+            if(time_ < t_min){// && candidates[c]*experimental_results(e,4)>1){
                 t_min = time_;
                 which_class = c;
             }
+            //read variance of time 
+
+            /*getline(ss, str, ' ');
+            float variance_ = std::atof(str.c_str());
+            variance_of_time(e, c) = variance_;*/
         }
 
         //assiging the class of that experiments
         targets[e] = which_class;
-        num_class[which_class]++;
-
         e++;    
     }
 }
 
-
+/*
 void implementing_binary_logistic_regression_model(){
     float threshold = 0.2;
     std::string line;
@@ -63,16 +76,25 @@ void implementing_binary_logistic_regression_model(){
     //learning two classes    
     std::cout <<"\n****************** Binary logistic regression model ******************\n"<<std::endl;
 
+    //reading first line
     std::ifstream myfile ("../inputs/par_if.dat");
     getline(myfile, line);
     std::stringstream ss(line);
     std::string str;
     getline(ss, str, ' ');
-    std::size_t number_of_experiments_two_class = std::stoi(str);
+    std::cout<<str<<std::endl;
+    std::size_t number_of_experiments_two_class =std::stoi(str);
     getline(ss, str, ' ');
+    std::cout<<str<<std::endl;
     std::size_t number_of_features_two_class = std::stoi(str);
-    //getline(ss, str, ' ');
+    getline(ss, str, ' ');
+    std::cout<<str<<std::endl;
     std::size_t number_of_multi_classes = std::stoi(str);
+
+
+
+
+
     //initializing
     float** experimental_results_two_class = new float*[number_of_experiments_two_class];
     float** execution_times_two_class = new float*[number_of_experiments_two_class];
@@ -82,6 +104,7 @@ void implementing_binary_logistic_regression_model(){
         execution_times_two_class[n] = new float[2];
     }
     int* targets_two_class = new int[number_of_experiments_two_class];    
+
 
     //reading input data
     reading_input_values(number_of_experiments_two_class, number_of_features_two_class, number_of_multi_classes, 
@@ -98,53 +121,109 @@ void implementing_binary_logistic_regression_model(){
     my_nw.printing_predicted_output_two_class();
     my_nw.finalizing_step();
 }
+*/
 
-void implementing_multinomial_logistic_regression_model(){
-    float threshold = 0.1;
+void implementing_multinomial_logistic_regression_model() {
+
+    float threshold = 0.02;
+    float eta = 0.01;
+    float time_threshold = 0.1;
+    int Max_ite = 5000;
+
     std::string line;
     
     //learning multi classes    
-    std::cout <<"\n****************** Multi-class logistic regression model ******************\n"<<std::endl;
+    std::cout << "\n****************** Multi-class logistic regression model ******************\n" <<std::endl;
     //reading input data : number of experiments, number of feautures and number of output_classes in each experiments
     //chunk size training data:
-    std::ifstream myfile ("../inputs/data_chunk.dat");
-    
+    std::ifstream myfile("./../inputs/train.dat");
     // prefetching distance training data:
-    //std::ifstream myfile ("inputs/data_prefetch.dat");
+    //std::ifstream myfile ("./../inputs/data_prefetch.dat");
     
+
+    //read first line
     getline(myfile, line);
     std::stringstream ss(line);
     std::string str;
     getline(ss, str, ' ');
-    std::size_t number_of_experiments_multi_class = std::stoi(str);
+    std::size_t number_of_experiments = std::stoi(str);
     getline(ss, str, ' ');
-    std::size_t number_of_features_multi_class = std::stoi(str);
+    std::size_t number_of_features = std::stoi(str);
     getline(ss, str, ' ');
     std::size_t number_of_multi_classes = std::stoi(str);
 
+    //read second line
+    float* chunk_size_candidates = new float[number_of_multi_classes];
+    getline(myfile,line);
+    std::stringstream ss2(line);
+    for(int i(0);i < number_of_features+number_of_multi_classes; i++) {
+        if(i<number_of_features) {
+	        getline(ss2, str, ' ');
+	}
+	    else {
+	        getline(ss2, str, ' ');
+	        chunk_size_candidates[i - number_of_features] = std::stof(str, NULL);
+    	}
+    }   
+       
     //initializing     
-    int* targets_multi_class = new int[number_of_experiments_multi_class];
-    float** experimental_results_multi_class = new float*[number_of_experiments_multi_class];
-    float** execution_times_multi_class = new float*[number_of_experiments_multi_class];
-    for(std::size_t n = 0; n < number_of_experiments_multi_class; n++) {
-        experimental_results_multi_class[n] = new float[number_of_features_multi_class];
-        execution_times_multi_class[n] = new float[number_of_multi_classes];
-    }
+    int* targets_multi_class = new int[number_of_experiments];
+    MatrixXf experimental_results = MatrixXf::Random(number_of_experiments, number_of_features);
+    MatrixXf execution_times = MatrixXf::Random(number_of_experiments, number_of_multi_classes);
+    MatrixXf variance_of_time = MatrixXf::Random(number_of_experiments, number_of_multi_classes);
+    MatrixXf Y = MatrixXf::Random(number_of_experiments, number_of_multi_classes);
 
     //reading real input data
-    reading_input_values(number_of_experiments_multi_class, number_of_features_multi_class, number_of_multi_classes, 
-                          experimental_results_multi_class, targets_multi_class, execution_times_multi_class, myfile);
-       
-    multinomial_logistic_regression_model my_nw(number_of_experiments_multi_class, number_of_features_multi_class,
-                                                 number_of_multi_classes, threshold, experimental_results_multi_class, 
-                                                 targets_multi_class, execution_times_multi_class);
+    reading_input_values(number_of_experiments, number_of_features,number_of_multi_classes, experimental_results,
+                        targets_multi_class, execution_times, variance_of_time, chunk_size_candidates, myfile);
+    
+   
+   ////////normilazing features/////////
+   float* averages = new float[number_of_features];
+   float* averages_2 = new float[number_of_features];
+   float* var = new float[number_of_features];
+
+    for(std::size_t i = 0; i < number_of_features; i++) {
+        averages[i] = 0;
+	    averages_2[i] = 0;
+	    var[i] = 0;
+    }
+
+    //computing average and variance values for each feature
+    for(std::size_t i = 0; i < number_of_experiments; i++) {		
+	    for(std::size_t j = 0; j < number_of_features; j++) {
+	        averages[j] += experimental_results(i, j);
+	        averages_2[j] += (pow(experimental_results(i, j), 2.0));
+	    }
+    }
+    for(std::size_t i = 0; i < number_of_features; i++) {		
+	    averages[i] = float(averages[i]/number_of_experiments);
+	    averages_2[i] = float(averages_2[i]/number_of_experiments);
+	    var[i] = sqrt(averages_2[i] - pow(averages[i], 2.0));		
+    }
+
+    for(std::size_t n = 0; n < number_of_experiments; n++) {
+	    for(std::size_t f = 0; f < number_of_features; f++) {
+	        experimental_results(n, f) = float((experimental_results(n, f) - averages[f])/var[f]);
+	    }
+    }
+  
+    multinomial_logistic_regression_model my_nw;
                                                            
-    my_nw.learning_multi_classes();
-    std::cout<<"\nLearning has been done!\n"<<std::endl;
-    std::cout<<"\nThe predicated weights for each features are: "<<std::endl;    
-    my_nw.retrieving_weights_multi_classes_into_text_file();
-    my_nw.printing_predicted_output_multi_class();
-    my_nw.finalizing_step();       
+    //convert targets to binary to get Y 
+    my_nw.convert_target_to_binary(targets_multi_class, Y); 
+    
+    my_nw.fit(experimental_results, Y, execution_times, eta, threshold, time_threshold, Max_ite, true);
+    std::cout<< "\nLearning has been done!\n" <<std::endl;
+    //std::cout<<"\nThe predicated weights for each features are: "<<std::endl;    
+    //my_nw.retrieving_weights_multi_classes_into_text_file();
+    //my_nw.printing_predicted_output_multi_class();
+    //my_nw.misclassification_ratio();
+    
+
+    //releasing memory
+    delete[] chunk_size_candidates;
+    delete[] targets_multi_class;
 }
 
 int main(int argc, const char * argv[]) {  
